@@ -13,6 +13,8 @@ export interface IGameData {
   }
 
   rng: ISeedRandom;
+  width: number;
+  height: number;
 }
 
 export function createGameData(seed: number): IGameData {
@@ -27,5 +29,7 @@ export function createGameData(seed: number): IGameData {
     },
 
     rng: createSeedRandom(seed),
+    width: 0,
+    height: 0,
   }
 }
