@@ -49,12 +49,10 @@ export default function Map() {
 
   return (
     <TransformWrapper
-      maxScale={10}
-      minScale={1}
-      initialScale={5}
+      maxScale={1}
+      minScale={0.5}
       centerOnInit={true}
       limitToBounds={false}
-      wheel={{ step: 1 }}
     >
       <TransformComponent wrapperStyle={{ width: `${size.x}px`, height: `${size.y}px` }}>
         <div
