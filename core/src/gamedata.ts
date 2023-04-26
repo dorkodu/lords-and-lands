@@ -1,6 +1,7 @@
 import { ICountry } from "./lib/country"
 import { createSeedRandom, ISeedRandom } from "./lib/seed_random";
 import { ITile } from "./lib/tile";
+import { TurnType } from "./types/turn_type";
 
 export interface IGameData {
   countries: ICountry[];
@@ -9,7 +10,7 @@ export interface IGameData {
   running: boolean;
   turn: {
     count: number;
-    country: ICountry | undefined;
+    type: TurnType;
   }
 
   rng: ISeedRandom;
@@ -25,7 +26,7 @@ export function createGameData(seed: number): IGameData {
     running: false,
     turn: {
       count: 0,
-      country: undefined,
+      type: TurnType.None,
     },
 
     rng: createSeedRandom(seed),

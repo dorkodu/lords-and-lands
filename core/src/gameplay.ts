@@ -2,6 +2,7 @@ import { IGameData } from "./gamedata";
 
 import { generate } from "./gameplay/generate";
 import { createCountry } from "./lib/country";
+import { util } from "./lib/util";
 import { CountryId } from "./types/country_id";
 
 function start(data: IGameData) {
@@ -9,22 +10,22 @@ function start(data: IGameData) {
   if (!firstCountry) return;
 
   data.running = true;
-  data.turn = { country: firstCountry, count: 0 };
+  data.turn.type = util.countryToTurnType(firstCountry);
 }
 
-function pause() {
-
-}
-
-function resume() {
+function pause(data: IGameData) {
 
 }
 
-function stop() {
+function resume(data: IGameData) {
 
 }
 
-function nextTurn() {
+function stop(data: IGameData) {
+
+}
+
+function nextTurn(data: IGameData) {
 
 }
 
@@ -34,8 +35,8 @@ function addCountry(data: IGameData, country: CountryId) {
   data.countries.push(createCountry(country));
 }
 
-function removeCountry() {
-
+function removeCountry(data: IGameData, country: CountryId) {
+  data.countries = data.countries.filter(c => c.id !== country);
 }
 
 export const gameplay = {
