@@ -1,6 +1,6 @@
 import { TransformComponent, TransformWrapper } from "react-zoom-pan-pinch"
 import React, { useLayoutEffect, useRef, useState } from "react";
-
+import Tilemap from "./Tilemap";
 
 export default function Map() {
   const [size, setSize] = useState({ x: innerWidth, y: innerHeight });
@@ -66,7 +66,7 @@ export default function Map() {
           onTouchStart={onTouchStart}
           onTouchMove={onTouchMove}
         >
-          map
+          <Tilemap />
         </div>
       </TransformComponent>
     </TransformWrapper>
