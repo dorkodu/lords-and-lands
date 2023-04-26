@@ -4,6 +4,7 @@ import { CountryId } from "@core/types/country_id";
 import { TileType } from "@core/types/tile_type";
 import { LandmarkId } from "@core/types/landmark_id";
 import { useMemo } from "react";
+import { useHover } from '@mantine/hooks';
 
 import TileNoneNomad from "@/assets/tiles/none_nomad.png";
 import TileGreenNomad from "@/assets/tiles/green_nomad.png";
@@ -27,6 +28,8 @@ import UnitPurple from "@/assets/units/purple.png";
 import UnitRed from "@/assets/units/red.png";
 import UnitYellow from "@/assets/units/yellow.png";
 
+import Cursor from "@/assets/misc/cursor.png";
+
 export default function Tilemap() {
   const tiles = useGameStore(state => state.data.tiles);
 
@@ -38,25 +41,30 @@ export default function Tilemap() {
 }
 
 function Tile({ tile }: { tile: ITile }) {
-  const transform = useMemo(() => `translate(${tile.pos.x * 128}px, ${tile.pos.y * 128}px)`, []);
+  const divTransform = useMemo(() => `translate(${tile.pos.x * 128}px, ${tile.pos.y * 128}px)`, []);
+  const imgTransform = useMemo(() => `translate(0px, 0px)`, []);
   const unitTransform = useMemo(() => `translate(${tile.pos.x * 128}px, ${tile.pos.y * 128 + 32}px) scale(0.5)`, []);
+  const { hovered, ref } = useHover();
+
   return (
-    <>
+    <div style={{ position: "absolute", transform: divTransform, width: 128, height: 128 }} ref={ref}>
       <img
         src={getTileSrc(tile)}
-        style={{ position: "absolute", transform, zIndex: 0 }}
+        style={{ position: "absolute", transform: imgTransform, zIndex: 0 }}
       />
 
       <img
         src={getLandmarkSrc(tile)}
-        style={{ position: "absolute", transform, zIndex: 1 }}
+        style={{ position: "absolute", transform: imgTransform, zIndex: 1 }}
       />
 
       <img
         src={getUnitSrc(tile)}
-        style={{ position: "absolute", transform: unitTransform, zIndex: 1 }}
+        style={{ position: "absolute", transform: unitTransform, zIndex: 2 }}
       />
-    </>
+
+      {hovered && <img src={Cursor} style={{ position: "absolute", transform: imgTransform, zIndex: 3 }} />}
+    </div>
   )
 }
 
