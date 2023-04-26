@@ -6,12 +6,11 @@ export interface IGameData {
   countries: ICountry[];
   tiles: ITile[];
 
+  running: boolean;
   turn: {
     count: number;
     country: ICountry | undefined;
   }
-
-  running: boolean;
 
   rng: ISeedRandom;
 }
@@ -21,12 +20,11 @@ export function createGameData(seed: number): IGameData {
     countries: [],
     tiles: [],
 
+    running: false,
     turn: {
       count: 0,
       country: undefined,
     },
-
-    running: false,
 
     rng: createSeedRandom(seed),
   }

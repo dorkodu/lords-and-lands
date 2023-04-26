@@ -4,8 +4,8 @@ export interface ICountry {
   id: CountryId;
 }
 
-export function createCountry(): ICountry {
+export function createCountry(id: ICountry["id"]): ICountry {
   return {
-    id: CountryId.None,
+    id,
   }
 }

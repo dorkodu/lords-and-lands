@@ -1,4 +1,6 @@
 export interface ISeedRandom {
+  seed: number;
+
   number: (min: number, max: number) => number;
   dice: () => number;
   percent: <T>(cases: { percent: number, result: T }[]) => T | undefined;
@@ -34,8 +36,9 @@ export function createSeedRandom(seed: number): ISeedRandom {
   }
 
   return {
-    number,
+    seed,
 
+    number,
     dice,
     percent,
   }
