@@ -1,3 +1,4 @@
+import { CountryId } from "../types/country_id";
 import { LandmarkId } from "../types/landmark_id";
 import { TileType } from "../types/tile_type";
 import { ICountry } from "./country";
@@ -8,6 +9,7 @@ export interface ITile {
 
   type: TileType;
   landmark: LandmarkId;
+  unit: CountryId;
 }
 
 export function createTile(pos: ITile["pos"], owner: ITile["owner"]): ITile {
@@ -17,5 +19,6 @@ export function createTile(pos: ITile["pos"], owner: ITile["owner"]): ITile {
 
     type: TileType.Nomad,
     landmark: LandmarkId.None,
+    unit: CountryId.None,
   }
 }
