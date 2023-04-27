@@ -48,7 +48,7 @@ function Tile({ tile }: { tile: ITile }) {
 
   const divTransform = useMemo(() => `translate(${tile.pos.x * 128}px, ${tile.pos.y * 128}px)`, []);
   const imgTransform = useMemo(() => `translate(0px, 0px)`, []);
-  const unitTransform = useMemo(() => `translate(${tile.pos.x * 128}px, ${tile.pos.y * 128 + 32}px) scale(0.5)`, []);
+  const unitTransform = useMemo(() => `translate(0px, 32px) scale(0.5)`, []);
   const { hovered, ref } = useHover();
 
   const event = () => {

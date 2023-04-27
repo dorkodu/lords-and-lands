@@ -50,6 +50,7 @@ export function placeBanner(data: IGameData, info: Info) {
 
   tile.type = TileType.Settled;
   tile.landmark = LandmarkId.Banner;
+  tile.unit = country.id;
   country.banners--;
 
   const adjacent = util.getAdjacentTiles(data, info.pos);
