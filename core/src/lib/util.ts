@@ -24,6 +24,12 @@ function turnTypeToCountry(data: IGameData, type: TurnType | undefined): ICountr
   }
 }
 
+function compareTile(t1: ITile | undefined, t2: ITile | undefined): boolean {
+  if (!t1 || !t2) return false;
+  if (t1.pos.x === t2.pos.x && t1.pos.y === t2.pos.y) return true;
+  return false;
+}
+
 /**
  * After each country plays for 3 turns, a special turn happens.
  * @param data 
@@ -77,13 +83,25 @@ function getAdjacentTiles(data: IGameData, pos: { x: number, y: number }): ITile
 function getMoveableTiles(data: IGameData, countryId: CountryId, pos: { x: number, y: number }): ITile[] {
   const tile = data.tiles[pos.x + pos.y * data.width];
   if (!tile) return [];
+
+  // If no unit exist
   if (!tile.unit) return [];
+
+  // If unit doesn't belong to the country
   if (tile.unit.id !== countryId) return [];
+
+  // If unit already attacked
+  if (tile.unit.attacked) return [];
 
   const adjacent: ITile[] = getAdjacentTiles(data, pos);
 
   const tiles = adjacent.filter(t => {
+    // If same country's unit
     if (t.unit && t.unit.id === countryId) return false;
+
+    // If unit already moved and there is no unit to attack
+    if (tile.unit?.moved && !t.unit) return false;
+
     return true;
   });
 
@@ -93,6 +111,8 @@ function getMoveableTiles(data: IGameData, countryId: CountryId, pos: { x: numbe
 export const util = {
   countryToTurnType,
   turnTypeToCountry,
+
+  compareTile,
 
   getTurnType,
 

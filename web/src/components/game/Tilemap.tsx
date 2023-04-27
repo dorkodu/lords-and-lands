@@ -60,11 +60,20 @@ function Tile({ tile }: { tile: ITile }) {
       if (s.selectedUnitTile?.pos.x === tile.pos.x && s.selectedUnitTile?.pos.y === tile.pos.y) {
         s.selectedUnitTile = undefined;
         s.moveableTiles = [];
+        return;
       }
-      else {
-        s.selectedUnitTile = tile;
-        s.moveableTiles = game.util.getMoveableTiles(data, s.country.id, tile.pos);
+
+      if (s.moveableTiles.filter(t => game.util.compareTile(t, tile)).length > 0) {
+        if (s.selectedUnitTile) {
+          game.play.moveUnit(
+            s.data,
+            { countryId: s.country.id, from: s.selectedUnitTile.pos, to: tile.pos }
+          );
+        }
       }
+
+      s.moveableTiles = game.util.getMoveableTiles(s.data, s.country.id, tile.pos);
+      s.selectedUnitTile = s.moveableTiles.length > 0 ? tile : undefined;
     });
   }
 

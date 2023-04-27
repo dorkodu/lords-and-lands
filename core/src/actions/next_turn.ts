@@ -63,6 +63,15 @@ function chestTurn(data: IGameData) {
   tile.landmark = LandmarkId.Chest;
 }
 
-function countryTurn(_data: IGameData) {
+function countryTurn(data: IGameData) {
+  const country = util.turnTypeToCountry(data, data.turn.type);
+  if (!country) return;
 
+  data.tiles.forEach(tile => {
+    if (!tile.unit) return;
+    if (tile.unit.id !== country.id) return;
+
+    tile.unit.attacked = false;
+    tile.unit.moved = false;
+  });
 }
