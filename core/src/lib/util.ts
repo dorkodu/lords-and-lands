@@ -130,14 +130,20 @@ function getWarModifier(data: IGameData, from: ITile, to: ITile): number {
     if (t.unit.id === to.unit.id) bonus += 0.5;
   });
 
-  switch (from.landmark) {
-    case LandmarkId.Forest: bonus += 2.0; break;
-    default: break;
+  // Only add forest bonus if it belongs to the same country-unit
+  if (from.owner.id === from.unit.id) {
+    switch (from.landmark) {
+      case LandmarkId.Forest: bonus += 2.0; break;
+      default: break;
+    }
   }
 
-  switch (to.landmark) {
-    case LandmarkId.Mountains: bonus -= 2.0; break;
-    default: break;
+  // Only add mountains bonus if it belongs to the same country-unit
+  if (to.owner.id === to.unit.id) {
+    switch (to.landmark) {
+      case LandmarkId.Mountains: bonus -= 2.0; break;
+      default: break;
+    }
   }
 
   return bonus;
