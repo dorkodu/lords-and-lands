@@ -136,11 +136,11 @@ function getLandmarkSrc(tile: ITile) {
 }
 
 function getUnitSrc(tile: ITile) {
-  switch (tile.unit) {
-    case CountryId.None: return undefined;
+  switch (tile.unit?.id) {
     case CountryId.Green: return UnitGreen;
     case CountryId.Purple: return UnitPurple;
     case CountryId.Red: return UnitRed;
     case CountryId.Yellow: return UnitYellow;
+    default: return undefined;
   }
 }

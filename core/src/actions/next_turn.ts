@@ -50,7 +50,7 @@ function bannerTurn(data: IGameData) {
 
 function chestTurn(data: IGameData) {
   const availableTiles = data.tiles.filter(t => {
-    if (t.unit !== CountryId.None) return false;
+    if (t.unit) return false;
     if (t.landmark !== LandmarkId.None) return false;
     return true;
   });

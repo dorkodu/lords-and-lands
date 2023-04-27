@@ -1,4 +1,5 @@
 import { IGameData } from "../gamedata";
+import { createUnit } from "../lib/unit";
 import { util } from "../lib/util";
 import { CountryId } from "../types/country_id";
 import { LandmarkId } from "../types/landmark_id";
@@ -31,7 +32,7 @@ export function placeBannerActable(data: IGameData, info: Info): boolean {
   if (tile.landmark !== LandmarkId.None) return false;
 
   // If tile has a unit on it
-  if (tile.unit !== CountryId.None) return false;
+  if (tile.unit) return false;
 
   // TODO: Don't allow if there is adjacent enemy unit
   //const adjacent = getAdjacentTiles(data, pos);
@@ -50,7 +51,7 @@ export function placeBanner(data: IGameData, info: Info) {
 
   tile.type = TileType.Settled;
   tile.landmark = LandmarkId.Banner;
-  tile.unit = country.id;
+  tile.unit = createUnit(country.id);
   country.banners--;
 
   const adjacent = util.getAdjacentTiles(data, info.pos);
@@ -59,7 +60,7 @@ export function placeBanner(data: IGameData, info: Info) {
     if (t.type === TileType.Settled) return;
 
     // If tile has a unit that is not own unit
-    if (t.unit !== CountryId.None && t.unit !== country.id) return;
+    if (t.unit && t.unit.id !== country.id) return;
 
     t.owner = country;
     t.type = TileType.Settled;
