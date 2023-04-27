@@ -51,7 +51,7 @@ export default function DefaultLayout() {
         </Flex>
       </Card>
 
-      <Flex direction="column" className={classes.main}>
+      <Flex direction="column" mx="md" className={classes.main}>
         <Outlet />
       </Flex>
     </Flex>

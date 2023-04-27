@@ -1,4 +1,4 @@
-import { ActionIcon, Button, Card, Divider, Flex, NumberInput, Text, Title } from "@mantine/core";
+import { ActionIcon, Button, Divider, Flex, NumberInput, Text, Title } from "@mantine/core";
 import {
   IconArrowBigLeftFilled,
   IconArrowBigRightFilled,
@@ -9,32 +9,37 @@ import {
   IconLogin,
   IconLogout,
   IconMessageCircle2,
-  IconRobot,
   IconSettings,
   IconStarFilled
 } from "@tabler/icons-react";
-
-import UnitGreen from "@/assets/units/green.png";
-import { CountryId } from "@core/types/country_id";
+import { IPlayer } from "@/types/player";
+import { useAppStore } from "@/stores/appStore";
+import { assets } from "@/assets/assets";
 
 export default function Lobby() {
+  const lobby = useAppStore(state => state.lobby);
+
+  const toggleLobbyStatus = () => {
+    useAppStore.setState(s => { s.lobby.online = !s.lobby.online });
+  }
+
   return (
     <Flex direction="column" align="center" gap="md">
 
       <Flex gap="md">
-        <ActionIcon>
+        <ActionIcon onClick={toggleLobbyStatus} disabled={lobby.owner}>
           <IconArrowBigLeftFilled />
         </ActionIcon>
 
-        <Text>offline</Text>
+        <Text>{lobby.online ? "Online" : "Offline"}</Text>
 
-        <ActionIcon>
+        <ActionIcon onClick={toggleLobbyStatus} disabled={lobby.owner}>
           <IconArrowBigRightFilled />
         </ActionIcon>
       </Flex>
 
       <Flex gap="md">
-        <Text>Lobby ID: abc123</Text>
+        <Text>Lobby ID: {lobby.id}</Text>
         <ActionIcon>
           <IconCopy />
         </ActionIcon>
@@ -65,60 +70,83 @@ export default function Lobby() {
 }
 
 function Players() {
+  const players = useAppStore(state => state.players);
+
+  if (players.length === 0) return null;
   return (
     <Flex direction="column" gap="xs">
-      <Player
-        country={CountryId.Green}
-        name={"Berk Cambaz"}
-        isAdmin
-      />
-      <Player
-        country={CountryId.Green}
-        name={"Berk Cambaz"}
-      />
+      <Divider />
+      {players.map((player, i) => <Player player={player} key={i} />)}
     </Flex>
   )
 }
 
-interface PlayerProps {
-  country: CountryId;
-  name: string;
+function Player({ player }: { player: IPlayer }) {
+  const onClickBan = () => {
 
-  isAdmin?: boolean;
-}
+  }
 
-function Player({ country, name, isAdmin }: PlayerProps) {
+  const onClickLogin = () => {
+
+  }
+
+  const onClickLogout = () => {
+
+  }
+
   return (
-    <Flex gap="md" justify="space-between">
-      <Flex gap="md">
-        <img src={UnitGreen} width={48} />
-        <Text>{name}</Text>
+    <>
+      <Flex gap="md" justify="space-between" maw={360}>
+
+        <Flex gap="md">
+          <img src={assets.countryIdToUnitSrc(player.country)} width={48} height={48} />
+          <Text>{player.name}</Text>
+        </Flex>
+
+        <Flex align="center" justify="flex-end" gap="xs">
+          <ActionIcon size={24} onClick={onClickBan}><IconBan /></ActionIcon>
+          <ActionIcon size={24} onClick={onClickLogin}><IconLogin /></ActionIcon>
+          <ActionIcon size={24} onClick={onClickLogout}><IconLogout /></ActionIcon>
+          {player.isAdmin && <IconStarFilled />}
+        </Flex>
+
       </Flex>
-      <Flex align="center" justify="flex-end" gap="xs">
-        <ActionIcon size={24}><IconBan /></ActionIcon>
-        <ActionIcon size={24}><IconLogin /></ActionIcon>
-        <ActionIcon size={24}><IconLogout /></ActionIcon>
-        {isAdmin && <IconStarFilled />}
-      </Flex>
-    </Flex>
+
+      <Divider />
+    </>
   )
 }
 
 function Map() {
+  const map = useAppStore(state => state.map);
+  const lobbyOwner = useAppStore(state => state.lobby.owner);
+
+  const onChangeWidth = (value: number | "") => {
+    useAppStore.setState(s => { s.map.width = value || 10 });
+  }
+
+  const onChangeHeight = (value: number | "") => {
+    useAppStore.setState(s => { s.map.height = value || 10 });
+  }
+
+  const onChangeSeed = (value: number | "") => {
+    useAppStore.setState(s => { s.map.seed = value || Date.now() });
+  }
+
   return (
     <Flex direction="column" gap="md">
       <Title order={4}>Map Settings</Title>
 
       <Flex align="center" justify="space-between" gap="md">
-        Width: <NumberInput />
+        Width: <NumberInput value={map.width} onChange={onChangeWidth} disabled={lobbyOwner} />
       </Flex>
 
       <Flex align="center" justify="space-between" gap="md">
-        Height: <NumberInput />
+        Height: <NumberInput value={map.height} onChange={onChangeHeight} disabled={lobbyOwner} />
       </Flex>
 
       <Flex align="center" justify="space-between" gap="md">
-        Seed: <NumberInput />
+        Seed: <NumberInput value={map.seed} onChange={onChangeSeed} disabled={lobbyOwner} />
       </Flex>
 
       <Button>Preview</Button>
