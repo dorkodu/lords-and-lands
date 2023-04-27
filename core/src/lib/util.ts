@@ -42,14 +42,31 @@ function getTurnType(data: IGameData, turn: number): TurnType {
 
 function getAdjacentTiles(data: IGameData, pos: { x: number, y: number }): ITile[] {
   const tiles: (ITile | undefined)[] = [];
-  tiles.push(data.tiles[(pos.x - 1) + (pos.y - 1) * data.width]); // NW
-  tiles.push(data.tiles[(pos.x + 0) + (pos.y - 1) * data.width]); // N
-  tiles.push(data.tiles[(pos.x + 1) + (pos.y - 1) * data.width]); // NE
-  tiles.push(data.tiles[(pos.x - 1) + (pos.y + 1) * data.width]); // SW
-  tiles.push(data.tiles[(pos.x + 0) + (pos.y + 1) * data.width]); // S
-  tiles.push(data.tiles[(pos.x + 1) + (pos.y + 1) * data.width]); // SE
-  tiles.push(data.tiles[(pos.x - 1) + (pos.y + 0) * data.width]); // W
-  tiles.push(data.tiles[(pos.x + 1) + (pos.y + 0) * data.width]); // E
+
+  if (pos.x - 1 >= 0 && pos.y - 1 >= 0)
+    tiles.push(data.tiles[(pos.x - 1) + (pos.y - 1) * data.width]); // NW
+
+  if (pos.y - 1 >= 0)
+    tiles.push(data.tiles[(pos.x + 0) + (pos.y - 1) * data.width]); // N
+
+  if (pos.x + 1 < data.width && pos.y - 1 >= 0)
+    tiles.push(data.tiles[(pos.x + 1) + (pos.y - 1) * data.width]); // NE
+
+  if (pos.x - 1 >= 0 && pos.y + 1 < data.height)
+    tiles.push(data.tiles[(pos.x - 1) + (pos.y + 1) * data.width]); // SW
+
+  if (pos.y + 1 < data.height)
+    tiles.push(data.tiles[(pos.x + 0) + (pos.y + 1) * data.width]); // S
+
+  if (pos.x + 1 < data.width && pos.y + 1 < data.height)
+    tiles.push(data.tiles[(pos.x + 1) + (pos.y + 1) * data.width]); // SE
+
+  if (pos.x - 1 >= 0)
+    tiles.push(data.tiles[(pos.x - 1) + (pos.y + 0) * data.width]); // W
+
+  if (pos.x + 1 < data.width)
+    tiles.push(data.tiles[(pos.x + 1) + (pos.y + 0) * data.width]); // E
+
   return tiles.filter(t => t) as ITile[];
 }
 
