@@ -15,13 +15,21 @@ import {
 import { IPlayer } from "@/types/player";
 import { useAppStore } from "@/stores/appStore";
 import { assets } from "@/assets/assets";
+import { useNavigate } from "react-router-dom";
 
 export default function Lobby() {
+  const navigate = useNavigate();
+
   const lobby = useAppStore(state => state.lobby);
 
   const toggleLobbyStatus = () => {
     useAppStore.setState(s => { s.lobby.online = !s.lobby.online });
   }
+
+  const onClickSettings = () => { navigate("/settings") }
+  const onClickSaves = () => { navigate("/saves") }
+  const onClickChat = () => { navigate("/chat") }
+  const onClickGame = () => { navigate("/game") }
 
   return (
     <Flex direction="column" align="center" gap="md">
@@ -46,19 +54,19 @@ export default function Lobby() {
       </Flex>
 
       <Flex gap="md">
-        <ActionIcon>
+        <ActionIcon onClick={onClickSettings}>
           <IconSettings />
         </ActionIcon>
 
-        <ActionIcon>
+        <ActionIcon onClick={onClickSaves}>
           <IconDeviceFloppy />
         </ActionIcon>
 
-        <ActionIcon>
+        <ActionIcon onClick={onClickChat}>
           <IconMessageCircle2 />
         </ActionIcon>
 
-        <ActionIcon>
+        <ActionIcon onClick={onClickGame}>
           <IconArrowRight />
         </ActionIcon>
       </Flex>
@@ -118,6 +126,8 @@ function Player({ player }: { player: IPlayer }) {
 }
 
 function Map() {
+  const navigate = useNavigate();
+
   const map = useAppStore(state => state.map);
   const lobbyOwner = useAppStore(state => state.lobby.owner);
 
@@ -132,6 +142,8 @@ function Map() {
   const onChangeSeed = (value: number | "") => {
     useAppStore.setState(s => { s.map.seed = value || Date.now() });
   }
+
+  const onClickPreview = () => { navigate("/lobby-preview") }
 
   return (
     <Flex direction="column" gap="md">
@@ -149,7 +161,7 @@ function Map() {
         Seed: <NumberInput value={map.seed} onChange={onChangeSeed} disabled={!lobbyOwner} />
       </Flex>
 
-      <Button>Preview</Button>
+      <Button onClick={onClickPreview}>Preview</Button>
     </Flex>
   )
 }
