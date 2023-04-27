@@ -48,6 +48,19 @@ export function placeBanner(data: IGameData, info: Info) {
   const tile = data.tiles[info.pos.x + info.pos.y * data.width];
   if (!tile) return;
 
+  tile.type = TileType.Settled;
   tile.landmark = LandmarkId.Banner;
   country.banners--;
+
+  const adjacent = util.getAdjacentTiles(data, info.pos);
+  adjacent.forEach(t => {
+    // If tile is already settled
+    if (t.type === TileType.Settled) return;
+
+    // If tile has a unit that is not own unit
+    if (t.unit !== CountryId.None && t.unit !== country.id) return;
+
+    t.owner = country;
+    t.type = TileType.Settled;
+  });
 }
