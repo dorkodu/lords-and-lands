@@ -8,6 +8,8 @@ import { game } from "@core/game";
 export default function Game() {
   useEffect(() => {
     useGameStore.setState(s => {
+      if (s.data.running) return;
+
       game.play.start(s.data, {});
       s.country = game.util.turnTypeToCountry(s.data, s.data.turn.type);
     });
