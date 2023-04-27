@@ -1,7 +1,10 @@
 import { IGameData } from "../gamedata";
+import { ICountry } from "../lib/country";
+import { createUnit } from "../lib/unit";
 import { util } from "../lib/util";
 import { CountryId } from "../types/country_id";
 import { LandmarkId } from "../types/landmark_id";
+import { TileType } from "../types/tile_type";
 import { TurnType } from "../types/turn_type";
 
 type Info = { country: CountryId | undefined };
@@ -22,6 +25,7 @@ export function nextTurn(data: IGameData, info: Info) {
   if (!nextTurnActable(data, info)) return;
 
   const currentTurn = data.turn.type;
+  const currentCountry = util.turnTypeToCountry(data, data.turn.type);
 
   data.turn.count++;
   data.turn.type = util.getTurnType(data, data.turn.count);
@@ -37,7 +41,7 @@ export function nextTurn(data: IGameData, info: Info) {
     case TurnType.CountryPurple:
     case TurnType.CountryRed:
     case TurnType.CountryYellow:
-      countryTurn(data);
+      countryTurn(data, currentCountry);
       break;
     default:
       break;
@@ -63,15 +67,43 @@ function chestTurn(data: IGameData) {
   tile.landmark = LandmarkId.Chest;
 }
 
-function countryTurn(data: IGameData) {
-  const country = util.turnTypeToCountry(data, data.turn.type);
-  if (!country) return;
+function countryTurn(data: IGameData, currentCountry: ICountry | undefined) {
+  if (!currentCountry) return;
 
+  // Banner unit spawn
+  data.tiles.forEach(tile => {
+    if (tile.owner.id !== currentCountry.id) return;
+    if (tile.unit) return;
+    if (tile.landmark !== LandmarkId.Banner) return;
+
+    tile.unit = createUnit(currentCountry.id);
+  });
+
+  // Unit attacked & moved changes
   data.tiles.forEach(tile => {
     if (!tile.unit) return;
-    if (tile.unit.id !== country.id) return;
+    if (tile.unit.id !== currentCountry.id) return;
 
     tile.unit.attacked = false;
     tile.unit.moved = false;
+  });
+
+  // Ownership changes
+  data.tiles.forEach(tile => {
+    if (!tile.unit) return;
+    if (tile.owner.id !== tile.unit.id) {
+      switch (tile.landmark) {
+        // Banner takes 2 turn to change ownership
+        case LandmarkId.Banner:
+          if (tile.type === TileType.Settled) tile.type = TileType.Nomad;
+          else if (tile.type === TileType.Nomad) tile.owner = currentCountry;
+          break;
+
+        // If anything else than banner, it takes 1 turn to change ownership
+        default:
+          tile.owner = currentCountry;
+          break;
+      }
+    }
   });
 }
