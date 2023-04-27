@@ -1,5 +1,6 @@
 import { IGameData } from "../gamedata";
 import { CountryId } from "../types/country_id";
+import { LandmarkId } from "../types/landmark_id";
 import { TurnType } from "../types/turn_type";
 import { ICountry } from "./country";
 import { ITile } from "./tile";
@@ -108,6 +109,40 @@ function getMoveableTiles(data: IGameData, countryId: CountryId, pos: { x: numbe
   return tiles;
 }
 
+function getWarModifier(data: IGameData, from: ITile, to: ITile): number {
+  if (!from.unit || !to.unit) return 0;
+  let bonus = 0;
+
+  const fromAdjacent = getAdjacentTiles(data, from.pos);
+  const toAdjacent = getAdjacentTiles(data, to.pos);
+
+  fromAdjacent.forEach(t => {
+    if (!from.unit || !to.unit || !t.unit) return;
+
+    if (t.unit.id === from.unit.id) bonus += 0.5;
+    if (t.unit.id === to.unit.id) bonus += -1.0;
+  });
+
+  toAdjacent.forEach(t => {
+    if (!from.unit || !to.unit || !t.unit) return;
+
+    if (t.unit.id === from.unit.id) bonus += -1.0;
+    if (t.unit.id === to.unit.id) bonus += 0.5;
+  });
+
+  switch (from.landmark) {
+    case LandmarkId.Forest: bonus += 2.0; break;
+    default: break;
+  }
+
+  switch (to.landmark) {
+    case LandmarkId.Mountains: bonus -= 2.0; break;
+    default: break;
+  }
+
+  return bonus;
+}
+
 export const util = {
   countryToTurnType,
   turnTypeToCountry,
@@ -118,4 +153,6 @@ export const util = {
 
   getAdjacentTiles,
   getMoveableTiles,
+
+  getWarModifier,
 }

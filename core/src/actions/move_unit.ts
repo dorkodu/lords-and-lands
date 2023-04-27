@@ -34,7 +34,22 @@ export function moveUnit(data: IGameData, info: Info) {
 
   // War mechanic
   if (toTile.unit) {
+    const modifier = util.getWarModifier(data, fromTile, toTile);
+    const fromDice = data.rng.dice();
+    const toDice = data.rng.dice();
+    const total = (fromDice - toDice) + modifier;
 
+    // If war is won
+    if (total > 0) {
+      toTile.unit = fromTile.unit;
+      fromTile.unit = undefined;
+
+      if (toTile.unit) toTile.unit.attacked = true;
+    }
+    // If war is lost
+    else {
+      fromTile.unit = undefined;
+    }
   }
   // Movement mechanic
   else {
