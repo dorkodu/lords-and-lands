@@ -4,6 +4,8 @@ import { create } from "zustand";
 import { immer } from "zustand/middleware/immer";
 
 export interface AppStoreState {
+  route: "game" | "chat" | "join-lobby" | "lobby" | "lobby-preview" | "main-menu" | "settings" | "any";
+
   players: IPlayer[];
   lobby: {
     owner: boolean;
@@ -22,6 +24,8 @@ export interface AppStoreAction {
 }
 
 const initialState: AppStoreState = {
+  route: "any",
+
   players: [
     { id: "player", name: "Player", country: CountryId.Green, isAdmin: true },
     { id: "", name: "", country: CountryId.Purple },

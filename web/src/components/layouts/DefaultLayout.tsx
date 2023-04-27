@@ -1,6 +1,7 @@
+import { useAppStore } from "@/stores/appStore";
 import { ActionIcon, Card, createStyles, Flex, px, Title } from "@mantine/core";
 import { IconArrowLeft } from "@tabler/icons-react";
-import { Outlet } from "react-router-dom";
+import { Outlet, useNavigate } from "react-router-dom";
 
 const useStyles = createStyles((theme) => ({
   container: {
@@ -35,17 +36,47 @@ const useStyles = createStyles((theme) => ({
 
 
 export default function DefaultLayout() {
+  const navigate = useNavigate();
+  const route = useAppStore(state => state.route);
+
   const { classes } = useStyles();
+
+  const onClickBack = () => {
+    switch (route) {
+      case "chat":
+      case "lobby-preview":
+      case "settings":
+        navigate(-1);
+        break;
+      case "join-lobby":
+      case "lobby":
+        navigate("/main-menu");
+        break;
+    }
+  }
+
+  const routeToTitle = (): string => {
+    switch (route) {
+      case "chat": return "Chat";
+      //case "game": return "Game";
+      case "join-lobby": return "Join Lobby";
+      case "lobby": return "Lobby";
+      //case "lobby-preview": return "Lobby Preview";
+      //case "main-menu": return "Main Menu";
+      case "settings": return "Settings";
+      default: return "Not Found";
+    }
+  }
 
   return (
     <Flex className={classes.container}>
       <Card className={classes.header}>
         <Flex align="center" justify="space-between" style={{ height: "100%" }}>
-          <ActionIcon>
+          <ActionIcon onClick={onClickBack}>
             <IconArrowLeft />
           </ActionIcon>
 
-          <Title order={3}>Title</Title>
+          <Title order={3}>{routeToTitle()}</Title>
 
           <ActionIcon style={{ visibility: "hidden" }}></ActionIcon>
         </Flex>
