@@ -14,7 +14,7 @@ export default function Map() {
   return (
     <TransformWrapper
       maxScale={1}
-      minScale={0.5}
+      minScale={0.25}
       centerOnInit={true}
       limitToBounds={false}
     >
