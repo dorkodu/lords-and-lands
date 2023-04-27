@@ -1,6 +1,6 @@
 import CenterLoader from "@/components/loaders/CenterLoader";
 import React, { Suspense } from "react";
-import { createBrowserRouter, createRoutesFromElements, Navigate, Route } from "react-router-dom";
+import { createHashRouter, createRoutesFromElements, Navigate, Route } from "react-router-dom";
 import App from "../App";
 import { useWait } from "../components/hooks";
 
@@ -12,9 +12,11 @@ const LazyNotFound = React.lazy(useWait(() => import("./NotFound")));
 const Game = <Suspense fallback={<CenterLoader />}><LazyGame /></Suspense>
 const NotFound = <Suspense fallback={<CenterLoader />}><LazyNotFound /></Suspense>
 
-export const router = createBrowserRouter(
+export const router = createHashRouter(
   createRoutesFromElements(
     <Route path="/" element={<App />}>
+      {/* Navigate to "/game" on path "/" */}
+      <Route index element={<Navigate to="/game" />} />
 
       <Route path="/game" element={Game} />
 
