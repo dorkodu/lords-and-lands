@@ -6,10 +6,10 @@ export enum ActionId {
   Stop,
 
   NextTurn,
+  Generate,
 
   AddCountry,
   RemoveCounty,
-  Generate,
 
   // Ingame
   PlaceBanner,

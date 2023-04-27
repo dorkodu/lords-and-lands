@@ -1,6 +1,7 @@
 import { IGameData } from "../gamedata";
 import { util } from "../lib/util";
 import { CountryId } from "../types/country_id";
+import { TurnType } from "../types/turn_type";
 
 type Info = { country: CountryId };
 
@@ -19,5 +20,37 @@ export function nextTurnActable(data: IGameData, info: Info): boolean {
 export function nextTurn(data: IGameData, info: Info) {
   if (!nextTurnActable(data, info)) return;
 
-  console.log("next turn");
+  const currentTurn = data.turn.type;
+
+  data.turn.count++;
+  data.turn.type = util.getTurnType(data, data.turn.count);
+
+  switch (currentTurn) {
+    case TurnType.Banner:
+      bannerTurn();
+      break;
+    case TurnType.Chest:
+      chestTurn();
+      break;
+    case TurnType.CountryGreen:
+    case TurnType.CountryPurple:
+    case TurnType.CountryRed:
+    case TurnType.CountryYellow:
+      countryTurn();
+      break;
+    default:
+      break;
+  }
+}
+
+function bannerTurn() {
+
+}
+
+function chestTurn() {
+
+}
+
+function countryTurn() {
+
 }

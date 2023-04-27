@@ -15,6 +15,7 @@ export default function Game() {
       game.play.addCountry(s.data, { country: CountryId.Red });
       game.play.generate(s.data, { w: 10, h: 10 });
       game.play.start(s.data, {});
+      s.country = game.util.turnTypeToCountry(s.data.turn.type);
     });
   }, []);
 
