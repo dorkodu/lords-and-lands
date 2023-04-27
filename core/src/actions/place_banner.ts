@@ -34,8 +34,14 @@ export function placeBannerActable(data: IGameData, info: Info): boolean {
   // If tile has a unit on it
   if (tile.unit) return false;
 
-  // TODO: Don't allow if there is adjacent enemy unit
-  //const adjacent = getAdjacentTiles(data, pos);
+  const adjacents = util.getAdjacentTiles(data, info.pos);
+  for (const adjacent of adjacents) {
+    // If there is a adjacent banner
+    if (adjacent.landmark === LandmarkId.Banner) return false;
+
+    // If there is adjacent enemy unit
+    if (adjacent.unit && adjacent.unit.id !== country.id) return false;
+  }
 
   return true;
 }
