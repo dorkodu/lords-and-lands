@@ -2,6 +2,7 @@ import { IGameData } from "../gamedata";
 import { CountryId } from "../types/country_id";
 import { TurnType } from "../types/turn_type";
 import { ICountry } from "./country";
+import { ITile } from "./tile";
 
 function countryToTurnType(country: ICountry | undefined): TurnType {
   switch (country?.id) {
@@ -13,13 +14,13 @@ function countryToTurnType(country: ICountry | undefined): TurnType {
   }
 }
 
-function turnTypeToCountry(type: TurnType | undefined): CountryId {
+function turnTypeToCountry(data: IGameData, type: TurnType | undefined): ICountry | undefined {
   switch (type) {
-    case TurnType.CountryGreen: return CountryId.Green;
-    case TurnType.CountryPurple: return CountryId.Purple;
-    case TurnType.CountryRed: return CountryId.Red;
-    case TurnType.CountryYellow: return CountryId.Yellow;
-    default: return CountryId.None;
+    case TurnType.CountryGreen: return data.countries.filter(c => c.id === CountryId.Green)[0];
+    case TurnType.CountryPurple: return data.countries.filter(c => c.id === CountryId.Purple)[0];
+    case TurnType.CountryRed: return data.countries.filter(c => c.id === CountryId.Red)[0];
+    case TurnType.CountryYellow: return data.countries.filter(c => c.id === CountryId.Yellow)[0];
+    default: return undefined;
   }
 }
 
@@ -35,17 +36,28 @@ function getTurnType(data: IGameData, turn: number): TurnType {
 
   if (turn < 0) return TurnType.None;
 
-  if (turn % specialTurnOffset === 0) {
-    return TurnType.Banner;
-  }
-  else {
-    return util.countryToTurnType(data.countries[turnOffset % countryCount]);
-  }
+  if (turn % specialTurnOffset === 0) return TurnType.Banner;
+  return util.countryToTurnType(data.countries[turnOffset % countryCount]);
+}
+
+function getAdjacentTiles(data: IGameData, pos: { x: number, y: number }): ITile[] {
+  const tiles: (ITile | undefined)[] = [];
+  tiles.push(data.tiles[(pos.x - 1) + (pos.y - 1) * data.width]); // NW
+  tiles.push(data.tiles[(pos.x + 0) + (pos.y - 1) * data.width]); // N
+  tiles.push(data.tiles[(pos.x + 1) + (pos.y - 1) * data.width]); // NE
+  tiles.push(data.tiles[(pos.x - 1) + (pos.y + 1) * data.width]); // SW
+  tiles.push(data.tiles[(pos.x + 0) + (pos.y + 1) * data.width]); // S
+  tiles.push(data.tiles[(pos.x + 1) + (pos.y + 1) * data.width]); // SE
+  tiles.push(data.tiles[(pos.x - 1) + (pos.y + 0) * data.width]); // W
+  tiles.push(data.tiles[(pos.x + 1) + (pos.y + 0) * data.width]); // E
+  return tiles.filter(t => t) as ITile[];
 }
 
 export const util = {
   countryToTurnType,
   turnTypeToCountry,
-  
+
   getTurnType,
+
+  getAdjacentTiles,
 }

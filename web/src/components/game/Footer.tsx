@@ -24,8 +24,8 @@ export default function Footer() {
   const onClickChat = () => { }
   const onClickNextTurn = () => {
     useGameStore.setState(s => {
-      game.play.nextTurn(s.data, { country: s.country });
-      s.country = game.util.turnTypeToCountry(s.data.turn.type);
+      game.play.nextTurn(s.data, { country: s.country?.id });
+      s.country = game.util.turnTypeToCountry(s.data, s.data.turn.type);
     })
   }
 

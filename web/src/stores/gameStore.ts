@@ -3,11 +3,11 @@ import { immer } from "zustand/middleware/immer";
 
 import { game } from "@core/game";
 import { IGameData } from "@core/gamedata";
-import { CountryId } from "@core/types/country_id";
+import { ICountry } from "@core/lib/country";
 
 export interface GameStoreState {
   data: IGameData;
-  country: CountryId;
+  country: ICountry | undefined;
 }
 
 export interface GameStoreAction {
@@ -16,7 +16,7 @@ export interface GameStoreAction {
 
 const initialState: GameStoreState = {
   data: game.createGameData(Date.now()),
-  country: CountryId.None,
+  country: undefined,
 }
 
 export const useGameStore = create(
