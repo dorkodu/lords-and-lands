@@ -3,7 +3,7 @@ import { ITile } from "@core/lib/tile";
 import { CountryId } from "@core/types/country_id";
 import { TileType } from "@core/types/tile_type";
 import { LandmarkId } from "@core/types/landmark_id";
-import { useMemo } from "react";
+import { useEffect, useMemo } from "react";
 import { useHover } from '@mantine/hooks';
 import { game } from "@core/game";
 
@@ -45,6 +45,7 @@ export default function Tilemap() {
 function Tile({ tile }: { tile: ITile }) {
   const data = useGameStore(state => state.data);
   const country = useGameStore(state => state.country);
+  const hoveredTile = useGameStore(state => state.hoveredTile);
   const moveableTiles = useGameStore(state => state.moveableTiles);
 
   const divTransform = useMemo(() => `translate(${tile.pos.x * 128}px, ${tile.pos.y * 128}px)`, []);
@@ -52,8 +53,17 @@ function Tile({ tile }: { tile: ITile }) {
   const unitTransform = useMemo(() => `translate(0px, 32px) scale(0.5)`, []);
   const { hovered, ref } = useHover();
 
+  useEffect(() => {
+    if (!hovered) return;
+    useGameStore.setState(s => {
+      s.hoveredTile = s.data.tiles[tile.pos.x + tile.pos.y * s.data.width];
+    });
+  }, [hovered]);
+
   const event = () => {
     useGameStore.setState(s => {
+      s.hoveredTile = s.data.tiles[tile.pos.x + tile.pos.y * s.data.width];
+
       if (!s.country) return;
       game.play.placeBanner(s.data, { countryId: s.country.id, pos: tile.pos });
 
@@ -127,7 +137,9 @@ function Tile({ tile }: { tile: ITile }) {
         />
       }
 
-      {hovered && <img src={Cursor} style={{ position: "absolute", transform: imgTransform, zIndex: 3 }} />}
+      {game.util.compareTile(tile, hoveredTile) &&
+        <img src={Cursor} style={{ position: "absolute", transform: imgTransform, zIndex: 3 }} />
+      }
     </div>
   )
 }

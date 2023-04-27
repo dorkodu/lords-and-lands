@@ -10,6 +10,7 @@ export interface GameStoreState {
   data: IGameData;
   country: ICountry | undefined;
 
+  hoveredTile: ITile | undefined;
   selectedUnitTile: ITile | undefined;
   moveableTiles: ITile[];
 }
@@ -22,6 +23,7 @@ const initialState: GameStoreState = {
   data: game.createGameData(Date.now()),
   country: undefined,
 
+  hoveredTile: undefined,
   selectedUnitTile: undefined,
   moveableTiles: [],
 }
