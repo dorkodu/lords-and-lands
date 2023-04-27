@@ -1,4 +1,4 @@
-import { ActionIcon, Card, createStyles, Flex, Title } from "@mantine/core";
+import { ActionIcon, Card, createStyles, Flex, px, Title } from "@mantine/core";
 import { IconArrowLeft } from "@tabler/icons-react";
 import { Outlet } from "react-router-dom";
 
@@ -16,6 +16,7 @@ const useStyles = createStyles((theme) => ({
     maxWidth: theme.breakpoints.sm,
     height: 64,
     margin: "0 auto",
+    zIndex: 100,
 
     borderTopRightRadius: 0,
     borderTopLeftRadius: 0,
@@ -27,7 +28,8 @@ const useStyles = createStyles((theme) => ({
 
   main: {
     width: "100%",
-    marginTop: 64,
+    marginTop: 64 + px(theme.spacing.md),
+    marginBottom: 0 + px(theme.spacing.md),
   },
 }));
 
