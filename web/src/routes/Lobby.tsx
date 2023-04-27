@@ -16,6 +16,8 @@ import { IPlayer } from "@/types/player";
 import { useAppStore } from "@/stores/appStore";
 import { assets } from "@/assets/assets";
 import { useNavigate } from "react-router-dom";
+import { useGameStore } from "@/stores/gameStore";
+import { game } from "@core/game";
 
 export default function Lobby() {
   const navigate = useNavigate();
@@ -90,31 +92,70 @@ function Players() {
 }
 
 function Player({ player }: { player: IPlayer }) {
+  const playerExist = !!player.id;
+  const lobbyOwner = useAppStore(state => state.lobby.owner);
+
+  const showBan = lobbyOwner && playerExist;
+  const showLogin = !playerExist;
+  const showLogout = playerExist;
+
   const onClickBan = () => {
 
   }
 
   const onClickLogin = () => {
+    let done = false;
+    if (playerExist) return;
 
+    useAppStore.setState(s => {
+      const p = s.players.filter(p => p.country === player.country)[0];
+      if (!p) return;
+      p.id = `${p.country}`;
+      p.name = `Player (${p.country})`;
+      p.isAdmin = lobbyOwner;
+      done = true;
+    });
+
+    if (!done) return;
+
+    useGameStore.setState(s => {
+      game.play.addCountry(s.data, { country: player.country });
+    });
   }
 
   const onClickLogout = () => {
+    let done = false;
+    if (!playerExist) return;
 
+    useAppStore.setState(s => {
+      const p = s.players.filter(p => p.country === player.country)[0];
+      if (!p) return;
+      p.id = undefined;
+      p.name = undefined;
+      p.isAdmin = false;
+      done = true;
+    });
+
+    if (!done) return;
+
+    useGameStore.setState(s => {
+      game.play.removeCountry(s.data, { country: player.country });
+    });
   }
 
   return (
     <>
-      <Flex gap="md" justify="space-between" maw={360}>
+      <Flex gap="md" justify="space-between" style={{ maxWidth: 360 }}>
 
-        <Flex gap="md">
+        <Flex align="center" gap="md">
           <img src={assets.countryIdToUnitSrc(player.country)} width={48} height={48} />
-          <Text>{player.name}</Text>
+          {playerExist && <Text>{player.name}</Text>}
         </Flex>
 
         <Flex align="center" justify="flex-end" gap="xs">
-          <ActionIcon size={24} onClick={onClickBan}><IconBan /></ActionIcon>
-          <ActionIcon size={24} onClick={onClickLogin}><IconLogin /></ActionIcon>
-          <ActionIcon size={24} onClick={onClickLogout}><IconLogout /></ActionIcon>
+          {showBan && <ActionIcon size={24} onClick={onClickBan}><IconBan /></ActionIcon>}
+          {showLogin && <ActionIcon size={24} onClick={onClickLogin}><IconLogin /></ActionIcon>}
+          {showLogout && <ActionIcon size={24} onClick={onClickLogout}><IconLogout /></ActionIcon>}
           {player.isAdmin && <IconStarFilled />}
         </Flex>
 
