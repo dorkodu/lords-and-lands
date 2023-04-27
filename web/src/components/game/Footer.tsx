@@ -1,6 +1,7 @@
 import { useGameStore } from "@/stores/gameStore";
 import { game } from "@core/game";
 import { Flex, createStyles, ActionIcon } from "@mantine/core";
+import { useHotkeys } from "@mantine/hooks";
 import { IconArrowRight, IconMenu2, IconMessageCircle2 } from "@tabler/icons-react";
 
 const useStyles = createStyles((_theme) => ({
@@ -28,6 +29,12 @@ export default function Footer() {
       s.country = game.util.turnTypeToCountry(s.data, s.data.turn.type);
     })
   }
+
+  useHotkeys([
+    ["1", () => onClickMenu()],
+    ["2", () => onClickChat()],
+    ["3", () => onClickNextTurn()],
+  ]);
 
   return (
     <Flex className={classes.footer} direction="row" align="center" justify="center" gap="md">
