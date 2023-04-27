@@ -8,6 +8,7 @@ import UnitRed from "@/assets/units/red.png";
 import UnitYellow from "@/assets/units/yellow.png";
 import LandmarkBanner from "@/assets/landmarks/banner.png";
 import LandmarkChest from "@/assets/landmarks/chest.png";
+import { game } from "@core/game";
 
 const useStyles = createStyles((_theme) => ({
   header: {
@@ -25,17 +26,18 @@ const useStyles = createStyles((_theme) => ({
 export default function Header() {
   const { classes } = useStyles();
   const data = useGameStore(state => state.data);
-  const olderTurns = useGameStore(state => state.olderTurns);
-  const newerTurns = useGameStore(state => state.newerTurns);
 
   return (
     <Flex className={classes.header} direction="row" align="center" justify="center" gap="md">
       <Flex>
-        {olderTurns.map((turn, i) => <img src={turnTypeToSrc(turn)} style={{ width: 32, height: 32 }} key={i} />)}
-
+        {[-4, -3, -2, -1].map((v, i) =>
+          <img src={turnTypeToSrc(game.play.getTurnType(data, data.turn.count + v))} style={{ width: 32, height: 32 }} key={i} />
+        )}
         <img src={turnTypeToSrc(data.turn.type)} style={{ width: 64, height: 64 }} />
 
-        {newerTurns.map((turn, i) => <img src={turnTypeToSrc(turn)} style={{ width: 32, height: 32 }} key={i} />)}
+        {[1, 2, 3, 4].map((v, i) =>
+          <img src={turnTypeToSrc(game.play.getTurnType(data, data.turn.count + v))} style={{ width: 32, height: 32 }} key={i} />
+        )}
       </Flex>
     </Flex>
   )

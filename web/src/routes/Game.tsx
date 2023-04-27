@@ -12,6 +12,7 @@ export default function Game() {
       s.data = game.createGameData(Date.now());
       game.play.addCountry(s.data, CountryId.Green);
       game.play.addCountry(s.data, CountryId.Purple);
+      game.play.addCountry(s.data, CountryId.Red);
       game.play.generate(s.data, 10, 10);
       game.play.start(s.data);
     });
