@@ -17,6 +17,7 @@ export default function Map() {
       minScale={0.25}
       centerOnInit={true}
       limitToBounds={false}
+      doubleClick={{ disabled: true }}
     >
       <TransformComponent wrapperStyle={{ width: `${size.x}px`, height: `${size.y}px` }}>
         <Tilemap />
