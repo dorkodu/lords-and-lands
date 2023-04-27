@@ -36,7 +36,11 @@ function getTurnType(data: IGameData, turn: number): TurnType {
 
   if (turn < 0) return TurnType.None;
 
-  if (turn % specialTurnOffset === 0) return TurnType.Banner;
+  if (turn % specialTurnOffset === 0) {
+    if (turn % 2 === 1) return TurnType.Chest;
+    else return TurnType.Banner;
+  }
+
   return util.countryToTurnType(data.countries[turnOffset % countryCount]);
 }
 

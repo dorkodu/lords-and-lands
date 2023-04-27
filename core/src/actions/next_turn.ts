@@ -1,6 +1,7 @@
 import { IGameData } from "../gamedata";
 import { util } from "../lib/util";
 import { CountryId } from "../types/country_id";
+import { LandmarkId } from "../types/landmark_id";
 import { TurnType } from "../types/turn_type";
 
 type Info = { country: CountryId | undefined };
@@ -48,9 +49,20 @@ function bannerTurn(data: IGameData) {
 }
 
 function chestTurn(data: IGameData) {
+  const availableTiles = data.tiles.filter(t => {
+    if (t.unit !== CountryId.None) return false;
+    if (t.landmark !== LandmarkId.None) return false;
+    return true;
+  });
 
+  const random = data.rng.number(0, availableTiles.length);
+
+  const tile = availableTiles[random];
+  if (!tile) return;
+
+  tile.landmark = LandmarkId.Chest;
 }
 
-function countryTurn(data: IGameData) {
+function countryTurn(_data: IGameData) {
 
 }

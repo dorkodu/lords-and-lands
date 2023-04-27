@@ -55,7 +55,7 @@ function Tile({ tile }: { tile: ITile }) {
     useGameStore.setState(s => {
       if (!s.country) return;
       game.play.placeBanner(s.data, { countryId: s.country.id, pos: tile.pos });
-    })
+    });
   }
 
   const {

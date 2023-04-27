@@ -30,8 +30,8 @@ export function placeBannerActable(data: IGameData, info: Info): boolean {
   // If tile already has another landmark
   if (tile.landmark !== LandmarkId.None) return false;
 
-  // If tile has a enemy unit on it
-  if (tile.unit !== CountryId.None && tile.unit !== country.id) return false;
+  // If tile has a unit on it
+  if (tile.unit !== CountryId.None) return false;
 
   // TODO: Don't allow if there is adjacent enemy unit
   //const adjacent = getAdjacentTiles(data, pos);
