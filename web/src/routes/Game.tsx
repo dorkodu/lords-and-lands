@@ -1,6 +1,6 @@
-import Header from "@/components/game/Header";
-import Footer from "@/components/game/Footer";
-import Map from "@/components/game/Map";
+import Header from "@/components/_game/Header";
+import Footer from "@/components/_game/Footer";
+import Map from "@/components/_game/Map";
 import { useEffect } from "react";
 import { useGameStore } from "@/stores/gameStore";
 import { game } from "@core/game";

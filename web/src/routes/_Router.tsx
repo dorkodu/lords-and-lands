@@ -24,6 +24,10 @@ const Settings = <Suspense fallback={<CenterLoader />}><LazySettings /></Suspens
 const Game = <Suspense fallback={<CenterLoader />}><LazyGame /></Suspense>
 const NotFound = <Suspense fallback={<CenterLoader />}><LazyNotFound /></Suspense>
 
+// Lazy layouts \\
+const DefaultLayout = React.lazy(useWait(() => import("../components/layouts/DefaultLayout")));
+// Lazy layouts \\
+
 export const router = createBrowserRouter(
   createRoutesFromElements(
     <Route path="/" element={<App />}>
@@ -31,12 +35,15 @@ export const router = createBrowserRouter(
       <Route index element={<Navigate to="/main-menu" />} />
 
       <Route path="/main-menu" element={MainMenu} />
-      <Route path="/lobby" element={Lobby} />
-      <Route path="/join-lobby" element={JoinLobby} />
       <Route path="/lobby-preview" element={LobbyPreview} />
-      <Route path="/chat" element={Chat} />
-      <Route path="/settings" element={Settings} />
       <Route path="/game" element={Game} />
+
+      <Route element={<Suspense fallback={<CenterLoader />}><DefaultLayout /></Suspense>}>
+        <Route path="/lobby" element={Lobby} />
+        <Route path="/join-lobby" element={JoinLobby} />
+        <Route path="/chat" element={Chat} />
+        <Route path="/settings" element={Settings} />
+      </Route>
 
       {/* Error routes & catch all */}
       <Route path="/404" element={NotFound} />
