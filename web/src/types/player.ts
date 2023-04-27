@@ -1,8 +1,8 @@
 import { CountryId } from "@core/types/country_id";
 
 export interface IPlayer {
-  id: string;
-  name: string;
+  id: string | undefined;
+  name: string | undefined;
   country: CountryId;
   isAdmin?: boolean;
 }
