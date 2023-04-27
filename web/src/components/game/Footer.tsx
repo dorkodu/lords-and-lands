@@ -2,7 +2,7 @@ import { useGameStore } from "@/stores/gameStore";
 import { game } from "@core/game";
 import { Flex, createStyles, ActionIcon } from "@mantine/core";
 import { useHotkeys } from "@mantine/hooks";
-import { IconArrowRight, IconMenu2, IconMessageCircle2 } from "@tabler/icons-react";
+import { IconArrowRight, IconMessageCircle2, IconWorld } from "@tabler/icons-react";
 
 const useStyles = createStyles((_theme) => ({
   footer: {
@@ -21,7 +21,7 @@ const useStyles = createStyles((_theme) => ({
 export default function Footer() {
   const { classes } = useStyles();
 
-  const onClickMenu = () => { }
+  const onClickLobby = () => { }
   const onClickChat = () => { }
   const onClickNextTurn = () => {
     useGameStore.setState(s => {
@@ -31,7 +31,7 @@ export default function Footer() {
   }
 
   useHotkeys([
-    ["1", () => onClickMenu()],
+    ["1", () => onClickLobby()],
     ["2", () => onClickChat()],
     ["3", () => onClickNextTurn()],
   ]);
@@ -39,8 +39,8 @@ export default function Footer() {
   return (
     <Flex className={classes.footer} direction="row" align="center" justify="center" gap="md">
 
-      <ActionIcon variant="filled" size={32} onClick={onClickMenu}>
-        <IconMenu2 />
+      <ActionIcon variant="filled" size={32} onClick={onClickLobby}>
+        <IconWorld />
       </ActionIcon>
 
       <ActionIcon variant="filled" size={32} onClick={onClickChat}>
