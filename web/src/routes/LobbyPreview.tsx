@@ -4,9 +4,20 @@ import { useGameStore } from "@/stores/gameStore";
 import { game } from "@core/game";
 import { ActionIcon, createStyles, Flex } from "@mantine/core";
 import { IconArrowLeft, IconRefresh } from "@tabler/icons-react";
+import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
 export default function LobbyPreview() {
+  useEffect(() => {
+    const w = useAppStore.getState().map.width;
+    const h = useAppStore.getState().map.height;
+
+    useGameStore.setState(s => {
+      if (s.data.tiles.length !== 0) return;
+      game.play.generate(s.data, { w, h });
+    });
+  }, []);
+
   return (
     <>
       <Map />
