@@ -19,6 +19,10 @@ export function moveUnitActable(data: IGameData, info: Info): boolean {
   const moveableTiles = util.getMoveableTiles(data, fromTile.unit.id, fromTile.pos);
   if (moveableTiles.filter(t => t === toTile).length === 0) return false;
 
+  // If it's not unit's country's turn
+  const country = util.turnTypeToCountry(data, data.turn.type);
+  if (country && fromTile.unit.id !== country.id) return false;
+
   return true;
 }
 

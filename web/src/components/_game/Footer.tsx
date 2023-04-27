@@ -29,6 +29,10 @@ export default function Footer() {
     useGameStore.setState(s => {
       game.play.nextTurn(s.data, { country: s.country?.id });
       s.country = game.util.turnTypeToCountry(s.data, s.data.turn.type);
+
+      // Clear any previous tile selections (excluding hovered tile)
+      s.moveableTiles = [];
+      s.selectedUnitTile = undefined;
     })
   }
 
