@@ -45,6 +45,7 @@ export default function Tilemap() {
 function Tile({ tile }: { tile: ITile }) {
   const data = useGameStore(state => state.data);
   const country = useGameStore(state => state.country);
+  const moveableTiles = useGameStore(state => state.moveableTiles);
 
   const divTransform = useMemo(() => `translate(${tile.pos.x * 128}px, ${tile.pos.y * 128}px)`, []);
   const imgTransform = useMemo(() => `translate(0px, 0px)`, []);
@@ -55,6 +56,15 @@ function Tile({ tile }: { tile: ITile }) {
     useGameStore.setState(s => {
       if (!s.country) return;
       game.play.placeBanner(s.data, { countryId: s.country.id, pos: tile.pos });
+
+      if (s.selectedUnitTile?.pos.x === tile.pos.x && s.selectedUnitTile?.pos.y === tile.pos.y) {
+        s.selectedUnitTile = undefined;
+        s.moveableTiles = [];
+      }
+      else {
+        s.selectedUnitTile = tile;
+        s.moveableTiles = game.util.getMoveableTiles(data, s.country.id, tile.pos);
+      }
     });
   }
 
@@ -93,6 +103,18 @@ function Tile({ tile }: { tile: ITile }) {
         <img
           src={LandmarkBanner}
           style={{ position: "absolute", transform: imgTransform, zIndex: 2, filter: "invert(100%)" }}
+        />
+      }
+
+      {moveableTiles.filter(t => t === tile).length > 0 &&
+        <div
+          style={{
+            position: "absolute",
+            transform: imgTransform,
+            zIndex: 2,
+            width: 128, height: 128,
+            backgroundColor: "rgba(0, 0, 0, 0.375)",
+          }}
         />
       }
 

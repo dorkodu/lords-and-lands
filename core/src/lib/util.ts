@@ -74,6 +74,22 @@ function getAdjacentTiles(data: IGameData, pos: { x: number, y: number }): ITile
   return tiles.filter(t => t) as ITile[];
 }
 
+function getMoveableTiles(data: IGameData, countryId: CountryId, pos: { x: number, y: number }): ITile[] {
+  const tile = data.tiles[pos.x + pos.y * data.width];
+  if (!tile) return [];
+  if (!tile.unit) return [];
+  if (tile.unit.id !== countryId) return [];
+
+  const adjacent: ITile[] = getAdjacentTiles(data, pos);
+
+  const tiles = adjacent.filter(t => {
+    if (t.unit && t.unit.id === countryId) return false;
+    return true;
+  });
+
+  return tiles;
+}
+
 export const util = {
   countryToTurnType,
   turnTypeToCountry,
@@ -81,4 +97,5 @@ export const util = {
   getTurnType,
 
   getAdjacentTiles,
+  getMoveableTiles,
 }
