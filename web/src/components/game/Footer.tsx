@@ -22,7 +22,9 @@ export default function Footer() {
 
   const onClickMenu = () => { }
   const onClickChat = () => { }
-  const onClickNextTurn = () => { useGameStore.setState(s => { game.play.nextTurn(s.data) }) }
+  const onClickNextTurn = () => {
+    useGameStore.setState(s => { game.play.nextTurn(s.data, { country: s.country }) })
+  }
 
   return (
     <Flex className={classes.footer} direction="row" align="center" justify="center" gap="md">

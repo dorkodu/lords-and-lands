@@ -10,11 +10,11 @@ export default function Game() {
   useEffect(() => {
     useGameStore.setState(s => {
       s.data = game.createGameData(Date.now());
-      game.play.addCountry(s.data, CountryId.Green);
-      game.play.addCountry(s.data, CountryId.Purple);
-      game.play.addCountry(s.data, CountryId.Red);
-      game.play.generate(s.data, 10, 10);
-      game.play.start(s.data);
+      game.play.addCountry(s.data, { country: CountryId.Green });
+      game.play.addCountry(s.data, { country: CountryId.Purple });
+      game.play.addCountry(s.data, { country: CountryId.Red });
+      game.play.generate(s.data, { w: 10, h: 10 });
+      game.play.start(s.data, {});
     });
   }, []);
 

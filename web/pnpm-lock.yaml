@@ -4,10 +4,8 @@ specifiers:
   '@emotion/react': ^11.10.6
   '@mantine/core': ^6.0.8
   '@mantine/hooks': ^6.0.8
-  '@mapbox/polylabel': ^1.0.2
   '@tabler/icons-react': ^2.16.0
   '@types/node': ^18.15.11
-  '@types/polylabel': ^1.0.5
   '@types/react': ^18.0.28
   '@types/react-dom': ^18.0.11
   '@vitejs/plugin-react': ^3.1.0
@@ -44,9 +42,7 @@ dependencies:
   zustand: 4.3.7_immer@10.0.1+react@18.2.0
 
 devDependencies:
-  '@mapbox/polylabel': 1.0.2
   '@types/node': 18.16.1
-  '@types/polylabel': 1.0.5
   '@types/react': 18.2.0
   '@types/react-dom': 18.2.1
   '@vitejs/plugin-react': 3.1.0_vite@4.3.2
@@ -1652,12 +1648,6 @@ packages:
       react: 18.2.0
     dev: false
 
-  /@mapbox/polylabel/1.0.2:
-    resolution: {integrity: sha512-htPcy9pNNuTvlWIQIMZZORRgCnH2DFLEACxYc2yQHqwRYv5cO84lvQqxLUHC+4xqSbW41mIo/bhyPx+OUzofHg==}
-    dependencies:
-      tinyqueue: 1.2.3
-    dev: true
-
   /@nodelib/fs.scandir/2.1.5:
     resolution: {integrity: sha512-vq24Bq3ym5HEQm2NKCr3yXDwjc7vTsEThRDnkp2DK9p1uqLR+DHurm/NOTo0KG7HYHU7eppKZj3MyqYuMBf62g==}
     engines: {node: '>= 8'}
@@ -2063,10 +2053,6 @@ packages:
 
   /@types/parse-json/4.0.0:
     resolution: {integrity: sha512-//oorEZjL6sbPcKUaCdIGlIUeH26mgzimjBB77G6XRgnDl/L5wOnpyBGRe/Mmf5CVW3PwEBE1NjiMZ/ssFh4wA==}
-
-  /@types/polylabel/1.0.5:
-    resolution: {integrity: sha512-gnaNmo1OJiYNBFAZMZdqLZ3hKx2ee4ksAzqhKWBxuQ61PmhINHMcvIqsGmyCD1WFKCkwRt9NFhMSmKE6AgYY+w==}
-    dev: true
 
   /@types/prop-types/15.7.5:
     resolution: {integrity: sha512-JCB8C6SnDoQf0cNycqd/35A7MjcnK+ZTqE7judS6o7utxUCg6imJg3QK2qzHKszlTjcj2cn+NwMB2i96ubpj7w==}
@@ -3785,10 +3771,6 @@ packages:
       acorn: 8.8.2
       commander: 2.20.3
       source-map-support: 0.5.21
-    dev: true
-
-  /tinyqueue/1.2.3:
-    resolution: {integrity: sha512-Qz9RgWuO9l8lT+Y9xvbzhPT2efIUIFd69N7eF7tJ9lnQl0iLj1M7peK7IoUGZL9DJHw9XftqLreccfxcQgYLxA==}
     dev: true
 
   /tlds/1.238.0:

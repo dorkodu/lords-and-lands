@@ -1,11 +1,12 @@
 import { IGameData } from "../gamedata";
-import { createTile } from "../lib/tile";
 import { LandmarkId } from "../types/landmark_id";
+import { createTile } from "./tile";
 
-export function generate(data: IGameData, width: number, height: number) {
-  data.width = width;
-  data.height = height;
-  
+export const tilemap = {
+  generate,
+}
+
+function generate(data: IGameData) {
   const origins = chooseOrigins(data);
   chooseTiles(data, origins);
   sprinkleNature(data);

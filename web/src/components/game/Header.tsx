@@ -31,12 +31,21 @@ export default function Header() {
     <Flex className={classes.header} direction="row" align="center" justify="center" gap="md">
       <Flex>
         {[-4, -3, -2, -1].map((v, i) =>
-          <img src={turnTypeToSrc(game.play.getTurnType(data, data.turn.count + v))} style={{ width: 32, height: 32 }} key={i} />
+          <img
+            src={turnTypeToSrc(game.util.getTurnType(data, data.turn.count + v))}
+            style={{ width: 32, height: 32 }}
+            key={i}
+          />
         )}
+
         <img src={turnTypeToSrc(data.turn.type)} style={{ width: 64, height: 64 }} />
 
         {[1, 2, 3, 4].map((v, i) =>
-          <img src={turnTypeToSrc(game.play.getTurnType(data, data.turn.count + v))} style={{ width: 32, height: 32 }} key={i} />
+          <img
+            src={turnTypeToSrc(game.util.getTurnType(data, data.turn.count + v))}
+            style={{ width: 32, height: 32 }}
+            key={i}
+          />
         )}
       </Flex>
     </Flex>
