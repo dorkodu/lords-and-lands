@@ -27,13 +27,13 @@ export default function Lobby() {
     <Flex direction="column" align="center" gap="md">
 
       <Flex gap="md">
-        <ActionIcon onClick={toggleLobbyStatus} disabled={lobby.owner}>
+        <ActionIcon onClick={toggleLobbyStatus} disabled={!lobby.owner}>
           <IconArrowBigLeftFilled />
         </ActionIcon>
 
         <Text>{lobby.online ? "Online" : "Offline"}</Text>
 
-        <ActionIcon onClick={toggleLobbyStatus} disabled={lobby.owner}>
+        <ActionIcon onClick={toggleLobbyStatus} disabled={!lobby.owner}>
           <IconArrowBigRightFilled />
         </ActionIcon>
       </Flex>
@@ -138,15 +138,15 @@ function Map() {
       <Title order={4}>Map Settings</Title>
 
       <Flex align="center" justify="space-between" gap="md">
-        Width: <NumberInput value={map.width} onChange={onChangeWidth} disabled={lobbyOwner} />
+        Width: <NumberInput value={map.width} onChange={onChangeWidth} disabled={!lobbyOwner} />
       </Flex>
 
       <Flex align="center" justify="space-between" gap="md">
-        Height: <NumberInput value={map.height} onChange={onChangeHeight} disabled={lobbyOwner} />
+        Height: <NumberInput value={map.height} onChange={onChangeHeight} disabled={!lobbyOwner} />
       </Flex>
 
       <Flex align="center" justify="space-between" gap="md">
-        Seed: <NumberInput value={map.seed} onChange={onChangeSeed} disabled={lobbyOwner} />
+        Seed: <NumberInput value={map.seed} onChange={onChangeSeed} disabled={!lobbyOwner} />
       </Flex>
 
       <Button>Preview</Button>
