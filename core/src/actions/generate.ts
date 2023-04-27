@@ -15,5 +15,6 @@ export function generate(data: IGameData, info: Info) {
 
   data.width = info.w;
   data.height = info.h;
+  data.tiles = [];
   tilemap.generate(data);
 }
