@@ -14,11 +14,17 @@ export interface IGameData {
   }
 
   rng: ISeedRandom;
+
   width: number;
   height: number;
+
+  /**
+   * This seed is only used for map generation.
+   */
+  seed: number;
 }
 
-export function createGameData(seed: number): IGameData {
+export function createGameData(): IGameData {
   return {
     countries: [],
     tiles: [],
@@ -29,8 +35,10 @@ export function createGameData(seed: number): IGameData {
       type: TurnType.None,
     },
 
-    rng: createSeedRandom(seed),
+    rng: createSeedRandom(Date.now()),
+
     width: 0,
     height: 0,
+    seed: Date.now(),
   }
 }

@@ -11,10 +11,11 @@ export default function LobbyPreview() {
   useEffect(() => {
     const w = useAppStore.getState().lobby.map.width;
     const h = useAppStore.getState().lobby.map.height;
+    const seed = useAppStore.getState().lobby.map.seed;
 
     useGameStore.setState(s => {
       if (s.data.tiles.length !== 0) return;
-      game.play.generate(s.data, { w, h });
+      game.play.generate(s.data, { w, h, seed });
     });
   }, []);
 
@@ -50,8 +51,18 @@ function Footer() {
   }
 
   const onClickGenerate = () => {
-    const map = useAppStore.getState().lobby.map;
-    useGameStore.setState(s => { game.play.generate(s.data, { w: map.width, h: map.height }) })
+    // Generate new seed on every map generation
+    let map = { ...useAppStore.getState().lobby.map };
+    map.seed = Date.now();
+
+    useAppStore.setState(s => {
+      s.lobby.map = map;
+    });
+
+    useGameStore.setState(s => {
+      if (!map) return;
+      game.play.generate(s.data, { w: map.width, h: map.height, seed: map.seed });
+    });
   }
 
   return (

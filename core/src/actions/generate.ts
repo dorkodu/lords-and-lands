@@ -1,7 +1,7 @@
 import { IGameData } from "../gamedata";
 import { tilemap } from "../lib/tilemap";
 
-type Info = { w: number, h: number };
+type Info = { w: number, h: number, seed: number };
 
 export function generateActable(data: IGameData, _info: Info): boolean {
   // If already started
@@ -15,6 +15,7 @@ export function generate(data: IGameData, info: Info) {
 
   data.width = info.w;
   data.height = info.h;
+  data.seed = info.seed;
   data.tiles = [];
   tilemap.generate(data);
 }

@@ -1,5 +1,6 @@
 import { IGameData } from "../gamedata";
 import { LandmarkId } from "../types/landmark_id";
+import { createSeedRandom, ISeedRandom } from "./seed_random";
 import { createTile } from "./tile";
 
 export const tilemap = {
@@ -7,16 +8,18 @@ export const tilemap = {
 }
 
 function generate(data: IGameData) {
-  const origins = chooseOrigins(data);
+  const rng = createSeedRandom(data.seed);
+
+  const origins = chooseOrigins(data, rng);
   chooseTiles(data, origins);
-  sprinkleNature(data);
+  sprinkleNature(data, rng);
 }
 
-function chooseOrigins(data: IGameData) {
+function chooseOrigins(data: IGameData, rng: ISeedRandom) {
   const origins: { x: number, y: number }[][] = [];
 
   for (let i = 0; i < data.countries.length; ++i) {
-    origins[i] = [{ x: data.rng.number(0, data.width), y: data.rng.number(0, data.height) }];
+    origins[i] = [{ x: rng.number(0, data.width), y: rng.number(0, data.height) }];
 
     for (let j = i - 1; j >= 0; --j) {
       if (origins[j]![0]!.x === origins[i]![0]!.x && origins[j]![0]!.y === origins[i]![0]!.y) {
@@ -74,11 +77,11 @@ function chooseTiles(data: IGameData, origins: { x: number, y: number }[][]) {
   }
 }
 
-function sprinkleNature(data: IGameData) {
+function sprinkleNature(data: IGameData, rng: ISeedRandom) {
   for (let y = 0; y < data.height; ++y) {
     for (let x = 0; x < data.width; ++x) {
       const tile = data.tiles[x + y * data.width];
-      const landmark = data.rng.percent([
+      const landmark = rng.percent([
         { percent: 10, result: LandmarkId.Mountains },
         { percent: 15, result: LandmarkId.Forest },
         { percent: 75, result: LandmarkId.None }

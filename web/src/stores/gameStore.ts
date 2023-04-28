@@ -22,7 +22,7 @@ export interface GameStoreAction {
 }
 
 const initialState: GameStoreState = {
-  data: game.createGameData(Date.now()),
+  data: game.createGameData(),
   country: undefined,
 
   hoveredTile: undefined,

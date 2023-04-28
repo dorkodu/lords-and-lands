@@ -20,6 +20,8 @@ import { useGameStore } from "@/stores/gameStore";
 import { game } from "@core/game";
 import { util } from "@/lib/util";
 import { CountryId } from "@core/types/country_id";
+import { useDebouncedValue } from "@mantine/hooks";
+import { useEffect } from "react";
 
 export default function Lobby() {
   const navigate = useNavigate();
@@ -179,6 +181,16 @@ function Map() {
 
   const map = useAppStore(state => state.lobby.map);
   const lobbyOwner = useAppStore(state => state.lobby.owner);
+
+  const [debouncedWidth] = useDebouncedValue(map.width, 250);
+  const [debouncedHeight] = useDebouncedValue(map.height, 250);
+  const [debouncedSeed] = useDebouncedValue(map.seed, 250);
+
+  useEffect(() => {
+    useGameStore.setState(s => {
+      game.play.generate(s.data, { w: debouncedWidth, h: debouncedHeight, seed: debouncedSeed });
+    });
+  }, [debouncedWidth, debouncedHeight, debouncedSeed]);
 
   const onChangeWidth = (value: number | "") => {
     useAppStore.setState(s => { s.lobby.map.width = value || 10 });
