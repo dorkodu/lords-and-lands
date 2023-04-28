@@ -21,4 +21,6 @@ export interface ClientToServerEvents {
 
   "chat-message": (data: z.infer<typeof chatMessageSchema>) => void;
   "sync-state": () => void;
+
+  "game-action": () => void;
 }
