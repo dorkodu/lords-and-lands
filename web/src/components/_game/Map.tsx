@@ -11,7 +11,7 @@ export default function Map() {
     window.addEventListener("resize", onResize);
     return () => window.removeEventListener("resize", onResize);
   }, []);
-  console.log(useGameStore.getState().map.positionX)
+
   return (
     <TransformWrapper
       initialPositionX={useGameStore.getState().map.positionX}

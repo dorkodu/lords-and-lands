@@ -25,7 +25,7 @@ function Tile({ tile }: { tile: ITile }) {
   const hoveredTile = useGameStore(state => state.hoveredTile);
   const moveableTiles = useGameStore(state => state.moveableTiles);
 
-  const divTransform = useMemo(() => `translate(${tile.pos.x * 128}px, ${tile.pos.y * 128}px)`, []);
+  const divTransform = useMemo(() => `translate(${tile.pos.x * 128}px, ${tile.pos.y * 128}px)`, [tile.pos]);
   const imgTransform = useMemo(() => `translate(0px, 0px)`, []);
   const unitTransform = useMemo(() => `translate(0px, 32px) scale(0.5)`, []);
   const { hovered, ref } = useHover();
