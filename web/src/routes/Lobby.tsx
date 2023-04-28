@@ -80,7 +80,7 @@ export default function Lobby() {
 }
 
 function Players() {
-  const players = useAppStore(state => state.players);
+  const players = useAppStore(state => state.lobby.players);
 
   if (players.length === 0) return null;
   return (
@@ -108,7 +108,7 @@ function Player({ player }: { player: IPlayer }) {
     if (playerExist) return;
 
     useAppStore.setState(s => {
-      const p = s.players.filter(p => p.country === player.country)[0];
+      const p = s.lobby.players.filter(p => p.country === player.country)[0];
       if (!p) return;
       p.id = `${p.country}`;
       p.name = `Player (${p.country})`;
@@ -128,7 +128,7 @@ function Player({ player }: { player: IPlayer }) {
     if (!playerExist) return;
 
     useAppStore.setState(s => {
-      const p = s.players.filter(p => p.country === player.country)[0];
+      const p = s.lobby.players.filter(p => p.country === player.country)[0];
       if (!p) return;
       p.id = undefined;
       p.name = undefined;
@@ -169,19 +169,19 @@ function Player({ player }: { player: IPlayer }) {
 function Map() {
   const navigate = useNavigate();
 
-  const map = useAppStore(state => state.map);
+  const map = useAppStore(state => state.lobby.map);
   const lobbyOwner = useAppStore(state => state.lobby.owner);
 
   const onChangeWidth = (value: number | "") => {
-    useAppStore.setState(s => { s.map.width = value || 10 });
+    useAppStore.setState(s => { s.lobby.map.width = value || 10 });
   }
 
   const onChangeHeight = (value: number | "") => {
-    useAppStore.setState(s => { s.map.height = value || 10 });
+    useAppStore.setState(s => { s.lobby.map.height = value || 10 });
   }
 
   const onChangeSeed = (value: number | "") => {
-    useAppStore.setState(s => { s.map.seed = value || Date.now() });
+    useAppStore.setState(s => { s.lobby.map.seed = value || Date.now() });
   }
 
   const onClickPreview = () => { navigate("/lobby-preview") }

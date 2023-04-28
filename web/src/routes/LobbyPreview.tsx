@@ -9,8 +9,8 @@ import { useNavigate } from "react-router-dom";
 
 export default function LobbyPreview() {
   useEffect(() => {
-    const w = useAppStore.getState().map.width;
-    const h = useAppStore.getState().map.height;
+    const w = useAppStore.getState().lobby.map.width;
+    const h = useAppStore.getState().lobby.map.height;
 
     useGameStore.setState(s => {
       if (s.data.tiles.length !== 0) return;
@@ -50,7 +50,7 @@ function Footer() {
   }
 
   const onClickGenerate = () => {
-    const map = useAppStore.getState().map;
+    const map = useAppStore.getState().lobby.map;
     useGameStore.setState(s => { game.play.generate(s.data, { w: map.width, h: map.height }) })
   }
 
