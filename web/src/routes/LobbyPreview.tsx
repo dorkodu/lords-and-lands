@@ -43,6 +43,7 @@ const useStyles = createStyles((_theme) => ({
 function Footer() {
   const navigate = useNavigate();
   const { classes } = useStyles();
+  const lobbyOwner = useAppStore(state => state.lobby.owner);
 
   const onClickLobby = () => {
     navigate("/lobby")
@@ -60,9 +61,11 @@ function Footer() {
         <IconArrowLeft />
       </ActionIcon>
 
-      <ActionIcon variant="filled" size={32} onClick={onClickGenerate}>
-        <IconRefresh />
-      </ActionIcon>
+      {lobbyOwner &&
+        <ActionIcon variant="filled" size={32} onClick={onClickGenerate}>
+          <IconRefresh />
+        </ActionIcon>
+      }
 
     </Flex>
   )
