@@ -4,6 +4,8 @@ import { CountryId } from "@core/types/country_id";
 import { Button, Flex, Image, Text, Title } from "@mantine/core";
 import { useNavigate } from "react-router-dom";
 import DorkoduLogo from "@/assets/dorkodu_logo.svg";
+import { useGameStore } from "@/stores/gameStore";
+import { createGameData } from "@core/gamedata";
 
 export default function MainMenu() {
   const navigate = useNavigate();
@@ -12,6 +14,11 @@ export default function MainMenu() {
     useAppStore.setState(s => {
       s.lobby.players = [{ id: util.generateId(), name: "player", country: CountryId.None, isAdmin: true }];
     });
+
+    useGameStore.setState(s => {
+      s.data = createGameData();
+    });
+
     navigate("/lobby");
   }
   const joinLobby = () => { navigate("/join-lobby") }
