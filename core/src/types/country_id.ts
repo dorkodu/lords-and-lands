@@ -4,4 +4,5 @@ export enum CountryId {
   Purple,
   Red,
   Yellow,
+  Count,
 }

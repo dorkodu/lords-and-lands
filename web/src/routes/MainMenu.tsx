@@ -1,10 +1,18 @@
+import { util } from "@/lib/util";
+import { useAppStore } from "@/stores/appStore";
+import { CountryId } from "@core/types/country_id";
 import { Button, Flex, Title } from "@mantine/core";
 import { useNavigate } from "react-router-dom";
 
 export default function MainMenu() {
   const navigate = useNavigate();
 
-  const createLobby = () => { navigate("/lobby") }
+  const createLobby = () => {
+    useAppStore.setState(s => {
+      s.lobby.players = [{ id: util.generateId(), name: "player", country: CountryId.None, isAdmin: true }];
+    });
+    navigate("/lobby");
+  }
   const joinLobby = () => { navigate("/join-lobby") }
   const settings = () => { navigate("/settings") }
 

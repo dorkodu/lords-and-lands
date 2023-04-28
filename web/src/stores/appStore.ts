@@ -1,3 +1,4 @@
+import { util } from "@/lib/util";
 import { IPlayer } from "@/types/player";
 import { CountryId } from "@core/types/country_id";
 import { create } from "zustand";
@@ -43,10 +44,7 @@ const initialState: AppStoreState = {
     id: "abc123",
 
     players: [
-      { id: undefined, name: undefined, country: CountryId.Green },
-      { id: undefined, name: undefined, country: CountryId.Purple },
-      { id: undefined, name: undefined, country: CountryId.Red },
-      { id: undefined, name: undefined, country: CountryId.Yellow },
+      { id: util.generateId(), name: "Player", country: CountryId.None, isAdmin: true },
     ],
 
     map: {
