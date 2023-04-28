@@ -1,7 +1,7 @@
 import { ILobby } from "../types/lobby"
 import { IPlayer } from "../types/player";
 import { ISocket } from "../types/socket";
-import { crypto } from "./crypto";
+import { crypto } from "../lib/crypto";
 
 function createPlayer(socket: ISocket) {
   const id = crypto.id();
