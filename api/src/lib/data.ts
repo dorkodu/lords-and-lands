@@ -1,9 +1,12 @@
 import { ILobby } from "../types/lobby"
 import { IPlayer } from "../types/player";
 import { ISocket } from "../types/socket";
+import { crypto } from "./crypto";
 
-function createPlayer(id: string, socket: ISocket) {
-  if (!!data.players[id]) return undefined;
+function createPlayer(socket: ISocket) {
+  const id = crypto.id();
+  if (data.players[id]) return undefined;
+
   data.players[id] = { id, lobby: undefined, socket };
   return data.players[id];
 }
