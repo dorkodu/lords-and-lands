@@ -1,3 +1,4 @@
+import { game } from "../game";
 import { IGameData } from "../gamedata";
 import { util } from "../lib/util";
 
@@ -15,6 +16,11 @@ export function startActable(data: IGameData, _info: Info): boolean {
 
 export function start(data: IGameData, info: Info) {
   if (!startActable(data, info)) return;
+
+  // Generate tilemap on start if not generated
+  if (data.tiles.length === 0) {
+    game.play.generate(data, { w: data.width, h: data.height, seed: data.seed });
+  }
 
   data.running = true;
   data.turn.type = util.getTurnType(data, data.turn.count);
