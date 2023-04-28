@@ -9,6 +9,9 @@ export function addCountryActable(data: IGameData, info: Info): boolean {
   const existing = data.countries.filter(c => c.id === info.country).length > 0;
   if (existing) return false;
 
+  // If country is none
+  if (info.country === CountryId.None) return false;
+
   return true;
 }
 
