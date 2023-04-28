@@ -72,8 +72,8 @@ function countryTurn(data: IGameData, currentCountry: ICountry | undefined) {
 
   // Banner unit spawn
   data.tiles.forEach(tile => {
-    if (tile.owner.id !== currentCountry.id) return;
     if (tile.unit) return;
+    if (tile.owner.id !== currentCountry.id) return;
     if (tile.landmark !== LandmarkId.Banner) return;
 
     tile.unit = createUnit(currentCountry.id);
@@ -91,6 +91,8 @@ function countryTurn(data: IGameData, currentCountry: ICountry | undefined) {
   // Ownership changes
   data.tiles.forEach(tile => {
     if (!tile.unit) return;
+    if (tile.unit.id !== currentCountry.id) return;
+
     if (tile.owner.id !== tile.unit.id) {
       switch (tile.landmark) {
         // Banner takes 2 turn to change ownership
