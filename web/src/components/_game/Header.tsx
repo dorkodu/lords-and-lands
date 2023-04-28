@@ -1,6 +1,6 @@
 import { useGameStore } from "@/stores/gameStore";
 import { TurnType } from "@core/types/turn_type";
-import { Flex, createStyles } from "@mantine/core";
+import { Flex, createStyles, Image, useMantineTheme } from "@mantine/core";
 
 import UnitGreen from "@/assets/units/green.png";
 import UnitPurple from "@/assets/units/purple.png";
@@ -24,6 +24,7 @@ const useStyles = createStyles((_theme) => ({
 }))
 
 export default function Header() {
+  const theme = useMantineTheme();
   const { classes } = useStyles();
   const data = useGameStore(state => state.data);
 
@@ -31,19 +32,40 @@ export default function Header() {
     <Flex className={classes.header} direction="row" align="center" justify="center" gap="md">
       <Flex>
         {[-4, -3, -2, -1].map((v, i) =>
-          <img
+          <Image
             src={turnTypeToSrc(game.util.getTurnType(data, data.turn.count + v))}
-            style={{ width: 32, height: 32 }}
+            style={{
+              width: 32,
+              height: 32,
+              userSelect: "none",
+              borderBottomLeftRadius: v === -4 ? theme.radius.md : undefined,
+            }}
+            bg="rgb(255, 255, 255, 0.5)"
             key={i}
           />
         )}
 
-        <img src={turnTypeToSrc(data.turn.type)} style={{ width: 64, height: 64 }} />
+        <Image
+          src={turnTypeToSrc(data.turn.type)}
+          style={{
+            width: 64,
+            height: 64,
+            userSelect: "none",
+            borderRadius: `0 0 ${theme.radius.md} ${theme.radius.md}`,
+          }}
+          bg="rgb(255, 255, 255, 0.5)"
+        />
 
         {[1, 2, 3, 4].map((v, i) =>
-          <img
+          <Image
             src={turnTypeToSrc(game.util.getTurnType(data, data.turn.count + v))}
-            style={{ width: 32, height: 32 }}
+            style={{
+              width: 32,
+              height: 32,
+              userSelect: "none",
+              borderBottomRightRadius: v === 4 ? theme.radius.md : undefined,
+            }}
+            bg="rgb(255, 255, 255, 0.5)"
             key={i}
           />
         )}
