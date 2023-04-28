@@ -7,6 +7,9 @@ export function startActable(data: IGameData, _info: Info): boolean {
   // If already started
   if (data.running) return false;
 
+  // If at least 2 countries must exist
+  if (data.countries.length < 2) return false;
+
   return true;
 }
 
