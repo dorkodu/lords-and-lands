@@ -15,6 +15,7 @@ export default function App() {
     else if (location.pathname.indexOf("/lobby-preview") !== -1) useAppStore.setState(s => { s.route = "lobby-preview" });
     else if (location.pathname.indexOf("/main-menu") !== -1) useAppStore.setState(s => { s.route = "main-menu" });
     else if (location.pathname.indexOf("/settings") !== -1) useAppStore.setState(s => { s.route = "settings" });
+    else if (location.pathname.indexOf("/saves") !== -1) useAppStore.setState(s => { s.route = "saves" });
     else useAppStore.setState(s => { s.route = "any" });
   }, [location.pathname]);
 

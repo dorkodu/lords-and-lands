@@ -11,6 +11,7 @@ const LazyJoinLobby = React.lazy(useWait(() => import("./JoinLobby")));
 const LazyLobbyPreview = React.lazy(useWait(() => import("./LobbyPreview")));
 const LazyChat = React.lazy(useWait(() => import("./Chat")));
 const LazySettings = React.lazy(useWait(() => import("./Settings")));
+const LazySaves = React.lazy(useWait(() => import("./Saves")));
 const LazyGame = React.lazy(useWait(() => import("./Game")));
 const LazyNotFound = React.lazy(useWait(() => import("./NotFound")));
 // Lazy routes \\
@@ -21,6 +22,7 @@ const JoinLobby = <Suspense fallback={<CenterLoader />}><LazyJoinLobby /></Suspe
 const LobbyPreview = <Suspense fallback={<CenterLoader />}><LazyLobbyPreview /></Suspense>
 const Chat = <Suspense fallback={<CenterLoader />}><LazyChat /></Suspense>
 const Settings = <Suspense fallback={<CenterLoader />}><LazySettings /></Suspense>
+const Saves = <Suspense fallback={<CenterLoader />}><LazySaves /></Suspense>
 const Game = <Suspense fallback={<CenterLoader />}><LazyGame /></Suspense>
 const NotFound = <Suspense fallback={<CenterLoader />}><LazyNotFound /></Suspense>
 
@@ -43,6 +45,7 @@ export const router = createBrowserRouter(
         <Route path="/join-lobby" element={JoinLobby} />
         <Route path="/chat" element={Chat} />
         <Route path="/settings" element={Settings} />
+        <Route path="/saves" element={Saves} />
       </Route>
 
       {/* Error routes & catch all */}

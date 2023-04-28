@@ -46,6 +46,7 @@ export default function DefaultLayout() {
       case "chat":
       case "lobby-preview":
       case "settings":
+      case "saves":
         navigate(-1);
         break;
       case "join-lobby":
@@ -64,6 +65,7 @@ export default function DefaultLayout() {
       //case "lobby-preview": return "Lobby Preview";
       //case "main-menu": return "Main Menu";
       case "settings": return "Settings";
+      case "saves": return "Saves";
       default: return "Not Found";
     }
   }

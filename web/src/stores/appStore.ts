@@ -4,7 +4,16 @@ import { create } from "zustand";
 import { immer } from "zustand/middleware/immer";
 
 export interface AppStoreState {
-  route: "game" | "chat" | "join-lobby" | "lobby" | "lobby-preview" | "main-menu" | "settings" | "any";
+  route:
+  "game" |
+  "chat" |
+  "join-lobby" |
+  "lobby" |
+  "lobby-preview" |
+  "main-menu" |
+  "settings" |
+  "saves" |
+  "any";
 
   players: IPlayer[];
   lobby: {
