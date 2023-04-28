@@ -133,7 +133,7 @@ function getUnitModifier(data: IGameData, countryId: CountryId, pos: { x: number
   }
   // If not our unit, only add mountains bonus
   else {
-    if (tile.landmark === LandmarkId.Mountains) modifier += -2.0;
+    if (tile.landmark === LandmarkId.Mountains) modifier += 2.0;
   }
 
   // Adjacent unit bonuses
