@@ -115,19 +115,27 @@ function Player({ player }: { player: IPlayer }) {
   const showBan = lobbyOwner && playerExist;
 
   const onClickCountry = () => {
+    let oldCountry = player.country;
+    let newCountry = player.country;
+
     useAppStore.setState(s => {
       const p = s.lobby.players.filter(p => p.id === player.id)[0];
       if (!p) return;
 
       const countries = s.lobby.players.map(p => p.country);
-      let newCountry = p.country;
 
       while (newCountry < CountryId.Count) {
         if (countries.includes(newCountry)) { newCountry++; }
         else { p.country = newCountry; return; }
       }
 
-      p.country = CountryId.None;
+      newCountry = CountryId.None;
+      p.country = newCountry;
+    });
+
+    useGameStore.setState(s => {
+      game.play.removeCountry(s.data, { country: oldCountry });
+      game.play.addCountry(s.data, { country: newCountry });
     });
   }
 
