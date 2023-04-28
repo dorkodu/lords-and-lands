@@ -46,6 +46,8 @@ function getTileSrc(tile: ITile) {
     case CountryId.Yellow:
       if (tile.type === TileType.Nomad) return TileYellowNomad;
       return TileYellowSettled;
+
+    default: return undefined;
   }
 }
 
@@ -83,6 +85,6 @@ export const assets = {
   getTileSrc,
   getLandmarkSrc,
   getUnitSrc,
-  
+
   countryIdToUnitSrc,
 }
