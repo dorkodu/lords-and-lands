@@ -25,9 +25,12 @@ function Tile({ tile }: { tile: ITile }) {
   const hoveredTile = useGameStore(state => state.hoveredTile);
   const moveableTiles = useGameStore(state => state.moveableTiles);
 
+  const canUnitMove = country && game.util.getMoveableTiles(data, country.id, tile.pos).length > 0;
+
   const divTransform = useMemo(() => `translate(${tile.pos.x * 128}px, ${tile.pos.y * 128}px)`, [tile.pos]);
   const imgTransform = useMemo(() => `translate(0px, 0px)`, []);
   const unitTransform = useMemo(() => `translate(0px, 32px) scale(0.5)`, []);
+  const unitFilter = useMemo(() => !canUnitMove ? `brightness(50%)` : undefined, [canUnitMove]);
   const { hovered, ref } = useHover();
 
   useEffect(() => {
@@ -92,7 +95,7 @@ function Tile({ tile }: { tile: ITile }) {
 
       <img
         src={assets.getUnitSrc(tile)}
-        style={{ position: "absolute", transform: unitTransform, zIndex: 2 }}
+        style={{ position: "absolute", transform: unitTransform, zIndex: 2, filter: unitFilter }}
       />
 
       {country && game.play.placeBannerActable(data, { countryId: country.id, pos: tile.pos }) &&
