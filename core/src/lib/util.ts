@@ -111,42 +111,12 @@ function getMoveableTiles(data: IGameData, countryId: CountryId, pos: { x: numbe
 
 function getWarModifier(data: IGameData, from: ITile, to: ITile): number {
   if (!from.unit || !to.unit) return 0;
-  let bonus = 0;
 
-  const fromAdjacent = getAdjacentTiles(data, from.pos);
-  const toAdjacent = getAdjacentTiles(data, to.pos);
+  const fromBonus = getUnitModifier(data, from.unit.id, from.pos);
+  const toBonus = getUnitModifier(data, from.unit.id, to.pos);
 
-  fromAdjacent.forEach(t => {
-    if (!from.unit || !to.unit || !t.unit) return;
-
-    if (t.unit.id === from.unit.id) bonus += 0.5;
-    if (t.unit.id === to.unit.id) bonus += -1.0;
-  });
-
-  toAdjacent.forEach(t => {
-    if (!from.unit || !to.unit || !t.unit) return;
-
-    if (t.unit.id === from.unit.id) bonus += -1.0;
-    if (t.unit.id === to.unit.id) bonus += 0.5;
-  });
-
-  // Only add forest bonus if it belongs to the same country-unit
-  if (from.owner.id === from.unit.id) {
-    switch (from.landmark) {
-      case LandmarkId.Forest: bonus += 2.0; break;
-      default: break;
-    }
-  }
-
-  // Only add mountains bonus if it belongs to the same country-unit
-  if (to.owner.id === to.unit.id) {
-    switch (to.landmark) {
-      case LandmarkId.Mountains: bonus -= 2.0; break;
-      default: break;
-    }
-  }
-
-  return bonus;
+  if (fromBonus === undefined || toBonus === undefined) return 0;
+  return fromBonus - toBonus;
 }
 
 function getUnitModifier(data: IGameData, countryId: CountryId, pos: { x: number, y: number }): number | undefined {
