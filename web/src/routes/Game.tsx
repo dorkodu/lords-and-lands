@@ -10,6 +10,7 @@ export default function Game() {
     useGameStore.setState(s => {
       if (s.data.running) return;
 
+      game.play.generate(s.data, { w: s.data.width, h: s.data.height, seed: s.data.seed });
       game.play.start(s.data, {});
       s.country = game.util.turnTypeToCountry(s.data, s.data.turn.type);
     });
