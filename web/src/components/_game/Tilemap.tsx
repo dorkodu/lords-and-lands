@@ -8,6 +8,10 @@ import { useOnClick } from "../hooks";
 import LandmarkBanner from "@/assets/landmarks/banner.png";
 import Cursor from "@/assets/misc/cursor.png";
 import { assets } from "@/assets/assets";
+import { IGameData } from "@core/gamedata";
+import { ICountry } from "@core/lib/country";
+import { Piece } from "../TextParser";
+import { Flex, Text } from "@mantine/core";
 
 export default function Tilemap() {
   const tiles = useGameStore(state => state.data.tiles);
@@ -83,6 +87,8 @@ function Tile({ tile }: { tile: ITile }) {
       style={{ position: "absolute", transform: divTransform, width: 128, height: 128 }}
       ref={ref}
     >
+      <TileModifier data={data} country={country} tile={tile} />
+
       <img
         src={assets.getTileSrc(tile)}
         style={{ position: "absolute", transform: imgTransform, zIndex: 0 }}
@@ -121,5 +127,25 @@ function Tile({ tile }: { tile: ITile }) {
         <img src={Cursor} style={{ position: "absolute", transform: imgTransform, zIndex: 3 }} />
       }
     </div>
+  )
+}
+
+function TileModifier({ data, country, tile }: { data: IGameData, country?: ICountry, tile: ITile }) {
+  const dice = useMemo(() => <Piece.Emoji emoji="🎲" />, []);
+  const formatter = useMemo(() => new Intl.NumberFormat("en", { signDisplay: "exceptZero" }), []);
+  const modifier = country && game.util.getUnitModifier(data, country.id, tile.pos);
+
+  // Don't show modifier if it's 0 or undefined
+  if (!modifier) return null;
+
+  return (
+    <Flex
+      align="center"
+      justify="center"
+      style={{ position: "absolute", zIndex: 10, width: 128, textShadow: "2px 2px 2px rgba(0, 0, 0, 1)" }}
+    >
+      <Text weight="bold" size="lg" color="white">{formatter.format(modifier)}</Text>
+      {dice}
+    </Flex>
   )
 }

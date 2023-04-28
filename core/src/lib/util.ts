@@ -149,6 +149,34 @@ function getWarModifier(data: IGameData, from: ITile, to: ITile): number {
   return bonus;
 }
 
+function getUnitModifier(data: IGameData, countryId: CountryId, pos: { x: number, y: number }): number | undefined {
+  const tile = data.tiles[pos.x + pos.y * data.width];
+  if (!tile) return undefined;
+  if (!tile.unit) return undefined;
+  const adjacent = getAdjacentTiles(data, pos);
+
+  let modifier = 0;
+
+  // If our unit, only add forest bonus
+  if (tile.unit.id === countryId) {
+    if (tile.landmark === LandmarkId.Forest) modifier += 2.0;
+  }
+  // If not our unit, only add mountains bonus
+  else {
+    if (tile.landmark === LandmarkId.Mountains) modifier += -2.0;
+  }
+
+  // Adjacent unit bonuses
+  adjacent.forEach(t => {
+    if (!t.unit || !tile.unit) return;
+
+    if (t.unit.id === tile.unit.id) modifier += 0.5;
+    else modifier += -1.0;
+  });
+
+  return modifier;
+}
+
 export const util = {
   countryToTurnType,
   turnTypeToCountry,
@@ -161,4 +189,5 @@ export const util = {
   getMoveableTiles,
 
   getWarModifier,
+  getUnitModifier,
 }
