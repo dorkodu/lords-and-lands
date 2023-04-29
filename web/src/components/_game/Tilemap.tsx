@@ -32,7 +32,10 @@ function Tile({ tile }: { tile: ITile }) {
   const hoveredTile = useGameStore(state => state.hoveredTile);
   const moveableTiles = useGameStore(state => state.moveableTiles);
 
-  const canUnitMove = country && game.util.getMoveableTiles(data, country.id, tile.pos).length > 0;
+  const online = useAppStore(state => state.lobby.online);
+
+  const unitMoveCountry = !online ? country : game.util.turnTypeToCountry(data, data.turn.type);
+  const canUnitMove = unitMoveCountry && game.util.getMoveableTiles(data, unitMoveCountry.id, tile.pos).length > 0;
 
   const divTransform = useMemo(() => `translate(${tile.pos.x * 128}px, ${tile.pos.y * 128}px)`, [tile.pos]);
   const imgTransform = useMemo(() => `translate(0px, 0px)`, []);
