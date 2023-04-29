@@ -1,3 +1,4 @@
+import { INetworkPlayer } from "../types/network_player";
 import { IPlayer } from "../types/player";
 import { dataAPI } from "./data";
 import { ClientToServerEvents } from "./types";
@@ -20,18 +21,23 @@ function joinLobby(player: IPlayer, data: Parameters<ClientToServerEvents["clien
   }
   else {
     const players = Object.values(lobby.players);
+    const networkPlayer: INetworkPlayer = { id: player.id, name: player.name, country: player.country, isAdmin: dataAPI.isPlayerAdmin(player) }
+    const networkPlayers: INetworkPlayer[] = players.map(p =>
+      ({ id: p.id, name: p.name, country: p.country, isAdmin: dataAPI.isPlayerAdmin(p) })
+    );
+
     const { width, height, seed } = lobby.gameData;
 
     // Send the joined player: player id, lobby id, width, height, seed, and all players
     player.socket.emit(
       "server-join-lobby",
-      { playerId: player.id, lobbyId: lobby.id, w: width, h: height, seed, players }
+      { playerId: player.id, lobbyId: lobby.id, w: width, h: height, seed, players: networkPlayers }
     );
 
     // Send the already joined players, only the joined player
     players
       .filter(p => p.id !== player.id)
-      .forEach(p => p.socket.emit("server-join-lobby", { players: [player] }));
+      .forEach(p => p.socket.emit("server-join-lobby", { players: [networkPlayer] }));
   }
 }
 

@@ -5,6 +5,7 @@ import { create } from "zustand";
 import { immer } from "zustand/middleware/immer";
 
 export interface AppStoreState {
+  redirect: string | undefined;
   route:
   "game" |
   "chat" |
@@ -38,6 +39,7 @@ export interface AppStoreAction {
 }
 
 const initialState: AppStoreState = {
+  redirect: undefined,
   route: "any",
 
   lobby: {

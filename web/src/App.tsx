@@ -1,11 +1,13 @@
 import { MantineProvider } from "@mantine/core";
 import { useEffect } from "react";
-import { Outlet, ScrollRestoration, useLocation } from "react-router-dom"
+import { Outlet, ScrollRestoration, useLocation, useNavigate } from "react-router-dom"
 import { useAppStore } from "./stores/appStore";
 import { theme } from "./styles/theme";
 
 export default function App() {
+  const navigate = useNavigate();
   const location = useLocation();
+  const redirect = useAppStore(state => state.redirect);
 
   useEffect(() => {
     if (location.pathname.indexOf("/chat") !== -1) useAppStore.setState(s => { s.route = "chat" });
@@ -18,6 +20,8 @@ export default function App() {
     else if (location.pathname.indexOf("/saves") !== -1) useAppStore.setState(s => { s.route = "saves" });
     else useAppStore.setState(s => { s.route = "any" });
   }, [location.pathname]);
+
+  useEffect(() => { redirect && navigate(redirect) }, [redirect]);
 
   return (
     <>

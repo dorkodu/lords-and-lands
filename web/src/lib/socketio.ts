@@ -31,16 +31,19 @@ socketio.on("server-create-lobby", (data) => {
 
 socketio.on("server-join-lobby", (data) => {
   useAppStore.setState(s => {
+    // If joining a lobby, set players; if already in a lobby add players
+    if (!s.lobby.lobbyId) s.lobby.players = data?.players ?? [];
+    else s.lobby.players.push(...data?.players ?? []);
+
     s.lobby.playerId = data?.playerId;
     s.lobby.lobbyId = data?.lobbyId;
-    s.lobby.players = data?.players ?? [];
 
     if (data?.w !== undefined) s.lobby.map.width = data.w;
     if (data?.h !== undefined) s.lobby.map.height = data.h;
     if (data?.seed !== undefined) s.lobby.map.seed = data.seed;
 
-    // If successfully joined to the lobby, set route to "/lobby"
-    if (data?.lobbyId) router.navigate("/lobby");
+    // If successfully joined to the lobby, set redirect to "/lobby"
+    if (data?.lobbyId) s.redirect = "/lobby";
   });
 });
 

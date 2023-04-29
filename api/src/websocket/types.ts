@@ -5,8 +5,8 @@ import {
   joinLobbySchema,
   updateLobbySchema
 } from "./schemas";
-import { IPlayer } from "../types/player";
 import { CountryId } from "@core/types/country_id";
+import { INetworkPlayer } from "../types/network_player";
 
 /**
  * Client sends "client-x" event. After server processes it,
@@ -34,7 +34,7 @@ import { CountryId } from "@core/types/country_id";
  */
 export interface ServerToClientEvents {
   "server-create-lobby": (data: { playerId: string, lobbyId: string } | undefined) => void;
-  "server-join-lobby": (data: { playerId?: string, lobbyId?: string, w?: number, h?: number, seed?: number, players: IPlayer[] } | undefined) => void;
+  "server-join-lobby": (data: { playerId?: string, lobbyId?: string, w?: number, h?: number, seed?: number, players: INetworkPlayer[] } | undefined) => void;
   "server-leave-lobby": (data: { playerId: string }) => void;
   "server-lobby-update": (data: { w?: number, h?: number, seed?: number, online?: boolean } | undefined) => void;
   "server-change-country": (data: { id: string, country: CountryId } | undefined) => void;
