@@ -34,8 +34,8 @@ function Tile({ tile }: { tile: ITile }) {
 
   const online = useAppStore(state => state.lobby.online);
 
-  const unitMoveCountry = !online ? country : game.util.turnTypeToCountry(data, data.turn.type);
-  const canUnitMove = unitMoveCountry && game.util.getMoveableTiles(data, unitMoveCountry.id, tile.pos).length > 0;
+  const relativeCountry = !online ? country : game.util.turnTypeToCountry(data, data.turn.type);
+  const canUnitMove = relativeCountry && game.util.getMoveableTiles(data, relativeCountry.id, tile.pos).length > 0;
 
   const divTransform = useMemo(() => `translate(${tile.pos.x * 128}px, ${tile.pos.y * 128}px)`, [tile.pos]);
   const imgTransform = useMemo(() => `translate(0px, 0px)`, []);
@@ -58,9 +58,12 @@ function Tile({ tile }: { tile: ITile }) {
 
       if (!s.country) return;
 
+      // Send place banner action if actable
       const info = { countryId: s.country.id, pos: tile.pos };
-      if (online) socketio.emit("client-game-action", { id: ActionId.PlaceBanner, info });
-      else game.play.placeBanner(s.data, info);
+      if (game.play.placeBannerActable(s.data, info)) {
+        if (online) socketio.emit("client-game-action", { id: ActionId.PlaceBanner, info });
+        else game.play.placeBanner(s.data, info);
+      }
 
       if (s.selectedUnitTile?.pos.x === tile.pos.x && s.selectedUnitTile?.pos.y === tile.pos.y) {
         s.selectedUnitTile = undefined;
@@ -68,16 +71,24 @@ function Tile({ tile }: { tile: ITile }) {
         return;
       }
 
-      if (s.moveableTiles.filter(t => game.util.compareTile(t, tile)).length > 0) {
-        if (s.selectedUnitTile) {
-          const info = { countryId: s.country.id, from: s.selectedUnitTile.pos, to: tile.pos };
+      if (s.moveableTiles.filter(t => game.util.compareTile(t, tile)).length > 0 && s.selectedUnitTile) {
+        // Send move unit action if actable
+        const info = { countryId: s.country.id, from: s.selectedUnitTile.pos, to: tile.pos };
+        if (game.play.moveUnitActable(s.data, info)) {
           if (online) socketio.emit("client-game-action", { id: ActionId.MoveUnit, info });
           else game.play.moveUnit(s.data, info);
         }
       }
 
-      s.moveableTiles = game.util.getMoveableTiles(s.data, s.country.id, tile.pos);
-      s.selectedUnitTile = s.moveableTiles.length > 0 ? tile : undefined;
+      // If current player's turn, highlight & show tiles
+      if (s.country.id === game.util.turnTypeToCountry(s.data, s.data.turn.type)?.id) {
+        s.moveableTiles = game.util.getMoveableTiles(s.data, s.country.id, tile.pos);
+        s.selectedUnitTile = s.moveableTiles.length > 0 ? tile : undefined;
+      }
+      else {
+        s.moveableTiles = [];
+        s.selectedUnitTile = undefined;
+      }
     });
   }
 

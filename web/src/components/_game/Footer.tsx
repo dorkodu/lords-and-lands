@@ -26,6 +26,9 @@ export default function Footer() {
   const navigate = useNavigate();
   const { classes } = useStyles();
 
+  const data = useGameStore(state => state.data);
+  const country = useGameStore(state => state.country);
+
   const onClickLobby = () => { navigate("/lobby") }
   const onClickChat = () => { navigate("/chat") }
   const onClickNextTurn = () => {
@@ -33,7 +36,10 @@ export default function Footer() {
 
     useGameStore.setState(s => {
       if (online) {
-        socketio.emit("client-game-action", { id: ActionId.NextTurn, info: {} });
+        // If next turn action is actable
+        if (game.play.nextTurnActable(s.data, { country: s.country?.id })) {
+          socketio.emit("client-game-action", { id: ActionId.NextTurn, info: {} });
+        }
       }
       else {
         game.play.nextTurn(s.data, { country: s.country?.id });
@@ -63,7 +69,12 @@ export default function Footer() {
         <IconMessageCircle2 />
       </ActionIcon>
 
-      <ActionIcon variant="filled" size={32} onClick={onClickNextTurn}>
+      <ActionIcon
+        variant="filled"
+        size={32}
+        onClick={onClickNextTurn}
+        disabled={!game.play.nextTurnActable(data, { country: country?.id })}
+      >
         <IconArrowRight />
       </ActionIcon>
 
