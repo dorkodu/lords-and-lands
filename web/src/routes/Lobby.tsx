@@ -37,6 +37,8 @@ export default function Lobby() {
     });
   }
 
+  const onClickCopyLobbyId = () => { lobby.lobbyId && util.copyToClipboard(lobby.lobbyId) }
+
   const onClickSettings = () => { navigate("/settings") }
   const onClickSaves = () => { navigate("/saves") }
   const onClickChat = () => { navigate("/chat") }
@@ -59,7 +61,8 @@ export default function Lobby() {
 
       <Flex gap="md">
         <Text>Lobby ID: {lobby.lobbyId ?? "- offline -"}</Text>
-        <ActionIcon>
+
+        <ActionIcon onClick={onClickCopyLobbyId}>
           <IconCopy />
         </ActionIcon>
       </Flex>
