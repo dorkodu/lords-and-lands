@@ -1,12 +1,20 @@
 import { z } from "zod";
 import {
+  changeCountrySchema,
   chatMessageSchema,
   joinLobbySchema,
-  joinSlotSchema,
   updateLobbySchema
 } from "./schemas";
+import { IPlayer } from "../types/player";
+import { CountryId } from "@core/types/country_id";
 
 /**
+ * Client sends "client-x" event. After server processes it,
+ * server sends to all/to 1/to all except 1 of the same event
+ * with the name "server-x" event. Server might send "server-x"
+ * events without first receiving "client-x" event also.
+ * 
+ * --- Events
  * Create lobby
  * Join lobby
  * Leave lobby
@@ -21,21 +29,34 @@ import {
  * Game action
  */
 
+/**
+ * 
+ */
 export interface ServerToClientEvents {
+  "server-create-lobby": (data: { lobbyId: string | undefined }) => void;
+  "server-join-lobby": (data: IPlayer[]) => void;
+  "server-leave-lobby": (data: { playerId: string }) => void;
+  "server-lobby-update": (data: { w: number, h: number, seed: number }) => void;
+  "server-change-country": (data: { id: string, country: CountryId } | undefined) => void;
 
+  "server-chat-message": () => void;
+  "server-sync-state": () => void;
+
+  "server-game-action": () => void;
 }
 
+/**
+ * 
+ */
 export interface ClientToServerEvents {
-  "create-lobby": (data: {}, callback: (lobbyId: string) => void) => void;
-  "join-lobby": (data: z.infer<typeof joinLobbySchema>, callback: (status: boolean) => void) => void;
-  "leave-lobby": () => void;
-  "lobby-update": (data: z.infer<typeof updateLobbySchema>) => void;
+  "client-create-lobby": () => void;
+  "client-join-lobby": (data: z.infer<typeof joinLobbySchema>) => void;
+  "client-leave-lobby": () => void;
+  "client-lobby-update": (data: z.infer<typeof updateLobbySchema>) => void;
+  "client-change-country": (data: z.infer<typeof changeCountrySchema>) => void;
 
-  "join-slot": (data: z.infer<typeof joinSlotSchema>) => void;
-  "leave-slot": () => void;
+  "client-chat-message": (data: z.infer<typeof chatMessageSchema>) => void;
+  "client-sync-state": () => void;
 
-  "chat-message": (data: z.infer<typeof chatMessageSchema>) => void;
-  "sync-state": () => void;
-
-  "game-action": () => void;
+  "client-game-action": () => void;
 }

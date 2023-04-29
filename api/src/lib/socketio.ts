@@ -13,16 +13,14 @@ socketio.on("connection", (socket): void => {
   const player = dataAPI.createPlayer(socket);
   if (!player) return void socket.disconnect(true);
 
-  socket.on("create-lobby", (data, cb) => { websocketController.createLobby(player) });
-  socket.on("join-lobby", (data, cb) => { websocketController.joinLobby(player, [data, cb]) });
-  socket.on("leave-lobby", () => { websocketController.leaveLobby(player) });
-  socket.on("lobby-update", () => { websocketController.lobbyUpdate(player) });
+  socket.on("client-create-lobby", () => { websocketController.createLobby(player) });
+  socket.on("client-join-lobby", (data) => { websocketController.joinLobby(player, data) });
+  socket.on("client-leave-lobby", () => { websocketController.leaveLobby(player) });
+  socket.on("client-lobby-update", () => { websocketController.lobbyUpdate(player) });
+  socket.on("client-change-country", (data) => { websocketController.changeCountry(player, data) });
 
-  socket.on("join-slot", (data) => { websocketController.joinSlot(player, [data]) });
-  socket.on("leave-slot", () => { websocketController.leaveLobby(player) });
+  socket.on("client-chat-message", (data) => { websocketController.chatMessage(player, data) });
+  socket.on("client-sync-state", () => { websocketController.syncState(player) });
 
-  socket.on("chat-message", (data) => { websocketController.chatMessage(player, [data]) });
-  socket.on("sync-state", () => { websocketController.syncState(player) });
-
-  socket.on("game-action", () => { websocketController.gameAction(player) });
+  socket.on("client-game-action", () => { websocketController.gameAction(player) });
 });

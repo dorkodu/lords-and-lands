@@ -2,7 +2,7 @@ import { z } from "zod";
 import { constants } from "../types/constants";
 
 export const joinLobbySchema = z.object({
-  id: z.string().trim().length(constants.lobbyIdLength),
+  lobbyId: z.string().trim().length(constants.lobbyIdLength),
 }).strict();
 
 export const updateLobbySchema = z.object({
@@ -11,8 +11,8 @@ export const updateLobbySchema = z.object({
   seed: z.number().optional(),
 }).strict();
 
-export const joinSlotSchema = z.object({
-  country: z.enum(["green", "purple", "red", "yellow"]),
+export const changeCountrySchema = z.object({
+  country: z.enum(["green", "purple", "red", "yellow", "none"]),
 }).strict();
 
 export const chatMessageSchema = z.object({
