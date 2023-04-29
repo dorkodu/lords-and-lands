@@ -92,9 +92,13 @@ export default function Lobby() {
 }
 
 function Players() {
-  const players = useAppStore(state => state.lobby.players);
+  const lobby = useAppStore(state => state.lobby);
 
   const addLocalPlayer = () => {
+    // TODO: Implement and enable adding local players in online mode
+    // Disable adding local players in online mode
+    if (lobby.online) return;
+
     useAppStore.setState(s => {
       const newPlayer = { id: util.generateId(), name: "Local Player", country: CountryId.None };
       const exists = s.lobby.players.filter(p => p.id === newPlayer.id).length > 0;
@@ -108,11 +112,11 @@ function Players() {
   return (
     <Flex direction="column" gap="xs">
       <Divider />
-      {players.map((player, i) => <Player player={player} key={i} />)}
+      {lobby.players.map((player, i) => <Player player={player} key={i} />)}
 
       <Flex justify="center" gap="md">
-        <ActionIcon size={24} onClick={addLocalPlayer}><IconDeviceGamepad2 /></ActionIcon>
-        <ActionIcon size={24} onClick={addBotPlayer}><IconRobot /></ActionIcon>
+        <ActionIcon size={24} onClick={addLocalPlayer} disabled={lobby.online}><IconDeviceGamepad2 /></ActionIcon>
+        <ActionIcon size={24} onClick={addBotPlayer} disabled={lobby.online}><IconRobot /></ActionIcon>
       </Flex>
     </Flex>
   )
