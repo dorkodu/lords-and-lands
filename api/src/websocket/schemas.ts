@@ -44,11 +44,11 @@ export const gameActionSchema = z.object({
 
 
 // Actions \\
-// Normally core game requires countryId with the actions, but here
-// since the server is authorative, server pick countryId from player itself.
 export const actionStartSchema = z.object({}).strict();
 
-export const actionNextTurnSchema = z.object({}).strict();
+export const actionNextTurnSchema = z.object({
+  country: z.number().min(CountryId.Green).max(CountryId.Yellow).optional().transform(arg => arg as CountryId),
+}).strict();
 
 export const actionGenerateSchema = z.object({
   w: z.number(),
@@ -56,11 +56,16 @@ export const actionGenerateSchema = z.object({
   seed: z.number(),
 }).strict();
 
-export const actionAddCountrySchema = z.object({}).strict();
+export const actionAddCountrySchema = z.object({
+  country: z.number().min(CountryId.Green).max(CountryId.Yellow),
+}).strict();
 
-export const actionRemoveCountrySchema = z.object({}).strict();
+export const actionRemoveCountrySchema = z.object({
+  country: z.number().min(CountryId.Green).max(CountryId.Yellow),
+}).strict();
 
 export const actionPlaceBannerSchema = z.object({
+  countryId: z.number().min(CountryId.Green).max(CountryId.Yellow),
   pos: z.object({
     x: z.number(),
     y: z.number(),
@@ -68,6 +73,7 @@ export const actionPlaceBannerSchema = z.object({
 }).strict();
 
 export const actionMoveUnitSchema = z.object({
+  countryId: z.number().min(CountryId.Green).max(CountryId.Yellow),
   from: z.object({
     x: z.number(),
     y: z.number(),

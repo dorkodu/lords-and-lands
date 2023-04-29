@@ -158,45 +158,62 @@ function gameAction(player: IPlayer, { id, info }: { id: ActionId, info?: any })
 
   switch (id) {
     case ActionId.Start:
-      if (!actionStartSchema.safeParse(info).success) break;
-      actable = game.play.startActable(lobby.gameData, info);
-      game.play.start(lobby.gameData, info);
+      const parsedStart = actionStartSchema.safeParse(info);
+      if (!parsedStart.success) break;
+
+      actable = game.play.startActable(lobby.gameData, parsedStart.data);
+      game.play.start(lobby.gameData, parsedStart.data);
       break;
     //case ActionId.Pause: break;
     //case ActionId.Resume: break;
     //case ActionId.Stop: break;
 
     case ActionId.NextTurn:
-      if (!actionNextTurnSchema.safeParse(info).success) break;
-      actable = game.play.nextTurnActable(lobby.gameData, info);
-      game.play.nextTurn(lobby.gameData, info);
+      const parsedNextTurn = actionNextTurnSchema.safeParse(info);
+      if (!parsedNextTurn.success) break;
+      parsedNextTurn.data.country = player.country;
+
+      actable = game.play.nextTurnActable(lobby.gameData, parsedNextTurn.data);
+      game.play.nextTurn(lobby.gameData, parsedNextTurn.data);
       break;
     case ActionId.Generate:
-      if (!actionGenerateSchema.safeParse(info).success) break;
-      actable = game.play.generateActable(lobby.gameData, info);
-      game.play.generate(lobby.gameData, info);
+      const parsedGenerate = actionGenerateSchema.safeParse(info);
+      if (!parsedGenerate.success) break;
+
+      actable = game.play.generateActable(lobby.gameData, parsedGenerate.data);
+      game.play.generate(lobby.gameData, parsedGenerate.data);
       break;
 
     case ActionId.AddCountry:
-      if (!actionAddCountrySchema.safeParse(info).success) break;
-      actable = game.play.addCountryActable(lobby.gameData, info);
-      game.play.addCountry(lobby.gameData, info);
+      const parsedAddCountry = actionAddCountrySchema.safeParse(info);
+      if (!parsedAddCountry.success) break;
+
+      actable = game.play.addCountryActable(lobby.gameData, parsedAddCountry.data);
+      game.play.addCountry(lobby.gameData, parsedAddCountry.data);
       break;
     case ActionId.RemoveCountry:
-      if (!actionRemoveCountrySchema.safeParse(info).success) break;
-      actable = game.play.removeCountryActable(lobby.gameData, info);
-      game.play.removeCountry(lobby.gameData, info);
+      const parsedRemoveCountry = actionRemoveCountrySchema.safeParse(info);
+      if (!parsedRemoveCountry.success) break;
+
+      actable = game.play.removeCountryActable(lobby.gameData, parsedRemoveCountry.data);
+      game.play.removeCountry(lobby.gameData, parsedRemoveCountry.data);
       break;
 
     case ActionId.PlaceBanner:
-      if (!actionPlaceBannerSchema.safeParse(info).success) break;
-      actable = game.play.placeBannerActable(lobby.gameData, info);
-      game.play.placeBanner(lobby.gameData, info);
+      const parsedPlaceBanner = actionPlaceBannerSchema.safeParse(info);
+      if (!parsedPlaceBanner.success) break;
+      parsedPlaceBanner.data.countryId = player.country;
+
+      actable = game.play.placeBannerActable(lobby.gameData, parsedPlaceBanner.data);
+      game.play.placeBanner(lobby.gameData, parsedPlaceBanner.data);
       break;
     case ActionId.MoveUnit:
-      if (!actionMoveUnitSchema.safeParse(info).success) break;
-      actable = game.play.moveUnitActable(lobby.gameData, info);
-      game.play.moveUnit(lobby.gameData, info);
+      const parsedMoveUnit = actionMoveUnitSchema.safeParse(info);
+      if (!parsedMoveUnit.success) break;
+      parsedMoveUnit.data.countryId = player.country;
+
+      actable = game.play.moveUnitActable(lobby.gameData, parsedMoveUnit.data);
+      game.play.moveUnit(lobby.gameData, parsedMoveUnit.data);
       break;
   }
 
