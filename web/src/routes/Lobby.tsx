@@ -119,10 +119,7 @@ function Players() {
 }
 
 function Player({ player }: { player: IPlayer }) {
-  const playerExist = !!player.id;
   const lobbyOwner = useAppStore(state => state.lobby.owner);
-
-  const showBan = lobbyOwner && playerExist;
 
   const onClickCountry = () => {
     let oldCountry = player.country;
@@ -150,7 +147,7 @@ function Player({ player }: { player: IPlayer }) {
   }
 
   const onClickBan = () => {
-    if (!playerExist) return;
+    if (!lobbyOwner) return;
 
     useAppStore.setState(s => {
       s.lobby.players = s.lobby.players.filter(p => p.id !== player.id);
@@ -169,11 +166,11 @@ function Player({ player }: { player: IPlayer }) {
           <ActionIcon size={48} onClick={onClickCountry}>
             <Image src={assets.countryIdToUnitSrc(player.country)} width={48} height={48} withPlaceholder />
           </ActionIcon>
-          {playerExist && <Text>{player.name}</Text>}
+          <Text>{player.name}</Text>
         </Flex>
 
         <Flex align="center" justify="flex-end" gap="xs">
-          {showBan && <ActionIcon size={24} onClick={onClickBan}><IconBan /></ActionIcon>}
+          {lobbyOwner && <ActionIcon size={24} onClick={onClickBan}><IconBan /></ActionIcon>}
           {player.isAdmin && <IconStarFilled />}
         </Flex>
 

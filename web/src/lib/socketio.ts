@@ -1,7 +1,6 @@
 import { io, Socket } from "socket.io-client";
 import type { ServerToClientEvents, ClientToServerEvents } from "@api/websocket/types";
 import { useAppStore } from "@/stores/appStore";
-import { router } from "@/routes/_Router";
 
 export const socketio: Socket<ServerToClientEvents, ClientToServerEvents> = io(
   { path: "/api/socket", transports: ["websocket"] }
@@ -26,14 +25,21 @@ socketio.on("server-create-lobby", (data) => {
   useAppStore.setState(s => {
     s.lobby.playerId = data?.playerId;
     s.lobby.lobbyId = data?.lobbyId;
+    s.lobby.owner = true;
   });
 });
 
 socketio.on("server-join-lobby", (data) => {
   useAppStore.setState(s => {
-    // If joining a lobby, set players; if already in a lobby add players
-    if (!s.lobby.lobbyId) s.lobby.players = data?.players ?? [];
-    else s.lobby.players.push(...data?.players ?? []);
+    // If joining a lobby
+    if (!s.lobby.lobbyId) {
+      s.lobby.players = data?.players ?? [];
+      s.lobby.owner = false;
+    }
+    // If already in a lobby but a new player is joining
+    else {
+      s.lobby.players.push(...data?.players ?? []);
+    }
 
     s.lobby.playerId = data?.playerId;
     s.lobby.lobbyId = data?.lobbyId;

@@ -29,7 +29,7 @@ function getLobbyPlayers(player: IPlayer) {
 }
 
 function isPlayerAdmin(player: IPlayer) {
-  const lobby = player.id && data.lobbies[player.id];
+  const lobby = player.lobby && data.lobbies[player.lobby];
   if (!lobby) return undefined;
   return player.id === lobby.adminId;
 }
