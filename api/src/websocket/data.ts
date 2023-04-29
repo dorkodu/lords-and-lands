@@ -4,6 +4,7 @@ import { ISocket } from "../types/socket";
 import { crypto } from "../lib/crypto";
 import { constants } from "../types/constants";
 import { CountryId } from "@core/types/country_id";
+import { createGameData } from "@core/gamedata";
 
 function createPlayer(socket: ISocket) {
   const id = crypto.id();
@@ -22,24 +23,31 @@ function removePlayer(id: string) {
   delete data.players[id];
 }
 
+function getLobbyPlayers(player: IPlayer) {
+  const lobby = player.lobby && data.lobbies[player.lobby];
+  if (!lobby) return [];
+  return Object.values(lobby.players);
+}
+
+
 function createLobby(userId: string) {
   const id = crypto.id();
   if (data.lobbies[id]) return undefined;
 
-  data.lobbies[id] = { id, adminId: userId, players: {} };
+  data.lobbies[id] = { id, adminId: userId, players: {}, gameData: createGameData() };
   return data.lobbies[id];
 }
 
-function joinLobby(player: IPlayer, lobbyId: string): IPlayer[] {
+function joinLobby(player: IPlayer, lobbyId: string): ILobby | undefined {
   const lobby = data.lobbies[lobbyId];
-  if (!lobby) return [];
+  if (!lobby) return undefined;
 
   // If lobby has less than "lobbyMaxPlayerCount"
   const playerCount = Object.values(lobby).length;
-  if (playerCount >= constants.lobbyMaxPlayerCount) return [];
+  if (playerCount >= constants.lobbyMaxPlayerCount) return undefined;
 
   lobby.players[player.id] = player;
-  return Object.values(lobby.players);
+  return lobby;
 }
 
 function leaveLobby(player: IPlayer) {
@@ -49,8 +57,21 @@ function leaveLobby(player: IPlayer) {
   delete data.lobbies[lobbyId]?.players[player.id];
 }
 
-function updateLobby(player: IPlayer) {
+function lobbyUpdate(player: IPlayer, width?: number, height?: number, seed?: number): boolean {
+  const lobby = player.lobby && data.lobbies[player.lobby];
+  if (!lobby) return false;
 
+  // If not the admin, can't update lobby
+  if (lobby.adminId !== player.id) return false;
+
+  // If game is running, can't change
+  if (lobby.gameData.running) return false;
+
+  if (width !== undefined) lobby.gameData.width = width;
+  if (height !== undefined) lobby.gameData.height = height;
+  if (seed !== undefined) lobby.gameData.seed = seed;
+
+  return true;
 }
 
 function changeCountry(player: IPlayer, countryStr: string): { id: string, country: CountryId } | undefined {
@@ -70,11 +91,12 @@ function changeCountry(player: IPlayer, countryStr: string): { id: string, count
 export const dataAPI = {
   createPlayer,
   removePlayer,
+  getLobbyPlayers,
 
   createLobby,
   joinLobby,
   leaveLobby,
-  updateLobby,
+  lobbyUpdate,
   changeCountry,
 }
 
