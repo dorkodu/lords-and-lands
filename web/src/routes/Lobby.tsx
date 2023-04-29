@@ -20,8 +20,8 @@ import { useGameStore } from "@/stores/gameStore";
 import { game } from "@core/game";
 import { util } from "@/lib/util";
 import { CountryId } from "@core/types/country_id";
-import { useDebouncedValue } from "@mantine/hooks";
-import { useEffect } from "react";
+import { useDebouncedValue, useScrollIntoView } from "@mantine/hooks";
+import { useEffect, useState } from "react";
 import { socketio } from "@/lib/socketio";
 
 export default function Lobby() {
@@ -205,11 +205,18 @@ function Map() {
   const map = useAppStore(state => state.lobby.map);
   const lobby = useAppStore(state => state.lobby);
 
+  const [modified, setMofidied] = useState(false);
+
   const [debouncedWidth] = useDebouncedValue(map.width, 250);
   const [debouncedHeight] = useDebouncedValue(map.height, 250);
   const [debouncedSeed] = useDebouncedValue(map.seed, 250);
 
   useEffect(() => {
+    // When player joins a lobby, lobby sends width, height & seed,
+    // but since it's listening for changes here, lobby update event is sent.
+    // "modified" variable is to prevent this from happening.
+    if (!modified) return;
+
     useGameStore.setState(s => {
       const info = { w: debouncedWidth, h: debouncedHeight, seed: debouncedSeed };
 
@@ -219,14 +226,17 @@ function Map() {
   }, [debouncedWidth, debouncedHeight, debouncedSeed]);
 
   const onChangeWidth = (value: number | "") => {
+    setMofidied(true);
     useAppStore.setState(s => { s.lobby.map.width = value || 10 });
   }
 
   const onChangeHeight = (value: number | "") => {
+    setMofidied(true);
     useAppStore.setState(s => { s.lobby.map.height = value || 10 });
   }
 
   const onChangeSeed = (value: number | "") => {
+    setMofidied(true);
     useAppStore.setState(s => { s.lobby.map.seed = value || Date.now() });
   }
 
