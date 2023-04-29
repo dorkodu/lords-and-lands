@@ -2,11 +2,13 @@ import { z } from "zod";
 import {
   changeCountrySchema,
   chatMessageSchema,
+  gameActionSchema,
   joinLobbySchema,
   updateLobbySchema
 } from "./schemas";
 import { CountryId } from "@core/types/country_id";
 import { INetworkPlayer } from "../types/network_player";
+import { ActionId } from "@core/types/action_id";
 
 /**
  * Client sends "client-x" event. After server processes it,
@@ -42,7 +44,7 @@ export interface ServerToClientEvents {
   "server-chat-message": () => void;
   "server-sync-state": () => void;
 
-  "server-game-action": () => void;
+  "server-game-action": (data: { id: ActionId, info?: any } | undefined) => void;
 }
 
 /**
@@ -58,5 +60,5 @@ export interface ClientToServerEvents {
   "client-chat-message": (data: z.infer<typeof chatMessageSchema>) => void;
   "client-sync-state": () => void;
 
-  "client-game-action": () => void;
+  "client-game-action": (data: z.infer<typeof gameActionSchema>) => void;
 }

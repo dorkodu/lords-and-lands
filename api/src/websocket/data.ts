@@ -5,6 +5,9 @@ import { crypto } from "../lib/crypto";
 import { constants } from "../types/constants";
 import { CountryId } from "@core/types/country_id";
 import { createGameData } from "@core/gamedata";
+import { ActionId } from "@core/types/action_id";
+import { game } from "@core/game";
+import { actionAddCountrySchema, actionGenerateSchema, actionMoveUnitSchema, actionNextTurnSchema, actionPlaceBannerSchema, actionRemoveCountrySchema, actionStartSchema } from "./schemas";
 
 function createPlayer(socket: ISocket) {
   // Generate random id, if player with id already exists, return
@@ -147,6 +150,59 @@ function changeCountry(player: IPlayer, countryStr: string): { id: string, count
   return { id: player.id, country };
 }
 
+function gameAction(player: IPlayer, { id, info }: { id: ActionId, info?: any }): boolean {
+  const lobby = player.lobby && data.lobbies[player.lobby];
+  if (!lobby) return false;
+
+  let actable = false;
+
+  switch (id) {
+    case ActionId.Start:
+      if (!actionStartSchema.safeParse(info).success) break;
+      actable = game.play.startActable(lobby.gameData, info);
+      game.play.start(lobby.gameData, info);
+      break;
+    //case ActionId.Pause: break;
+    //case ActionId.Resume: break;
+    //case ActionId.Stop: break;
+
+    case ActionId.NextTurn:
+      if (!actionNextTurnSchema.safeParse(info).success) break;
+      actable = game.play.nextTurnActable(lobby.gameData, info);
+      game.play.nextTurn(lobby.gameData, info);
+      break;
+    case ActionId.Generate:
+      if (!actionGenerateSchema.safeParse(info).success) break;
+      actable = game.play.generateActable(lobby.gameData, info);
+      game.play.generate(lobby.gameData, info);
+      break;
+
+    case ActionId.AddCountry:
+      if (!actionAddCountrySchema.safeParse(info).success) break;
+      actable = game.play.addCountryActable(lobby.gameData, info);
+      game.play.addCountry(lobby.gameData, info);
+      break;
+    case ActionId.RemoveCountry:
+      if (!actionRemoveCountrySchema.safeParse(info).success) break;
+      actable = game.play.removeCountryActable(lobby.gameData, info);
+      game.play.removeCountry(lobby.gameData, info);
+      break;
+
+    case ActionId.PlaceBanner:
+      if (!actionPlaceBannerSchema.safeParse(info).success) break;
+      actable = game.play.placeBannerActable(lobby.gameData, info);
+      game.play.placeBanner(lobby.gameData, info);
+      break;
+    case ActionId.MoveUnit:
+      if (!actionMoveUnitSchema.safeParse(info).success) break;
+      actable = game.play.moveUnitActable(lobby.gameData, info);
+      game.play.moveUnit(lobby.gameData, info);
+      break;
+  }
+
+  return actable;
+}
+
 export const dataAPI = {
   createPlayer,
   removePlayer,
@@ -159,6 +215,7 @@ export const dataAPI = {
   leaveLobby,
   lobbyUpdate,
   changeCountry,
+  gameAction,
 }
 
 export const data = {

@@ -100,8 +100,16 @@ function syncState(_player: IPlayer) {
 
 }
 
-function gameAction(_player: IPlayer) {
+function gameAction(player: IPlayer, data: Parameters<ClientToServerEvents["client-game-action"]>[0]) {
+  const actable = dataAPI.gameAction(player, data);
 
+  if (actable) {
+    const players = dataAPI.getLobbyPlayers(player.lobby);
+    players.forEach(p => p.socket.emit("server-game-action", data));
+  }
+  else {
+    player.socket.emit("server-game-action", undefined);
+  }
 }
 
 export const websocketController = {

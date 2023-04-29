@@ -22,7 +22,7 @@ socketio.on("connection", (socket): void => {
   socket.on("client-chat-message", (data) => { websocketController.chatMessage(player, data) });
   socket.on("client-sync-state", () => { websocketController.syncState(player) });
 
-  socket.on("client-game-action", () => { websocketController.gameAction(player) });
+  socket.on("client-game-action", (data) => { websocketController.gameAction(player, data) });
 
   socket.on("disconnect", (_reason, _description) => {
     const lobbyId = player.lobby;
