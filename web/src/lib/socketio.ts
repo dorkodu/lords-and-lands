@@ -54,7 +54,17 @@ socketio.on("server-join-lobby", (data) => {
 });
 
 socketio.on("server-leave-lobby", (data) => {
-  console.log(data);
+  useAppStore.setState(s => {
+    // If current player left the lobby
+    if (s.lobby.playerId === data.playerId) {
+      s.resetLobby();
+      s.redirect = "/";
+    }
+    // If another player left the lobby
+    else {
+      s.lobby.players = s.lobby.players.filter(p => p.id !== data.playerId);
+    }
+  });
 });
 
 socketio.on("server-lobby-update", (data) => {
