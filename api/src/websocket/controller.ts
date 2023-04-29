@@ -65,15 +65,15 @@ function changeCountry(player: IPlayer, data: Parameters<ClientToServerEvents["c
   }
 }
 
-function chatMessage(player: IPlayer, data: Parameters<ClientToServerEvents["client-chat-message"]>[0]) {
+function chatMessage(_player: IPlayer, _data: Parameters<ClientToServerEvents["client-chat-message"]>[0]) {
 
 }
 
-function syncState(player: IPlayer) {
+function syncState(_player: IPlayer) {
 
 }
 
-function gameAction(player: IPlayer) {
+function gameAction(_player: IPlayer) {
 
 }
 
