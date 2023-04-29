@@ -72,6 +72,8 @@ socketio.on("server-leave-lobby", (data) => {
   let needLobbyReset = false;
 
   useAppStore.setState(s => {
+    const player = s.lobby.players.filter(p => p.id === data.playerId)[0];
+
     // If current player left the lobby
     if (s.lobby.playerId === data.playerId) {
       needLobbyReset = true;
@@ -80,6 +82,12 @@ socketio.on("server-leave-lobby", (data) => {
     // If another player left the lobby
     else {
       s.lobby.players = s.lobby.players.filter(p => p.id !== data.playerId);
+
+      /**
+       * TODO: In server when admin leaves, another player is chosen as admin,
+       * but in client, if admin leaves, other players also leave automatically.
+       */
+      if (player && player.isAdmin) socketio.emit("client-leave-lobby");
     }
   });
 
