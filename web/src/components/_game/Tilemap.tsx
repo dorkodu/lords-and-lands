@@ -108,7 +108,7 @@ function Tile({ tile }: { tile: ITile }) {
       style={{ position: "absolute", transform: divTransform, width: 128, height: 128 }}
       ref={ref}
     >
-      <TileModifier data={data} country={country} tile={tile} />
+      <TileModifier data={data} country={relativeCountry} tile={tile} />
 
       <img
         src={assets.getTileSrc(tile)}
