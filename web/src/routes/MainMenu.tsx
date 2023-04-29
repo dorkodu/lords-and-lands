@@ -12,6 +12,7 @@ export default function MainMenu() {
 
   const createLobby = () => {
     useAppStore.setState(s => {
+      s.lobby.owner = true;
       s.lobby.players = [{ id: util.generateId(), name: "player", country: CountryId.None, isAdmin: true }];
     });
 

@@ -1,7 +1,9 @@
 import { io, Socket } from "socket.io-client";
 import type { ServerToClientEvents, ClientToServerEvents } from "@api/websocket/types";
 
-export const socketio: Socket<ServerToClientEvents, ClientToServerEvents> = io();
+export const socketio: Socket<ServerToClientEvents, ClientToServerEvents> = io(
+  { path: "/api/socket", transports: ["websocket"] }
+);
 
 // Default events \\
 socketio.on("connect", () => {

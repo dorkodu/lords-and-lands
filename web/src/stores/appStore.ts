@@ -17,7 +17,9 @@ export interface AppStoreState {
   "any";
 
   lobby: {
-    id: string;
+    lobbyId: string | undefined;
+    playerId: string | undefined;
+
     owner: boolean;
     online: boolean;
 
@@ -39,9 +41,11 @@ const initialState: AppStoreState = {
   route: "any",
 
   lobby: {
+    lobbyId: undefined,
+    playerId: undefined,
+
     owner: true,
     online: false,
-    id: "abc123",
 
     players: [
       { id: util.generateId(), name: "Player", country: CountryId.None, isAdmin: true },

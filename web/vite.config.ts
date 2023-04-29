@@ -41,6 +41,9 @@ export default defineConfig({
   ],
   server: {
     host: true,
+    proxy: {
+      "/api": "http://0.0.0.0:9000",
+    },
   },
   resolve: {
     alias: {

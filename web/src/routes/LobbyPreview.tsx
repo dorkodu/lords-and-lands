@@ -1,4 +1,5 @@
 import Map from "@/components/_game/Map";
+import { socketio } from "@/lib/socketio";
 import { useAppStore } from "@/stores/appStore";
 import { useGameStore } from "@/stores/gameStore";
 import { game } from "@core/game";
@@ -57,6 +58,8 @@ function Footer() {
 
     useAppStore.setState(s => {
       s.lobby.map = map;
+
+      if (s.lobby.online) socketio.emit("client-lobby-update", { seed: map.seed });
     });
 
     useGameStore.setState(s => {

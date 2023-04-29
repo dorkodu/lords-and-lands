@@ -22,6 +22,7 @@ import { util } from "@/lib/util";
 import { CountryId } from "@core/types/country_id";
 import { useDebouncedValue } from "@mantine/hooks";
 import { useEffect } from "react";
+import { socketio } from "@/lib/socketio";
 
 export default function Lobby() {
   const navigate = useNavigate();
@@ -29,7 +30,10 @@ export default function Lobby() {
   const lobby = useAppStore(state => state.lobby);
 
   const toggleLobbyStatus = () => {
-    useAppStore.setState(s => { s.lobby.online = !s.lobby.online });
+    useAppStore.setState(s => {
+      s.lobby.online = !s.lobby.online;
+      if (s.lobby.online) socketio.emit("client-create-lobby");
+    });
   }
 
   const onClickSettings = () => { navigate("/settings") }
@@ -53,7 +57,7 @@ export default function Lobby() {
       </Flex>
 
       <Flex gap="md">
-        <Text>Lobby ID: {lobby.id}</Text>
+        <Text>Lobby ID: {lobby.lobbyId ?? "- offline -"}</Text>
         <ActionIcon>
           <IconCopy />
         </ActionIcon>
@@ -180,7 +184,7 @@ function Map() {
   const navigate = useNavigate();
 
   const map = useAppStore(state => state.lobby.map);
-  const lobbyOwner = useAppStore(state => state.lobby.owner);
+  const lobby = useAppStore(state => state.lobby);
 
   const [debouncedWidth] = useDebouncedValue(map.width, 250);
   const [debouncedHeight] = useDebouncedValue(map.height, 250);
@@ -188,7 +192,10 @@ function Map() {
 
   useEffect(() => {
     useGameStore.setState(s => {
-      game.play.generate(s.data, { w: debouncedWidth, h: debouncedHeight, seed: debouncedSeed });
+      const info = { w: debouncedWidth, h: debouncedHeight, seed: debouncedSeed };
+
+      game.play.generate(s.data, info);
+      if (lobby.online) socketio.emit("client-lobby-update", info);
     });
   }, [debouncedWidth, debouncedHeight, debouncedSeed]);
 
@@ -211,15 +218,15 @@ function Map() {
       <Title order={4}>Map Settings</Title>
 
       <Flex align="center" justify="space-between" gap="md">
-        Width: <NumberInput value={map.width} onChange={onChangeWidth} disabled={!lobbyOwner} />
+        Width: <NumberInput value={map.width} onChange={onChangeWidth} disabled={!lobby.owner} />
       </Flex>
 
       <Flex align="center" justify="space-between" gap="md">
-        Height: <NumberInput value={map.height} onChange={onChangeHeight} disabled={!lobbyOwner} />
+        Height: <NumberInput value={map.height} onChange={onChangeHeight} disabled={!lobby.owner} />
       </Flex>
 
       <Flex align="center" justify="space-between" gap="md">
-        Seed: <NumberInput value={map.seed} onChange={onChangeSeed} disabled={!lobbyOwner} />
+        Seed: <NumberInput value={map.seed} onChange={onChangeSeed} disabled={!lobby.owner} />
       </Flex>
 
       <Button onClick={onClickPreview}>Preview</Button>
