@@ -35,10 +35,12 @@ socketio.on("server-join-lobby", (data) => {
     if (!s.lobby.lobbyId) {
       s.lobby.players = data?.players ?? [];
       s.lobby.owner = false;
+      s.lobby.online = true;
     }
     // If already in a lobby but a new player is joining
     else {
       s.lobby.players.push(...data?.players ?? []);
+      return;
     }
 
     s.lobby.playerId = data?.playerId;
@@ -54,10 +56,12 @@ socketio.on("server-join-lobby", (data) => {
 });
 
 socketio.on("server-leave-lobby", (data) => {
+  let needLobbyReset = false;
+
   useAppStore.setState(s => {
     // If current player left the lobby
     if (s.lobby.playerId === data.playerId) {
-      s.resetLobby();
+      needLobbyReset = true;
       s.redirect = "/";
     }
     // If another player left the lobby
@@ -65,6 +69,8 @@ socketio.on("server-leave-lobby", (data) => {
       s.lobby.players = s.lobby.players.filter(p => p.id !== data.playerId);
     }
   });
+
+  if (needLobbyReset) useAppStore.getState().resetLobby();
 });
 
 socketio.on("server-lobby-update", (data) => {
