@@ -130,4 +130,17 @@ socketio.on("server-change-country", (data) => {
     game.play.addCountry(s.data, { country: newCountry });
   });
 });
+
+socketio.on("server-chat-message", () => {
+
+});
+
+socketio.on("server-sync-state", () => {
+
+});
+
+socketio.on("server-game-action", (data) => {
+  if (!data) return;
+  useGameStore.setState(s => { game.parseAction(s.data, data) });
+});
 // Game events \\

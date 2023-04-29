@@ -2,7 +2,7 @@ import { game } from "../game";
 import { IGameData } from "../gamedata";
 import { ActionId } from "../types/action_id";
 
-export function parseAction(data: IGameData, action: { id: ActionId, info: any }): boolean {
+export function parseAction(data: IGameData, action: { id: ActionId, info?: any }): boolean {
   let actable = false;
 
   switch (action.id) {
