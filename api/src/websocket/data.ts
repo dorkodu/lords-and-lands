@@ -15,6 +15,7 @@ import { IActionAddCountry } from "@core/actions/add_country";
 import { IActionRemoveCountry } from "@core/actions/remove_country";
 import { IActionPlaceBanner } from "@core/actions/place_banner";
 import { IActionMoveUnit } from "@core/actions/move_unit";
+import { createSeedRandom } from "@core/lib/seed_random";
 
 function createPlayer(socket: ISocket) {
   // Generate random id, if player with id already exists, return
@@ -125,7 +126,10 @@ function lobbyUpdate(player: IPlayer, width?: number, height?: number, seed?: nu
 
   if (width !== undefined) lobby.gameData.width = width;
   if (height !== undefined) lobby.gameData.height = height;
-  if (seed !== undefined) lobby.gameData.seed = seed;
+  if (seed !== undefined) {
+    lobby.gameData.rng = createSeedRandom(seed);
+    lobby.gameData.seed = seed;
+  }
 
   return true;
 }

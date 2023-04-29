@@ -4,6 +4,7 @@ import { useAppStore } from "@/stores/appStore";
 import { useGameStore } from "@/stores/gameStore";
 import { CountryId } from "@core/types/country_id";
 import { game } from "@core/game";
+import { createSeedRandom } from "@core/lib/seed_random";
 
 export const socketio: Socket<ServerToClientEvents, ClientToServerEvents> = io(
   { path: "/api/socket", transports: ["websocket"] }
@@ -40,6 +41,13 @@ socketio.on("server-create-lobby", (data) => {
     s.lobby.map.height = data.h;
     s.lobby.map.seed = data.seed;
   });
+
+  useGameStore.setState(s => {
+    s.data.width = data.w;
+    s.data.height = data.h;
+    s.data.seed = data.seed;
+    s.data.rng = createSeedRandom(data.seed);
+  });
 });
 
 socketio.on("server-join-lobby", (data) => {
@@ -65,6 +73,15 @@ socketio.on("server-join-lobby", (data) => {
 
     // If successfully joined to the lobby, set redirect to "/lobby"
     if (data?.lobbyId) s.redirect = "/lobby";
+  });
+
+  useGameStore.setState(s => {
+    if (data?.w !== undefined) s.data.width = data.w;
+    if (data?.h !== undefined) s.data.height = data.h;
+    if (data?.seed !== undefined) {
+      s.data.seed = data.seed;
+      s.data.rng = createSeedRandom(data.seed);
+    }
   });
 });
 
@@ -112,6 +129,7 @@ socketio.on("server-lobby-update", (data) => {
 
   useGameStore.setState(s => {
     const { width, height, seed } = useAppStore.getState().lobby.map;
+    s.data.rng = createSeedRandom(seed);
     game.play.generate(s.data, { w: width, h: height, seed });
   });
 });
