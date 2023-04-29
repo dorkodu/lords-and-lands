@@ -1,8 +1,10 @@
 import { util } from "@/lib/util";
 import { IPlayer } from "@/types/player";
+import { createGameData } from "@core/gamedata";
 import { CountryId } from "@core/types/country_id";
 import { create } from "zustand";
 import { immer } from "zustand/middleware/immer";
+import { useGameStore } from "./gameStore";
 
 export interface AppStoreState {
   redirect: string | undefined;
@@ -35,7 +37,7 @@ export interface AppStoreState {
 }
 
 export interface AppStoreAction {
-
+  resetLobby: () => void;
 }
 
 const initialState: AppStoreState = {
@@ -62,7 +64,12 @@ const initialState: AppStoreState = {
 }
 
 export const useAppStore = create(
-  immer<AppStoreState & AppStoreAction>((_set, _get) => ({
+  immer<AppStoreState & AppStoreAction>((set, _get) => ({
     ...initialState,
+
+    resetLobby: () => {
+      set(s => { s.lobby = { ...initialState.lobby } });
+      useGameStore.setState(s => { s.data = createGameData() });
+    },
   }))
 );
