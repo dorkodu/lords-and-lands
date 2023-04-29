@@ -1,4 +1,3 @@
-import { socketio } from "../lib/socketio";
 import { IPlayer } from "../types/player";
 import { dataAPI } from "./data";
 import { ClientToServerEvents } from "./types";
@@ -33,25 +32,37 @@ function joinLobby(player: IPlayer, data: Parameters<ClientToServerEvents["clien
 }
 
 function leaveLobby(player: IPlayer) {
+  // Send "leave lobby" event to all players in the lobby
+  dataAPI.getLobbyPlayers(player).forEach(p => p.socket.emit("server-leave-lobby", { playerId: player.id }));
+
   // Make player leave the lobby
   dataAPI.leaveLobby(player);
-
-  // Send "leave lobby" event to all players in the lobby (except player that left)
-  dataAPI.getLobbyPlayers(player).forEach(p => p.socket.emit("server-leave-lobby", { playerId: player.id }));
 }
 
 function lobbyUpdate(player: IPlayer, data: Parameters<ClientToServerEvents["client-lobby-update"]>[0]) {
-  const status = dataAPI.lobbyUpdate(player, data.width, data.height, data.seed);
+  const status = dataAPI.lobbyUpdate(player, data.w, data.h, data.seed);
 
-  // If lobby update is done successfully, send it to other players, if not, don't do anything
+  // If "lobby update" is done successfully, send it to all players, if not, only send to current player
   if (status) {
-
+    const players = dataAPI.getLobbyPlayers(player);
+    players.forEach(p => p.socket.emit("server-lobby-update", data));
+  }
+  else {
+    player.socket.emit("server-lobby-update", undefined);
   }
 }
 
 function changeCountry(player: IPlayer, data: Parameters<ClientToServerEvents["client-change-country"]>[0]) {
   const result = dataAPI.changeCountry(player, data.country);
-  socketio.emit("server-change-country", result);
+
+  // If "change country" is done successfully, send it to all players, if not, only send to current player
+  if (result) {
+    const players = dataAPI.getLobbyPlayers(player);
+    players.forEach(p => p.socket.emit("server-change-country", result));
+  }
+  else {
+    player.socket.emit("server-change-country", undefined);
+  }
 }
 
 function chatMessage(player: IPlayer, data: Parameters<ClientToServerEvents["client-chat-message"]>[0]) {

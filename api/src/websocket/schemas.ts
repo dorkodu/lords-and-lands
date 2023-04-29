@@ -6,8 +6,8 @@ export const joinLobbySchema = z.object({
 }).strict();
 
 export const updateLobbySchema = z.object({
-  width: z.number().optional(),
-  height: z.number().optional(),
+  w: z.number().optional(),
+  h: z.number().optional(),
   seed: z.number().optional(),
 }).strict();
 

@@ -36,7 +36,7 @@ export interface ServerToClientEvents {
   "server-create-lobby": (data: { lobbyId: string | undefined }) => void;
   "server-join-lobby": (data: { players: IPlayer[] | undefined }) => void;
   "server-leave-lobby": (data: { playerId: string }) => void;
-  "server-lobby-update": (data: { w: number, h: number, seed: number }) => void;
+  "server-lobby-update": (data: { w?: number, h?: number, seed?: number } | undefined) => void;
   "server-change-country": (data: { id: string, country: CountryId } | undefined) => void;
 
   "server-chat-message": () => void;

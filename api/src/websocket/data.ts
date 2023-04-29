@@ -85,6 +85,11 @@ function changeCountry(player: IPlayer, countryStr: string): { id: string, count
     default: break;
   }
 
+  // Check if any other player is using the same country
+  let used = false;
+  getLobbyPlayers(player).forEach(p => p.country === country && (used = true));
+  if (used) return undefined;
+
   return { id: player.id, country };
 }
 
