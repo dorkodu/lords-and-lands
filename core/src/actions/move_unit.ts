@@ -1,5 +1,6 @@
 import { IGameData } from "../gamedata";
 import { util } from "../lib/util";
+import { ActionId } from "../types/action_id";
 import { CountryId } from "../types/country_id";
 import { LandmarkId } from "../types/landmark_id";
 
@@ -8,6 +9,7 @@ type Info = {
   from: { x: number, y: number };
   to: { x: number, y: number };
 }
+export type IActionMoveUnit = { id: ActionId.MoveUnit, info: Info };
 
 export function moveUnitActable(data: IGameData, info: Info): boolean {
   const fromTile = data.tiles[info.from.x + info.from.y * data.width];

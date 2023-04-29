@@ -1,8 +1,10 @@
 import { IGameData } from "../gamedata";
 import { createCountry } from "../lib/country";
+import { ActionId } from "../types/action_id";
 import { CountryId } from "../types/country_id";
 
 type Info = { country: CountryId };
+export type IActionAddCountry = { id: ActionId.AddCountry, info: Info };
 
 export function addCountryActable(data: IGameData, info: Info): boolean {
   // If country already exist

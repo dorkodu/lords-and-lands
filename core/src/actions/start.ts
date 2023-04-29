@@ -1,8 +1,10 @@
 import { IGameData } from "../gamedata";
 import { util } from "../lib/util";
+import { ActionId } from "../types/action_id";
 import { CountryId } from "../types/country_id";
 
 type Info = {};
+export type IActionStart = { id: ActionId.Start, info: Info };
 
 export function startActable(data: IGameData, _info: Info): boolean {
   // If already started

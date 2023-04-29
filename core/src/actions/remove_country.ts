@@ -1,7 +1,9 @@
 import { IGameData } from "../gamedata";
+import { ActionId } from "../types/action_id";
 import { CountryId } from "../types/country_id";
 
 type Info = { country: CountryId };
+export type IActionRemoveCountry = { id: ActionId.RemoveCountry, info: Info };
 
 export function removeCountryActable(data: IGameData, info: Info): boolean {
   // If country doesn't exist

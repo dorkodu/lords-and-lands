@@ -2,12 +2,14 @@ import { IGameData } from "../gamedata";
 import { ICountry } from "../lib/country";
 import { createUnit } from "../lib/unit";
 import { util } from "../lib/util";
+import { ActionId } from "../types/action_id";
 import { CountryId } from "../types/country_id";
 import { LandmarkId } from "../types/landmark_id";
 import { TileType } from "../types/tile_type";
 import { TurnType } from "../types/turn_type";
 
 type Info = { country: CountryId | undefined };
+export type IActionNextTurn = { id: ActionId.NextTurn, info: Info };
 
 export function nextTurnActable(data: IGameData, info: Info): boolean {
   const currentCountry = util.turnTypeToCountry(data, data.turn.type);

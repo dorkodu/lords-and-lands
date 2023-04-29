@@ -1,17 +1,17 @@
 export enum ActionId {
   // Main
-  Start,
-  Pause,
-  Resume,
-  Stop,
+  Start = "start",
+  Pause = "pause",
+  Resume = "resume",
+  Stop = "stop",
 
-  NextTurn,
-  Generate,
+  NextTurn = "next_turn",
+  Generate = "generate",
 
-  AddCountry,
-  RemoveCounty,
+  AddCountry = "add_country",
+  RemoveCountry = "remove_country",
 
   // Ingame
-  PlaceBanner,
-  MoveUnit,
+  PlaceBanner = "place_banner",
+  MoveUnit = "move_unit",
 }

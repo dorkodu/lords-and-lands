@@ -1,11 +1,13 @@
 import { IGameData } from "../gamedata";
 import { createUnit } from "../lib/unit";
 import { util } from "../lib/util";
+import { ActionId } from "../types/action_id";
 import { CountryId } from "../types/country_id";
 import { LandmarkId } from "../types/landmark_id";
 import { TileType } from "../types/tile_type";
 
 type Info = { countryId: CountryId, pos: { x: number, y: number } };
+export type IActionPlaceBanner = { id: ActionId.PlaceBanner, info: Info };
 
 export function placeBannerActable(data: IGameData, info: Info): boolean {
   const country = data.countries.filter(c => c.id === info.countryId)[0];
