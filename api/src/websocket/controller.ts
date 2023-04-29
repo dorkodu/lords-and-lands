@@ -4,19 +4,19 @@ import { ClientToServerEvents } from "./types";
 
 function createLobby(player: IPlayer) {
   // Try to create a lobby
-  const lobby = dataAPI.createLobby(player.id);
+  const lobby = dataAPI.createLobby(player);
 
   // Send the result to the player that tried to create a lobby
-  player.socket.emit("server-create-lobby", { lobbyId: lobby?.id });
+  if (!lobby) player.socket.emit("server-create-lobby", undefined);
+  else player.socket.emit("server-create-lobby", { playerId: player.id, lobbyId: lobby.id });
 }
 
 function joinLobby(player: IPlayer, data: Parameters<ClientToServerEvents["client-join-lobby"]>[0]) {
   const lobby = dataAPI.joinLobby(player, data.lobbyId);
 
-
   if (!lobby) {
     // Send the joined player, that player couldn't join
-    player.socket.emit("server-join-lobby", { players: undefined });
+    player.socket.emit("server-join-lobby", undefined);
   }
   else {
     const players = Object.values(lobby.players);
@@ -42,10 +42,19 @@ function leaveLobby(player: IPlayer) {
 function lobbyUpdate(player: IPlayer, data: Parameters<ClientToServerEvents["client-lobby-update"]>[0]) {
   const status = dataAPI.lobbyUpdate(player, data.w, data.h, data.seed);
 
+  // If lobby is made offline, remove the lobby and all the players connected to the lobby
+  if (data.online !== undefined && !data.online) {
+    const players = dataAPI.getLobbyPlayers(player);
+    dataAPI.removeLobby(player);
+    players.forEach(p => p.socket.emit("server-lobby-update", { online: false }));
+  }
+
   // If "lobby update" is done successfully, send it to all players, if not, only send to current player
   if (status) {
     const players = dataAPI.getLobbyPlayers(player);
-    players.forEach(p => p.socket.emit("server-lobby-update", data));
+    players.forEach(p => {
+      p.socket.emit("server-lobby-update", { w: data.w, h: data.h, seed: data.seed, online: data.online });
+    });
   }
   else {
     player.socket.emit("server-lobby-update", undefined);

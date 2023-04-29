@@ -23,4 +23,8 @@ socketio.on("connection", (socket): void => {
   socket.on("client-sync-state", () => { websocketController.syncState(player) });
 
   socket.on("client-game-action", () => { websocketController.gameAction(player) });
+
+  socket.on("disconnect", (_reason, _description) => { dataAPI.removePlayer(player) });
+  socket.on("disconnecting", (_reason, _description) => { dataAPI.removePlayer(player) });
+  socket.on("error", (_err) => { dataAPI.removePlayer(player) });
 });

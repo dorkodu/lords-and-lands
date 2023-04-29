@@ -6,6 +6,7 @@ export const joinLobbySchema = z.object({
 }).strict();
 
 export const updateLobbySchema = z.object({
+  online: z.boolean().optional(),
   w: z.number().optional(),
   h: z.number().optional(),
   seed: z.number().optional(),

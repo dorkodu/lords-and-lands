@@ -14,13 +14,12 @@ function createPlayer(socket: ISocket) {
   return data.players[id];
 }
 
-function removePlayer(id: string) {
-  const player = data.players[id];
-  const lobby = player && player.lobby && data.lobbies[player.lobby];
+function removePlayer(player: IPlayer) {
+  // TODO: Re-assign lobby admin if lobby admin left
 
-  if (!player) return;
-  if (lobby) delete lobby.players[id];
-  delete data.players[id];
+  const lobby = player && player.lobby && data.lobbies[player.lobby];
+  if (lobby) delete lobby.players[player.id];
+  delete data.players[player.id];
 }
 
 function getLobbyPlayers(player: IPlayer) {
@@ -30,12 +29,29 @@ function getLobbyPlayers(player: IPlayer) {
 }
 
 
-function createLobby(userId: string) {
+function createLobby(player: IPlayer) {
+  // If player is already in a lobby
+  if (player.lobby) return undefined;
+
   const id = crypto.id();
   if (data.lobbies[id]) return undefined;
 
-  data.lobbies[id] = { id, adminId: userId, players: {}, gameData: createGameData() };
+  player.lobby = id;
+  data.lobbies[id] = { id, adminId: player.id, players: { [player.id]: player }, gameData: createGameData() };
   return data.lobbies[id];
+}
+
+function removeLobby(player: IPlayer) {
+  const lobby = player.lobby && data.lobbies[player.lobby];
+  if (!lobby) return;
+
+  const players = Object.values(lobby.players);
+
+  // Remove lobby
+  delete data.lobbies[lobby.id];
+
+  // Remove players' lobby
+  players.forEach(p => { p.lobby = undefined });
 }
 
 function joinLobby(player: IPlayer, lobbyId: string): ILobby | undefined {
@@ -51,6 +67,8 @@ function joinLobby(player: IPlayer, lobbyId: string): ILobby | undefined {
 }
 
 function leaveLobby(player: IPlayer) {
+  // TODO: Re-assign lobby admin if lobby admin left
+
   const lobbyId = player.lobby;
   if (!lobbyId) return;
 
@@ -99,6 +117,7 @@ export const dataAPI = {
   getLobbyPlayers,
 
   createLobby,
+  removeLobby,
   joinLobby,
   leaveLobby,
   lobbyUpdate,

@@ -33,10 +33,10 @@ import { CountryId } from "@core/types/country_id";
  * 
  */
 export interface ServerToClientEvents {
-  "server-create-lobby": (data: { lobbyId: string | undefined }) => void;
-  "server-join-lobby": (data: { players: IPlayer[] | undefined }) => void;
+  "server-create-lobby": (data: { playerId: string, lobbyId: string } | undefined) => void;
+  "server-join-lobby": (data: { players: IPlayer[] } | undefined) => void;
   "server-leave-lobby": (data: { playerId: string }) => void;
-  "server-lobby-update": (data: { w?: number, h?: number, seed?: number } | undefined) => void;
+  "server-lobby-update": (data: { w?: number, h?: number, seed?: number, online?: boolean } | undefined) => void;
   "server-change-country": (data: { id: string, country: CountryId } | undefined) => void;
 
   "server-chat-message": () => void;

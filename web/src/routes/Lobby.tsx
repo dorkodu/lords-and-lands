@@ -33,6 +33,7 @@ export default function Lobby() {
     useAppStore.setState(s => {
       s.lobby.online = !s.lobby.online;
       if (s.lobby.online) socketio.emit("client-create-lobby");
+      else socketio.emit("client-lobby-update", { online: false });
     });
   }
 
