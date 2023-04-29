@@ -29,9 +29,9 @@ export default function Game() {
       else {
         game.play.generate(s.data, { w: s.data.width, h: s.data.height, seed: s.data.seed });
         game.play.start(s.data, {});
-      }
 
-      s.country = game.util.turnTypeToCountry(s.data, s.data.turn.type);
+        s.country = game.util.turnTypeToCountry(s.data, s.data.turn.type);
+      }
     });
   }, []);
 

@@ -8,6 +8,13 @@ import { createGameData } from "@core/gamedata";
 import { ActionId } from "@core/types/action_id";
 import { game } from "@core/game";
 import { actionAddCountrySchema, actionGenerateSchema, actionMoveUnitSchema, actionNextTurnSchema, actionPlaceBannerSchema, actionRemoveCountrySchema, actionStartSchema } from "./schemas";
+import { IActionStart } from "@core/actions/start";
+import { IActionNextTurn } from "@core/actions/next_turn";
+import { IActionGenerate } from "@core/actions/generate";
+import { IActionAddCountry } from "@core/actions/add_country";
+import { IActionRemoveCountry } from "@core/actions/remove_country";
+import { IActionPlaceBanner } from "@core/actions/place_banner";
+import { IActionMoveUnit } from "@core/actions/move_unit";
 
 function createPlayer(socket: ISocket) {
   // Generate random id, if player with id already exists, return
@@ -130,90 +137,95 @@ function changeCountry(player: IPlayer, countryStr: string): { id: string, count
   // If game is running, can't change country
   if (lobby.gameData.running) return undefined;
 
-  let country = CountryId.None;
+  let oldCountry = player.country;
+  let newCountry = CountryId.None;
 
   switch (countryStr) {
-    case "green": country = CountryId.Green; break;
-    case "purple": country = CountryId.Purple; break;
-    case "red": country = CountryId.Red; break;
-    case "yellow": country = CountryId.Yellow; break;
+    case "green": newCountry = CountryId.Green; break;
+    case "purple": newCountry = CountryId.Purple; break;
+    case "red": newCountry = CountryId.Red; break;
+    case "yellow": newCountry = CountryId.Yellow; break;
     default: break;
   }
 
   // Check if any other player is using the same country (except CountryId.None)
   let used = false;
-  getLobbyPlayers(player.lobby).forEach(p => p.country !== CountryId.None && p.country === country && (used = true));
+  getLobbyPlayers(player.lobby).forEach(p => p.country !== CountryId.None && p.country === newCountry && (used = true));
   if (used) return undefined;
 
+  // Apply country changes to game data
+  game.play.removeCountry(lobby.gameData, { country: oldCountry });
+  game.play.addCountry(lobby.gameData, { country: newCountry });
+
   // Set the players country, and return
-  player.country = country;
-  return { id: player.id, country };
+  player.country = newCountry;
+  return { id: player.id, country: newCountry };
 }
 
-function gameAction(player: IPlayer, { id, info }: { id: ActionId, info?: any }): boolean {
+function gameAction(player: IPlayer, action: { id: ActionId, info?: any }): boolean {
   const lobby = player.lobby && data.lobbies[player.lobby];
   if (!lobby) return false;
 
   let actable = false;
 
-  switch (id) {
+  switch (action.id) {
     case ActionId.Start:
-      const parsedStart = actionStartSchema.safeParse(info);
-      if (!parsedStart.success) break;
+      if (!actionStartSchema.safeParse(action.info).success) break;
+      const parsedStart = action as IActionStart;
 
-      actable = game.play.startActable(lobby.gameData, parsedStart.data);
-      game.play.start(lobby.gameData, parsedStart.data);
+      actable = game.play.startActable(lobby.gameData, parsedStart.info);
+      game.play.start(lobby.gameData, parsedStart.info);
       break;
     //case ActionId.Pause: break;
     //case ActionId.Resume: break;
     //case ActionId.Stop: break;
 
     case ActionId.NextTurn:
-      const parsedNextTurn = actionNextTurnSchema.safeParse(info);
-      if (!parsedNextTurn.success) break;
-      parsedNextTurn.data.country = player.country;
+      if (!actionNextTurnSchema.safeParse(action.info).success) break;
+      const parsedNextTurn = action as IActionNextTurn;
+      parsedNextTurn.info.country = player.country;
 
-      actable = game.play.nextTurnActable(lobby.gameData, parsedNextTurn.data);
-      game.play.nextTurn(lobby.gameData, parsedNextTurn.data);
+      actable = game.play.nextTurnActable(lobby.gameData, parsedNextTurn.info);
+      game.play.nextTurn(lobby.gameData, parsedNextTurn.info);
       break;
     case ActionId.Generate:
-      const parsedGenerate = actionGenerateSchema.safeParse(info);
-      if (!parsedGenerate.success) break;
+      if (!actionGenerateSchema.safeParse(action.info).success) break;
+      const parsedGenerate = action as IActionGenerate;
 
-      actable = game.play.generateActable(lobby.gameData, parsedGenerate.data);
-      game.play.generate(lobby.gameData, parsedGenerate.data);
+      actable = game.play.generateActable(lobby.gameData, parsedGenerate.info);
+      game.play.generate(lobby.gameData, parsedGenerate.info);
       break;
 
     case ActionId.AddCountry:
-      const parsedAddCountry = actionAddCountrySchema.safeParse(info);
-      if (!parsedAddCountry.success) break;
+      if (!actionAddCountrySchema.safeParse(action.info).success) break;
+      const parsedAddCountry = action as IActionAddCountry;
 
-      actable = game.play.addCountryActable(lobby.gameData, parsedAddCountry.data);
-      game.play.addCountry(lobby.gameData, parsedAddCountry.data);
+      actable = game.play.addCountryActable(lobby.gameData, parsedAddCountry.info);
+      game.play.addCountry(lobby.gameData, parsedAddCountry.info);
       break;
     case ActionId.RemoveCountry:
-      const parsedRemoveCountry = actionRemoveCountrySchema.safeParse(info);
-      if (!parsedRemoveCountry.success) break;
+      if (!actionRemoveCountrySchema.safeParse(action.info).success) break;
+      const parsedRemoveCountry = action as IActionRemoveCountry;
 
-      actable = game.play.removeCountryActable(lobby.gameData, parsedRemoveCountry.data);
-      game.play.removeCountry(lobby.gameData, parsedRemoveCountry.data);
+      actable = game.play.removeCountryActable(lobby.gameData, parsedRemoveCountry.info);
+      game.play.removeCountry(lobby.gameData, parsedRemoveCountry.info);
       break;
 
     case ActionId.PlaceBanner:
-      const parsedPlaceBanner = actionPlaceBannerSchema.safeParse(info);
-      if (!parsedPlaceBanner.success) break;
-      parsedPlaceBanner.data.countryId = player.country;
+      if (!actionPlaceBannerSchema.safeParse(action.info).success) break;
+      const parsedPlaceBanner = action as IActionPlaceBanner;
+      parsedPlaceBanner.info.countryId = player.country;
 
-      actable = game.play.placeBannerActable(lobby.gameData, parsedPlaceBanner.data);
-      game.play.placeBanner(lobby.gameData, parsedPlaceBanner.data);
+      actable = game.play.placeBannerActable(lobby.gameData, parsedPlaceBanner.info);
+      game.play.placeBanner(lobby.gameData, parsedPlaceBanner.info);
       break;
     case ActionId.MoveUnit:
-      const parsedMoveUnit = actionMoveUnitSchema.safeParse(info);
-      if (!parsedMoveUnit.success) break;
-      parsedMoveUnit.data.countryId = player.country;
+      if (!actionMoveUnitSchema.safeParse(action.info).success) break;
+      const parsedMoveUnit = action as IActionMoveUnit;
+      parsedMoveUnit.info.countryId = player.country;
 
-      actable = game.play.moveUnitActable(lobby.gameData, parsedMoveUnit.data);
-      game.play.moveUnit(lobby.gameData, parsedMoveUnit.data);
+      actable = game.play.moveUnitActable(lobby.gameData, parsedMoveUnit.info);
+      game.play.moveUnit(lobby.gameData, parsedMoveUnit.info);
       break;
   }
 
