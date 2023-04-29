@@ -12,6 +12,9 @@ import { IGameData } from "@core/gamedata";
 import { ICountry } from "@core/lib/country";
 import { Piece } from "../TextParser";
 import { Flex, Text } from "@mantine/core";
+import { useAppStore } from "@/stores/appStore";
+import { socketio } from "@/lib/socketio";
+import { ActionId } from "@core/types/action_id";
 
 export default function Tilemap() {
   const tiles = useGameStore(state => state.data.tiles);
@@ -45,11 +48,16 @@ function Tile({ tile }: { tile: ITile }) {
   }, [hovered]);
 
   const event = () => {
+    const online = useAppStore.getState().lobby.online;
+
     useGameStore.setState(s => {
       s.hoveredTile = s.data.tiles[tile.pos.x + tile.pos.y * s.data.width];
 
       if (!s.country) return;
-      game.play.placeBanner(s.data, { countryId: s.country.id, pos: tile.pos });
+
+      const info = { countryId: s.country.id, pos: tile.pos };
+      if (online) socketio.emit("client-game-action", { id: ActionId.PlaceBanner, info });
+      else game.play.placeBanner(s.data, info);
 
       if (s.selectedUnitTile?.pos.x === tile.pos.x && s.selectedUnitTile?.pos.y === tile.pos.y) {
         s.selectedUnitTile = undefined;
@@ -59,10 +67,9 @@ function Tile({ tile }: { tile: ITile }) {
 
       if (s.moveableTiles.filter(t => game.util.compareTile(t, tile)).length > 0) {
         if (s.selectedUnitTile) {
-          game.play.moveUnit(
-            s.data,
-            { countryId: s.country.id, from: s.selectedUnitTile.pos, to: tile.pos }
-          );
+          const info = { countryId: s.country.id, from: s.selectedUnitTile.pos, to: tile.pos };
+          if (online) socketio.emit("client-game-action", { id: ActionId.MoveUnit, info });
+          else game.play.moveUnit(s.data, info);
         }
       }
 

@@ -1,5 +1,8 @@
+import { socketio } from "@/lib/socketio";
+import { useAppStore } from "@/stores/appStore";
 import { useGameStore } from "@/stores/gameStore";
 import { game } from "@core/game";
+import { ActionId } from "@core/types/action_id";
 import { Flex, createStyles, ActionIcon } from "@mantine/core";
 import { useHotkeys } from "@mantine/hooks";
 import { IconArrowRight, IconMessageCircle2, IconWorld } from "@tabler/icons-react";
@@ -26,14 +29,21 @@ export default function Footer() {
   const onClickLobby = () => { navigate("/lobby") }
   const onClickChat = () => { navigate("/chat") }
   const onClickNextTurn = () => {
+    const online = useAppStore.getState().lobby.online;
+
     useGameStore.setState(s => {
-      game.play.nextTurn(s.data, { country: s.country?.id });
-      s.country = game.util.turnTypeToCountry(s.data, s.data.turn.type);
+      if (online) {
+        socketio.emit("client-game-action", { id: ActionId.NextTurn });
+      }
+      else {
+        game.play.nextTurn(s.data, { country: s.country?.id });
+        s.country = game.util.turnTypeToCountry(s.data, s.data.turn.type);
+      }
 
       // Clear any previous tile selections (excluding hovered tile)
       s.moveableTiles = [];
       s.selectedUnitTile = undefined;
-    })
+    });
   }
 
   useHotkeys([
