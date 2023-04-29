@@ -37,8 +37,8 @@ export function createGameData(): IGameData {
 
     rng: createSeedRandom(Date.now()),
 
-    width: 0,
-    height: 0,
+    width: 10,
+    height: 10,
     seed: Date.now(),
   }
 }

@@ -33,7 +33,7 @@ import { INetworkPlayer } from "../types/network_player";
  * 
  */
 export interface ServerToClientEvents {
-  "server-create-lobby": (data: { playerId: string, lobbyId: string } | undefined) => void;
+  "server-create-lobby": (data: { playerId: string, lobbyId: string, w: number, h: number, seed: number } | undefined) => void;
   "server-join-lobby": (data: { playerId?: string, lobbyId?: string, w?: number, h?: number, seed?: number, players: INetworkPlayer[] } | undefined) => void;
   "server-leave-lobby": (data: { playerId: string }) => void;
   "server-lobby-update": (data: { w?: number, h?: number, seed?: number, online?: boolean } | undefined) => void;

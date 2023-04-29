@@ -8,8 +8,16 @@ function createLobby(player: IPlayer) {
   const lobby = dataAPI.createLobby(player);
 
   // Send the result to the player that tried to create a lobby
-  if (!lobby) player.socket.emit("server-create-lobby", undefined);
-  else player.socket.emit("server-create-lobby", { playerId: player.id, lobbyId: lobby.id });
+  if (!lobby) {
+    player.socket.emit("server-create-lobby", undefined);
+  }
+  else {
+    const { width, height, seed } = lobby.gameData;
+    player.socket.emit(
+      "server-create-lobby",
+      { playerId: player.id, lobbyId: lobby.id, w: width, h: height, seed }
+    );
+  }
 }
 
 function joinLobby(player: IPlayer, data: Parameters<ClientToServerEvents["client-join-lobby"]>[0]) {

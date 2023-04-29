@@ -22,10 +22,16 @@ socketio.on("disconnect", (_reason, _description) => {
 
 // Game events \\
 socketio.on("server-create-lobby", (data) => {
+  if (!data) return;
+
   useAppStore.setState(s => {
-    s.lobby.playerId = data?.playerId;
-    s.lobby.lobbyId = data?.lobbyId;
+    s.lobby.playerId = data.playerId;
+    s.lobby.lobbyId = data.lobbyId;
     s.lobby.owner = true;
+
+    s.lobby.map.width = data.w;
+    s.lobby.map.height = data.h;
+    s.lobby.map.seed = data.seed;
   });
 });
 
