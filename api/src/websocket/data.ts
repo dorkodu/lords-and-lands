@@ -142,6 +142,8 @@ function changeCountry(player: IPlayer, countryStr: string): { id: string, count
   getLobbyPlayers(player.lobby).forEach(p => p.country === country && (used = true));
   if (used) return undefined;
 
+  // Set the players country, and return
+  player.country = country;
   return { id: player.id, country };
 }
 

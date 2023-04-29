@@ -119,35 +119,53 @@ function Players() {
 }
 
 function Player({ player }: { player: IPlayer }) {
-  const lobbyOwner = useAppStore(state => state.lobby.owner);
+  const lobby = useAppStore(state => state.lobby);
 
   const onClickCountry = () => {
     let oldCountry = player.country;
     let newCountry = player.country;
 
-    useAppStore.setState(s => {
-      const p = s.lobby.players.filter(p => p.id === player.id)[0];
-      if (!p) return;
+    const p = useAppStore.getState().lobby.players.filter(p => p.id === player.id)[0];
+    if (!p) return;
 
-      const countries = s.lobby.players.map(p => p.country);
+    const countries = lobby.players.map(p => p.country);
 
-      while (newCountry < CountryId.Count) {
-        if (countries.includes(newCountry)) { newCountry++; }
-        else { p.country = newCountry; return; }
+    while (newCountry < CountryId.Count) {
+      if (countries.includes(newCountry)) { newCountry++; }
+      else break;
+    }
+
+    if (newCountry >= CountryId.Count) newCountry = CountryId.None;
+
+    // If online, send "new country" to server first to validate
+    if (lobby.online) {
+      let country: "green" | "purple" | "red" | "yellow" | "none" = "none";
+
+      switch (newCountry) {
+        case CountryId.Green: country = "green"; break;
+        case CountryId.Purple: country = "purple"; break;
+        case CountryId.Red: country = "red"; break;
+        case CountryId.Yellow: country = "yellow"; break;
       }
 
-      newCountry = CountryId.None;
-      p.country = newCountry;
-    });
+      socketio.emit("client-change-country", { country });
+    }
+    // If not offline, change country immediately
+    else {
+      useAppStore.setState(s => {
+        const p = s.lobby.players.filter(p => p.id === player.id)[0];
+        if (p) p.country = newCountry;
+      });
 
-    useGameStore.setState(s => {
-      game.play.removeCountry(s.data, { country: oldCountry });
-      game.play.addCountry(s.data, { country: newCountry });
-    });
+      useGameStore.setState(s => {
+        game.play.removeCountry(s.data, { country: oldCountry });
+        game.play.addCountry(s.data, { country: newCountry });
+      });
+    }
   }
 
   const onClickBan = () => {
-    if (!lobbyOwner) return;
+    if (!lobby.owner) return;
 
     useAppStore.setState(s => {
       s.lobby.players = s.lobby.players.filter(p => p.id !== player.id);
@@ -170,7 +188,7 @@ function Player({ player }: { player: IPlayer }) {
         </Flex>
 
         <Flex align="center" justify="flex-end" gap="xs">
-          {lobbyOwner && <ActionIcon size={24} onClick={onClickBan}><IconBan /></ActionIcon>}
+          {lobby.owner && <ActionIcon size={24} onClick={onClickBan}><IconBan /></ActionIcon>}
           {player.isAdmin && <IconStarFilled />}
         </Flex>
 

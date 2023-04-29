@@ -1,6 +1,9 @@
 import { io, Socket } from "socket.io-client";
 import type { ServerToClientEvents, ClientToServerEvents } from "@api/websocket/types";
 import { useAppStore } from "@/stores/appStore";
+import { useGameStore } from "@/stores/gameStore";
+import { CountryId } from "@core/types/country_id";
+import { game } from "@core/game";
 
 export const socketio: Socket<ServerToClientEvents, ClientToServerEvents> = io(
   { path: "/api/socket", transports: ["websocket"] }
@@ -28,6 +31,10 @@ socketio.on("server-create-lobby", (data) => {
     s.lobby.playerId = data.playerId;
     s.lobby.lobbyId = data.lobbyId;
     s.lobby.owner = true;
+
+    s.lobby.players = [
+      { id: data.playerId, name: data.playerId, country: CountryId.None, isAdmin: true }
+    ];
 
     s.lobby.map.width = data.w;
     s.lobby.map.height = data.h;
@@ -97,6 +104,22 @@ socketio.on("server-lobby-update", (data) => {
 });
 
 socketio.on("server-change-country", (data) => {
-  console.log(data);
+  if (!data) return;
+
+  const player = useAppStore.getState().lobby.players.filter(p => p.id === data.id)[0];
+  if (!player) return;
+
+  const oldCountry = player.country;
+  const newCountry = data.country;
+
+  useAppStore.setState(s => {
+    const p = s.lobby.players.filter(p => p.id === data.id)[0];
+    if (p) p.country = newCountry;
+  });
+
+  useGameStore.setState(s => {
+    game.play.removeCountry(s.data, { country: oldCountry });
+    game.play.addCountry(s.data, { country: newCountry });
+  });
 });
 // Game events \\
