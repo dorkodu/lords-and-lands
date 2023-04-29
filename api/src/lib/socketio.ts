@@ -24,7 +24,24 @@ socketio.on("connection", (socket): void => {
 
   socket.on("client-game-action", () => { websocketController.gameAction(player) });
 
-  socket.on("disconnect", (_reason, _description) => { dataAPI.removePlayer(player) });
-  socket.on("disconnecting", (_reason, _description) => { dataAPI.removePlayer(player) });
-  socket.on("error", (_err) => { dataAPI.removePlayer(player) });
+  socket.on("disconnect", (_reason, _description) => {
+    const lobbyId = player.lobby;
+    dataAPI.removePlayer(player);
+
+    const players = dataAPI.getLobbyPlayers(lobbyId);
+    players.forEach(p => p.socket.emit("server-leave-lobby", { playerId: player.id }));
+  });
+  socket.on("disconnecting", (_reason, _description) => {
+    const lobbyId = player.lobby;
+    dataAPI.removePlayer(player);
+
+    const players = dataAPI.getLobbyPlayers(lobbyId);
+  });
+  socket.on("error", (_err) => {
+    const lobbyId = player.lobby;
+    dataAPI.removePlayer(player);
+
+    const players = dataAPI.getLobbyPlayers(lobbyId);
+    players.forEach(p => p.socket.emit("server-leave-lobby", { playerId: player.id }));
+  });
 });
