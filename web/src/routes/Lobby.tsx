@@ -20,7 +20,7 @@ import { useGameStore } from "@/stores/gameStore";
 import { game } from "@core/game";
 import { util } from "@/lib/util";
 import { CountryId } from "@core/types/country_id";
-import { useDebouncedValue, useScrollIntoView } from "@mantine/hooks";
+import { useDebouncedValue } from "@mantine/hooks";
 import { useEffect, useState } from "react";
 import { socketio } from "@/lib/socketio";
 
@@ -122,6 +122,9 @@ function Player({ player }: { player: IPlayer }) {
   const lobby = useAppStore(state => state.lobby);
 
   const onClickCountry = () => {
+    // If not playing offline and player is not current player
+    if (lobby.online && lobby.playerId !== player.id) return;
+
     let oldCountry = player.country;
     let newCountry = player.country;
 
