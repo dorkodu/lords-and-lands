@@ -108,7 +108,12 @@ socketio.on("server-lobby-update", (data) => {
         s.lobby.lobbyId = undefined;
       }
     }
-  })
+  });
+
+  useGameStore.setState(s => {
+    const { width, height, seed } = useAppStore.getState().lobby.map;
+    game.play.generate(s.data, { w: width, h: height, seed });
+  });
 });
 
 socketio.on("server-change-country", (data) => {
