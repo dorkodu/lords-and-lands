@@ -43,7 +43,7 @@ function joinLobby(player: IPlayer, data: Parameters<ClientToServerEvents["clien
 
 function leaveLobby(player: IPlayer) {
   // Send "leave lobby" event to all players in the lobby
-  dataAPI.getLobbyPlayers(player).forEach(p => p.socket.emit("server-leave-lobby", { playerId: player.id }));
+  dataAPI.getLobbyPlayers(player.lobby).forEach(p => p.socket.emit("server-leave-lobby", { playerId: player.id }));
 
   // Make player leave the lobby
   dataAPI.leaveLobby(player);
@@ -54,14 +54,14 @@ function lobbyUpdate(player: IPlayer, data: Parameters<ClientToServerEvents["cli
 
   // If lobby is made offline, remove the lobby and all the players connected to the lobby
   if (data.online !== undefined && !data.online) {
-    const players = dataAPI.getLobbyPlayers(player);
+    const players = dataAPI.getLobbyPlayers(player.lobby);
     dataAPI.removeLobby(player);
     players.forEach(p => p.socket.emit("server-lobby-update", { online: false }));
   }
 
   // If "lobby update" is done successfully, send it to all players, if not, only send to current player
   if (status) {
-    const players = dataAPI.getLobbyPlayers(player);
+    const players = dataAPI.getLobbyPlayers(player.lobby);
     players.forEach(p => {
       p.socket.emit("server-lobby-update", { w: data.w, h: data.h, seed: data.seed, online: data.online });
     });
@@ -76,7 +76,7 @@ function changeCountry(player: IPlayer, data: Parameters<ClientToServerEvents["c
 
   // If "change country" is done successfully, send it to all players, if not, only send to current player
   if (result) {
-    const players = dataAPI.getLobbyPlayers(player);
+    const players = dataAPI.getLobbyPlayers(player.lobby);
     players.forEach(p => p.socket.emit("server-change-country", result));
   }
   else {

@@ -7,23 +7,34 @@ import { CountryId } from "@core/types/country_id";
 import { createGameData } from "@core/gamedata";
 
 function createPlayer(socket: ISocket) {
+  // Generate random id, if player with id already exists, return
   const id = crypto.id();
   if (data.players[id]) return undefined;
 
+  // Assign new player to data.players & return
   data.players[id] = { id, name: id, lobby: undefined, country: CountryId.None, socket };
   return data.players[id];
 }
 
 function removePlayer(player: IPlayer) {
-  // TODO: Re-assign lobby admin if lobby admin left
+  const lobby = player.lobby && data.lobbies[player.lobby];
 
-  const lobby = player && player.lobby && data.lobbies[player.lobby];
+  // If removed player was the last player in the lobby, remove lobby
+  if (lobby && Object.values(lobby.players).length === 1) removeLobby(player);
+
+  // Delete player from players and from lobby.players if exists
   if (lobby) delete lobby.players[player.id];
   delete data.players[player.id];
+
+  // If the removed player is admin, assign another player as admin
+  if (lobby && lobby.adminId === player.id) {
+    const newAdmin = Object.values(lobby.players)[0];
+    if (newAdmin) lobby.adminId = newAdmin.id;
+  }
 }
 
-function getLobbyPlayers(player: IPlayer) {
-  const lobby = player.lobby && data.lobbies[player.lobby];
+function getLobbyPlayers(lobbyId: string | undefined) {
+  const lobby = lobbyId && data.lobbies[lobbyId];
   if (!lobby) return [];
   return Object.values(lobby.players);
 }
@@ -39,11 +50,13 @@ function createLobby(player: IPlayer) {
   // If player is already in a lobby
   if (player.lobby) return undefined;
 
+  // Generate id for lobby and check if it already exists
   const id = crypto.id();
   if (data.lobbies[id]) return undefined;
 
-  player.lobby = id;
+  // Assign player to lobby & lobby to player, then return the lobby
   data.lobbies[id] = { id, adminId: player.id, players: { [player.id]: player }, gameData: createGameData() };
+  player.lobby = id;
   return data.lobbies[id];
 }
 
@@ -69,16 +82,25 @@ function joinLobby(player: IPlayer, lobbyId: string): ILobby | undefined {
   if (playerCount >= constants.lobbyMaxPlayerCount) return undefined;
 
   lobby.players[player.id] = player;
+  player.lobby = lobbyId;
+
   return lobby;
 }
 
 function leaveLobby(player: IPlayer) {
-  // TODO: Re-assign lobby admin if lobby admin left
+  const lobby = player.lobby && data.lobbies[player.lobby];
+  if (!lobby) return;
 
-  const lobbyId = player.lobby;
-  if (!lobbyId) return;
+  // If removed player was the last player in the lobby, remove lobby
+  if (lobby && Object.values(lobby.players).length === 1) removeLobby(player);
 
-  delete data.lobbies[lobbyId]?.players[player.id];
+  // If the removed player is admin, assign another player as admin
+  if (lobby && lobby.adminId === player.id) {
+    const newAdmin = Object.values(lobby.players)[0];
+    if (newAdmin) lobby.adminId = newAdmin.id;
+  }
+
+  delete data.lobbies[lobby.id]?.players[player.id];
 }
 
 function lobbyUpdate(player: IPlayer, width?: number, height?: number, seed?: number): boolean {
@@ -88,7 +110,7 @@ function lobbyUpdate(player: IPlayer, width?: number, height?: number, seed?: nu
   // If not the admin, can't update lobby
   if (lobby.adminId !== player.id) return false;
 
-  // If game is running, can't change
+  // If game is running, can't change width, height or seed
   if (lobby.gameData.running) return false;
 
   if (width !== undefined) lobby.gameData.width = width;
@@ -99,6 +121,12 @@ function lobbyUpdate(player: IPlayer, width?: number, height?: number, seed?: nu
 }
 
 function changeCountry(player: IPlayer, countryStr: string): { id: string, country: CountryId } | undefined {
+  const lobby = player.lobby && data.lobbies[player.lobby];
+  if (!lobby) return undefined;
+
+  // If game is running, can't change country
+  if (lobby.gameData.running) return undefined;
+
   let country = CountryId.None;
 
   switch (countryStr) {
@@ -111,7 +139,7 @@ function changeCountry(player: IPlayer, countryStr: string): { id: string, count
 
   // Check if any other player is using the same country
   let used = false;
-  getLobbyPlayers(player).forEach(p => p.country === country && (used = true));
+  getLobbyPlayers(player.lobby).forEach(p => p.country === country && (used = true));
   if (used) return undefined;
 
   return { id: player.id, country };

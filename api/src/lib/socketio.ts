@@ -36,6 +36,7 @@ socketio.on("connection", (socket): void => {
     dataAPI.removePlayer(player);
 
     const players = dataAPI.getLobbyPlayers(lobbyId);
+    players.forEach(p => p.socket.emit("server-leave-lobby", { playerId: player.id }));
   });
   socket.on("error", (_err) => {
     const lobbyId = player.lobby;
