@@ -1,6 +1,7 @@
 import { io, Socket } from "socket.io-client";
 import type { ServerToClientEvents, ClientToServerEvents } from "@api/websocket/types";
 import { useAppStore } from "@/stores/appStore";
+import { router } from "@/routes/_Router";
 
 export const socketio: Socket<ServerToClientEvents, ClientToServerEvents> = io(
   { path: "/api/socket", transports: ["websocket"] }
@@ -29,7 +30,18 @@ socketio.on("server-create-lobby", (data) => {
 });
 
 socketio.on("server-join-lobby", (data) => {
-  console.log(data);
+  useAppStore.setState(s => {
+    s.lobby.playerId = data?.playerId;
+    s.lobby.lobbyId = data?.lobbyId;
+    s.lobby.players = data?.players ?? [];
+
+    if (data?.w !== undefined) s.lobby.map.width = data.w;
+    if (data?.h !== undefined) s.lobby.map.height = data.h;
+    if (data?.seed !== undefined) s.lobby.map.seed = data.seed;
+
+    // If successfully joined to the lobby, set route to "/lobby"
+    if (data?.lobbyId) router.navigate("/lobby");
+  });
 });
 
 socketio.on("server-leave-lobby", (data) => {

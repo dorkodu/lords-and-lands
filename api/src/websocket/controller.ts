@@ -20,9 +20,13 @@ function joinLobby(player: IPlayer, data: Parameters<ClientToServerEvents["clien
   }
   else {
     const players = Object.values(lobby.players);
+    const { width, height, seed } = lobby.gameData;
 
-    // Send the joined player, all players
-    player.socket.emit("server-join-lobby", { players });
+    // Send the joined player: player id, lobby id, width, height, seed, and all players
+    player.socket.emit(
+      "server-join-lobby",
+      { playerId: player.id, lobbyId: lobby.id, w: width, h: height, seed, players }
+    );
 
     // Send the already joined players, only the joined player
     players

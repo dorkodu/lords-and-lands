@@ -10,7 +10,7 @@ function createPlayer(socket: ISocket) {
   const id = crypto.id();
   if (data.players[id]) return undefined;
 
-  data.players[id] = { id, lobby: undefined, country: CountryId.None, socket };
+  data.players[id] = { id, name: id, lobby: undefined, country: CountryId.None, socket };
   return data.players[id];
 }
 
@@ -59,7 +59,7 @@ function joinLobby(player: IPlayer, lobbyId: string): ILobby | undefined {
   if (!lobby) return undefined;
 
   // If lobby has less than "lobbyMaxPlayerCount"
-  const playerCount = Object.values(lobby).length;
+  const playerCount = Object.values(lobby.players).length;
   if (playerCount >= constants.lobbyMaxPlayerCount) return undefined;
 
   lobby.players[player.id] = player;
