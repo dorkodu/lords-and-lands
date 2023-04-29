@@ -33,7 +33,7 @@ export default function Footer() {
 
     useGameStore.setState(s => {
       if (online) {
-        socketio.emit("client-game-action", { id: ActionId.NextTurn });
+        socketio.emit("client-game-action", { id: ActionId.NextTurn, info: {} });
       }
       else {
         game.play.nextTurn(s.data, { country: s.country?.id });
