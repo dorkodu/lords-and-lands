@@ -21,14 +21,19 @@ export default function JoinLobby() {
   }, []);
 
   return (
-    <Flex direction="column" align="center" gap="md">
-      <TextInput
-        label="Lobby ID"
-        placeholder="Lobby ID..."
-        value={lobbyId}
-        onChange={(e) => setLobbyId(e.currentTarget.value)}
-      />
-      <Button onClick={onClickJoin}>Join</Button>
+    <Flex direction="column" align="center">
+      <Flex direction="column" gap="md">
+
+        <TextInput
+          label="Lobby ID"
+          placeholder="Lobby ID..."
+          value={lobbyId}
+          onChange={(e) => setLobbyId(e.currentTarget.value)}
+        />
+
+        <Button onClick={onClickJoin}>Join</Button>
+
+      </Flex>
     </Flex>
   )
 }
