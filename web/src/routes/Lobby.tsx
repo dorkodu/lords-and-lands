@@ -81,19 +81,22 @@ export default function Lobby() {
         </ActionIcon>
       </Flex>
 
-      <Flex gap="md">
-        <Text>Lobby ID: {lobby.lobbyId ?? "- offline -"}</Text>
+      {lobby.lobbyId ?
+        <Flex gap="md">
+          <Text>{`Lobby ID: ${lobby.lobbyId}`}</Text>
 
-        <Flex>
-          <ActionIcon onClick={onClickClipboard} color={clipboard ? "green" : undefined}>
-            {!clipboard ? <IconClipboardText /> : <IconCheck />}
-          </ActionIcon>
+          <Flex>
+            <ActionIcon onClick={onClickClipboard} color={clipboard ? "green" : undefined}>
+              {!clipboard ? <IconClipboardText /> : <IconCheck />}
+            </ActionIcon>
 
-          <ActionIcon onClick={onClickShare} color={share ? "green" : undefined}>
-            {!share ? <IconShare /> : <IconCheck />}
-          </ActionIcon>
-        </Flex>
-      </Flex>
+            <ActionIcon onClick={onClickShare} color={share ? "green" : undefined}>
+              {!share ? <IconShare /> : <IconCheck />}
+            </ActionIcon>
+          </Flex>
+        </Flex> :
+        <Text>&bull; lobby offline &bull;</Text>
+      }
 
       <Flex gap="md">
         <ActionIcon onClick={onClickSettings}>
