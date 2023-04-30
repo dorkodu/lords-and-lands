@@ -15,14 +15,8 @@ export default function Game() {
     useGameStore.setState(s => {
       if (s.data.running) return;
 
-      if (online) {
-        socketio.emit("client-game-action", { id: ActionId.Generate, info: { w: s.data.width, h: s.data.height, seed: s.data.seed } });
-        socketio.emit("client-game-action", { id: ActionId.Start, info: {} });
-      }
-      else {
-        game.play.generate(s.data, { w: s.data.width, h: s.data.height, seed: s.data.seed });
-        game.play.start(s.data, {});
-      }
+      if (online) socketio.emit("client-game-action", { id: ActionId.Start, info: {} });
+      else game.play.start(s.data, {});
     });
 
     useGameStore.setState(s => {
