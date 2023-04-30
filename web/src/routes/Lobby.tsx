@@ -4,11 +4,13 @@ import {
   IconArrowBigRightFilled,
   IconArrowRight,
   IconBan,
-  IconCopy,
+  IconCheck,
+  IconClipboardText,
   IconDeviceFloppy,
   IconDeviceGamepad2,
   IconRobot,
   IconSettings,
+  IconShare,
   IconStarFilled
 } from "@tabler/icons-react";
 import { IPlayer } from "@/types/player";
@@ -19,7 +21,7 @@ import { useGameStore } from "@/stores/gameStore";
 import { game } from "@core/game";
 import { util } from "@/lib/util";
 import { CountryId } from "@core/types/country_id";
-import { useDebouncedValue } from "@mantine/hooks";
+import { useDebouncedValue, useTimeout } from "@mantine/hooks";
 import { useEffect, useState } from "react";
 import { socketio } from "@/lib/socketio";
 import { useSettings } from "@/components/hooks";
@@ -31,6 +33,11 @@ export default function Lobby() {
   const lobby = useAppStore(state => state.lobby);
   const { playerName } = useSettings();
 
+  const [clipboard, setClipboard] = useState(false);
+  const [share, setShare] = useState(false);
+  const { start: resetClipboard } = useTimeout(() => setClipboard(false), 500);
+  const { start: resetShare } = useTimeout(() => setShare(false), 500);
+
   const toggleLobbyStatus = () => {
     useAppStore.setState(s => {
       s.lobby.online = !s.lobby.online;
@@ -39,7 +46,20 @@ export default function Lobby() {
     });
   }
 
-  const onClickCopyLobbyId = () => { lobby.lobbyId && util.copyToClipboard(lobby.lobbyId) }
+  const onClickClipboard = async () => {
+    if (clipboard || !lobby.lobbyId) return;
+    const link = `${location.origin}/join-lobby?lobby-id=${lobby.lobbyId}`;
+    const status = await util.copyToClipboard(link);
+    setClipboard(status);
+    resetClipboard();
+  }
+  const onClickShare = async () => {
+    if (share || !lobby.lobbyId) return;
+    const link = `${location.origin}/join-lobby?lobby-id=${lobby.lobbyId}`;
+    const status = await util.share("Lords and Lands", link);
+    setShare(status);
+    resetShare();
+  }
 
   const onClickSettings = () => { navigate("/settings") }
   const onClickSaves = () => { navigate("/saves") }
@@ -64,9 +84,15 @@ export default function Lobby() {
       <Flex gap="md">
         <Text>Lobby ID: {lobby.lobbyId ?? "- offline -"}</Text>
 
-        <ActionIcon onClick={onClickCopyLobbyId}>
-          <IconCopy />
-        </ActionIcon>
+        <Flex>
+          <ActionIcon onClick={onClickClipboard} color={clipboard ? "green" : undefined}>
+            {!clipboard ? <IconClipboardText /> : <IconCheck />}
+          </ActionIcon>
+
+          <ActionIcon onClick={onClickShare} color={share ? "green" : undefined}>
+            {!share ? <IconShare /> : <IconCheck />}
+          </ActionIcon>
+        </Flex>
       </Flex>
 
       <Flex gap="md">

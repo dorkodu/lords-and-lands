@@ -1,3 +1,15 @@
+function share(text: string, url: string): Promise<boolean> {
+  return new Promise(resolve => {
+    if (navigator.share) {
+      navigator.share({ text, url })
+        .then(() => resolve(true))
+        .catch(() => resolve(false))
+    } else {
+      resolve(false);
+    }
+  })
+}
+
 function copyToClipboard(text: string): Promise<boolean> {
   return new Promise(resolve => {
     navigator.clipboard.writeText(text)
@@ -20,6 +32,7 @@ function version(day: number, month: number, year: number) {
 }
 
 export const util = {
+  share,
   copyToClipboard,
 
   generateId,
