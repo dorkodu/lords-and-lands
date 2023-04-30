@@ -16,6 +16,7 @@ import { IActionRemoveCountry } from "@core/actions/remove_country";
 import { IActionPlaceBanner } from "@core/actions/place_banner";
 import { IActionMoveUnit } from "@core/actions/move_unit";
 import { createSeedRandom } from "@core/lib/seed_random";
+import { ISerializedGameData } from "@core/serializer";
 
 function createPlayer(socket: ISocket) {
   // Generate random id, if player with id already exists, return
@@ -134,7 +135,7 @@ function lobbyUpdate(player: IPlayer, width?: number, height?: number, seed?: nu
   return true;
 }
 
-function changeCountry(player: IPlayer, countryStr: string): { id: string, country: CountryId } | undefined {
+function changeCountry(player: IPlayer, country: CountryId): { id: string, country: CountryId } | undefined {
   const lobby = player.lobby && data.lobbies[player.lobby];
   if (!lobby) return undefined;
 
@@ -144,11 +145,11 @@ function changeCountry(player: IPlayer, countryStr: string): { id: string, count
   let oldCountry = player.country;
   let newCountry = CountryId.None;
 
-  switch (countryStr) {
-    case "green": newCountry = CountryId.Green; break;
-    case "purple": newCountry = CountryId.Purple; break;
-    case "red": newCountry = CountryId.Red; break;
-    case "yellow": newCountry = CountryId.Yellow; break;
+  switch (country) {
+    case CountryId.Green: newCountry = CountryId.Green; break;
+    case CountryId.Purple: newCountry = CountryId.Purple; break;
+    case CountryId.Red: newCountry = CountryId.Red; break;
+    case CountryId.Yellow: newCountry = CountryId.Yellow; break;
     default: break;
   }
 
@@ -164,6 +165,10 @@ function changeCountry(player: IPlayer, countryStr: string): { id: string, count
   // Set the players country, and return
   player.country = newCountry;
   return { id: player.id, country: newCountry };
+}
+
+function syncState(_player: IPlayer, _state: ISerializedGameData) {
+
 }
 
 function gameAction(player: IPlayer, action: { id: ActionId, info?: any }, seed: number): boolean {
@@ -256,6 +261,7 @@ export const dataAPI = {
   leaveLobby,
   lobbyUpdate,
   changeCountry,
+  syncState,
   gameAction,
 }
 

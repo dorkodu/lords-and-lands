@@ -178,16 +178,7 @@ function Player({ player }: { player: IPlayer }) {
 
     // If online, send "new country" to server first to validate
     if (lobby.online) {
-      let country: "green" | "purple" | "red" | "yellow" | "none" = "none";
-
-      switch (newCountry) {
-        case CountryId.Green: country = "green"; break;
-        case CountryId.Purple: country = "purple"; break;
-        case CountryId.Red: country = "red"; break;
-        case CountryId.Yellow: country = "yellow"; break;
-      }
-
-      socketio.emit("client-change-country", { country });
+      socketio.emit("client-change-country", { country: newCountry });
     }
     // If not offline, change country immediately
     else {

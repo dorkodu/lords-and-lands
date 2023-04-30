@@ -125,7 +125,7 @@ function chatMessage(player: IPlayer, data: Parameters<ClientToServerEvents["cli
   players.forEach(p => p.socket.emit("server-chat-message", { id: player.id, msg: parsedData.message }));
 }
 
-function syncState(_player: IPlayer) {
+function syncState(_player: IPlayer, _data: Parameters<ClientToServerEvents["client-sync-state"]>[0]) {
 
 }
 

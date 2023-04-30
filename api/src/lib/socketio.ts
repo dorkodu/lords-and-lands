@@ -20,7 +20,7 @@ socketio.on("connection", (socket): void => {
   socket.on("client-change-country", (data) => { websocketController.changeCountry(player, data) });
 
   socket.on("client-chat-message", (data) => { websocketController.chatMessage(player, data) });
-  socket.on("client-sync-state", () => { websocketController.syncState(player) });
+  socket.on("client-sync-state", (data) => { websocketController.syncState(player, data) });
 
   socket.on("client-game-action", (data) => { websocketController.gameAction(player, data) });
 

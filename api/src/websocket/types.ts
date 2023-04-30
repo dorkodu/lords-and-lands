@@ -6,10 +6,12 @@ import {
   gameActionSchema,
   joinLobbySchema,
   lobbyUpdateSchema,
+  syncStateSchema,
 } from "./schemas";
 import { CountryId } from "@core/types/country_id";
 import { INetworkPlayer } from "../types/network_player";
 import { ActionId } from "@core/types/action_id";
+import { ISerializedGameData } from "@core/serializer";
 
 /**
  * Client sends "client-x" event. After server processes it,
@@ -43,7 +45,7 @@ export interface ServerToClientEvents {
   "server-change-country": (data: { id: string, country: CountryId } | undefined) => void;
 
   "server-chat-message": (data: { id: string; msg: string } | undefined) => void;
-  "server-sync-state": () => void;
+  "server-sync-state": (data: { state: ISerializedGameData } | undefined) => void;
 
   "server-game-action": (data: { id: ActionId, info?: any, seed: number } | undefined) => void;
 }
@@ -59,7 +61,7 @@ export interface ClientToServerEvents {
   "client-change-country": (data: z.infer<typeof changeCountrySchema>) => void;
 
   "client-chat-message": (data: z.infer<typeof chatMessageSchema>) => void;
-  "client-sync-state": () => void;
+  "client-sync-state": (data: z.infer<typeof syncStateSchema>) => void;
 
   "client-game-action": (data: z.infer<typeof gameActionSchema>) => void;
 }

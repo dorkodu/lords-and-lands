@@ -158,8 +158,8 @@ socketio.on("server-chat-message", (data) => {
   useAppStore.setState(s => { s.lobby.messages.push({ playerId: id, msg: msg }) });
 });
 
-socketio.on("server-sync-state", () => {
-
+socketio.on("server-sync-state", (data) => {
+  console.log(data);
 });
 
 socketio.on("server-game-action", (data) => {
