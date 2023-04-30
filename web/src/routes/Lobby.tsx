@@ -234,14 +234,16 @@ function Player({ player }: { player: IPlayer }) {
 function Map() {
   const navigate = useNavigate();
 
-  const map = useAppStore(state => state.lobby.map);
   const lobby = useAppStore(state => state.lobby);
+  const width = useGameStore(state => state.data.width);
+  const height = useGameStore(state => state.data.height);
+  const seed = useGameStore(state => state.data.seed);
 
   const [modified, setMofidied] = useState(false);
 
-  const [debouncedWidth] = useDebouncedValue(map.width, 250);
-  const [debouncedHeight] = useDebouncedValue(map.height, 250);
-  const [debouncedSeed] = useDebouncedValue(map.seed, 250);
+  const [debouncedWidth] = useDebouncedValue(width, 250);
+  const [debouncedHeight] = useDebouncedValue(height, 250);
+  const [debouncedSeed] = useDebouncedValue(seed, 250);
 
   useEffect(() => {
     // When player joins a lobby, lobby sends width, height & seed,
@@ -259,17 +261,17 @@ function Map() {
 
   const onChangeWidth = (value: number | "") => {
     setMofidied(true);
-    useAppStore.setState(s => { s.lobby.map.width = value || 10 });
+    useGameStore.setState(s => { s.data.width = value || 10 });
   }
 
   const onChangeHeight = (value: number | "") => {
     setMofidied(true);
-    useAppStore.setState(s => { s.lobby.map.height = value || 10 });
+    useGameStore.setState(s => { s.data.height = value || 10 });
   }
 
   const onChangeSeed = (value: number | "") => {
     setMofidied(true);
-    useAppStore.setState(s => { s.lobby.map.seed = value || Date.now() });
+    useGameStore.setState(s => { s.data.seed = value || Date.now() });
   }
 
   const onClickPreview = () => { navigate("/lobby-preview") }
@@ -279,15 +281,15 @@ function Map() {
       <Title order={4}>Map Settings</Title>
 
       <Flex align="center" justify="space-between" gap="md">
-        Width: <NumberInput value={map.width} onChange={onChangeWidth} disabled={!lobby.owner} min={5} max={25} />
+        Width: <NumberInput value={width} onChange={onChangeWidth} disabled={!lobby.owner} min={5} max={25} />
       </Flex>
 
       <Flex align="center" justify="space-between" gap="md">
-        Height: <NumberInput value={map.height} onChange={onChangeHeight} disabled={!lobby.owner} min={5} max={25} />
+        Height: <NumberInput value={height} onChange={onChangeHeight} disabled={!lobby.owner} min={5} max={25} />
       </Flex>
 
       <Flex align="center" justify="space-between" gap="md">
-        Seed: <NumberInput value={map.seed} onChange={onChangeSeed} disabled={!lobby.owner} />
+        Seed: <NumberInput value={seed} onChange={onChangeSeed} disabled={!lobby.owner} />
       </Flex>
 
       <Button onClick={onClickPreview}>Preview</Button>

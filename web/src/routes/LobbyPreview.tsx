@@ -14,14 +14,10 @@ export default function LobbyPreview() {
     const online = useAppStore.getState().lobby.online;
     const owner = useAppStore.getState().lobby.owner;
 
-    const w = useAppStore.getState().lobby.map.width;
-    const h = useAppStore.getState().lobby.map.height;
-    const seed = useAppStore.getState().lobby.map.seed;
-    const info = { w, h, seed };
-
     useGameStore.setState(s => {
       if (s.data.tiles.length !== 0) return;
-      if (!online) game.play.generate(s.data, { w, h, seed });
+      const info = { w: s.data.width, h: s.data.height, seed: s.data.seed };
+      if (!online) game.play.generate(s.data, info);
       else if (online && owner) socketio.emit("client-game-action", { id: ActionId.Generate, info });
     });
   }, []);
@@ -60,14 +56,11 @@ function Footer() {
   const onClickGenerate = () => {
     const online = useAppStore.getState().lobby.online;
 
-    // Generate new seed on every map generation
-    const map = { ...useAppStore.getState().lobby.map, seed: Date.now() };
-
-    useAppStore.setState(s => { s.lobby.map = map });
-
     useGameStore.setState(s => {
-      const info = { w: map.width, h: map.height, seed: map.seed }
-      if (online) socketio.emit("client-game-action", { id: ActionId.Generate, info })
+      // Generate new seed on every map generation
+      const seed = Date.now();
+      const info = { w: s.data.width, h: s.data.height, seed };
+      if (online) socketio.emit("client-game-action", { id: ActionId.Generate, info });
       else game.play.generate(s.data, info);
     });
   }

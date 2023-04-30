@@ -36,10 +36,6 @@ socketio.on("server-create-lobby", (data) => {
     s.lobby.players = [
       { id: data.playerId, name: data.playerName, country: CountryId.None, isAdmin: true }
     ];
-
-    s.lobby.map.width = data.w;
-    s.lobby.map.height = data.h;
-    s.lobby.map.seed = data.seed;
   });
 
   useGameStore.setState(s => {
@@ -65,10 +61,6 @@ socketio.on("server-join-lobby", (data) => {
 
       s.lobby.playerId = data?.playerId;
       s.lobby.lobbyId = data?.lobbyId;
-
-      if (data?.w !== undefined) s.lobby.map.width = data.w;
-      if (data?.h !== undefined) s.lobby.map.height = data.h;
-      if (data?.seed !== undefined) s.lobby.map.seed = data.seed;
 
       // If successfully joined to the lobby, set redirect to "/lobby"
       if (data?.lobbyId) s.redirect = "/lobby";
@@ -109,22 +101,17 @@ socketio.on("server-leave-lobby", (data) => {
 });
 
 socketio.on("server-lobby-update", (data) => {
+  if (!data) return;
+
   // Lobby is made offline, reset lobby
-  if (data !== undefined && !data.online) {
+  if (data.online !== undefined && !data.online) {
     useAppStore.getState().resetLobby();
     return;
   }
 
-  useAppStore.setState(s => {
-    if (data?.w) s.lobby.map.width = data.w;
-    if (data?.h) s.lobby.map.height = data.h;
-    if (data?.seed) s.lobby.map.seed = data.seed;
-  });
-
   useGameStore.setState(s => {
-    const { width, height, seed } = useAppStore.getState().lobby.map;
-    s.data.rng = createSeedRandom(seed);
-    game.play.generate(s.data, { w: width, h: height, seed });
+    if (data.w === undefined || data.h === undefined || data.seed === undefined) return;
+    game.play.generate(s.data, { w: data.w, h: data.h, seed: data.seed });
   });
 });
 

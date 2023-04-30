@@ -29,12 +29,6 @@ export interface AppStoreState {
 
     players: IPlayer[];
 
-    map: {
-      width: number;
-      height: number;
-      seed: number;
-    }
-
     messages: { playerId: string, msg: string }[];
     message: string;
     lastSeenMessage: number | undefined;
@@ -65,12 +59,6 @@ const initialState: AppStoreState = {
     players: [
       { id: util.generateId(), name: "Player", country: CountryId.None, isAdmin: true },
     ],
-
-    map: {
-      width: 10,
-      height: 10,
-      seed: Date.now(),
-    },
 
     messages: [],
     message: "",
