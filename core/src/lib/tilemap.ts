@@ -33,7 +33,7 @@ function chooseOrigins(data: IGameData, rng: ISeedRandom) {
   for (let i = 0; i < data.countries.length; ++i) {
     data.tiles[origins[i]![0]!.x + origins[i]![0]!.y * data.width] = createTile(
       { x: origins[i]![0]!.x, y: origins[i]![0]!.y },
-      data.countries[i]!
+      data.countries[i]!.id
     );
   }
 
@@ -59,16 +59,16 @@ function chooseTiles(data: IGameData, origins: { x: number, y: number }[][]) {
 
       if (originY - 1 > -1 && !data.tiles[upIndex]) {
         origins[countryId]!.push({ x: originX, y: originY - 1 })
-        data.tiles[upIndex] = createTile({ x: originX, y: originY - 1 }, data.countries[countryId]!);
+        data.tiles[upIndex] = createTile({ x: originX, y: originY - 1 }, data.countries[countryId]!.id);
       } else if (originX + 1 < data.width && !data.tiles[rightIndex]) {
         origins[countryId]!.push({ x: originX + 1, y: originY })
-        data.tiles[rightIndex] = createTile({ x: originX + 1, y: originY }, data.countries[countryId]!);
+        data.tiles[rightIndex] = createTile({ x: originX + 1, y: originY }, data.countries[countryId]!.id);
       } else if (originY + 1 < data.height && !data.tiles[downIndex]) {
         origins[countryId]!.push({ x: originX, y: originY + 1 })
-        data.tiles[downIndex] = createTile({ x: originX, y: originY + 1 }, data.countries[countryId]!);
+        data.tiles[downIndex] = createTile({ x: originX, y: originY + 1 }, data.countries[countryId]!.id);
       } else if (originX - 1 > -1 && !data.tiles[leftIndex]) {
         origins[countryId]!.push({ x: originX - 1, y: originY })
-        data.tiles[leftIndex] = createTile({ x: originX - 1, y: originY }, data.countries[countryId]!);
+        data.tiles[leftIndex] = createTile({ x: originX - 1, y: originY }, data.countries[countryId]!.id);
       } else {
         origins[countryId]!.splice(0, 1);
       }

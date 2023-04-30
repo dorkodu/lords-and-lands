@@ -25,7 +25,7 @@ export function placeBannerActable(data: IGameData, info: Info): boolean {
   if (country.banners <= 0) return false;
 
   // If tile is not owned
-  if (tile.owner.id !== country.id) return false;
+  if (tile.owner !== country.id) return false;
 
   // If the tile is not nomad
   if (tile.type !== TileType.Nomad) return false;
@@ -70,7 +70,7 @@ export function placeBanner(data: IGameData, info: Info) {
     // If tile has a unit that is not own unit
     if (t.unit && t.unit.id !== country.id) return;
 
-    t.owner = country;
+    t.owner = country.id;
     t.type = TileType.Settled;
   });
 }

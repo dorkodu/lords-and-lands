@@ -1,11 +1,11 @@
+import { CountryId } from "../types/country_id";
 import { LandmarkId } from "../types/landmark_id";
 import { TileType } from "../types/tile_type";
-import { ICountry } from "./country";
 import { IUnit } from "./unit";
 
 export interface ITile {
   pos: { x: number, y: number };
-  owner: ICountry;
+  owner: CountryId;
 
   type: TileType;
   landmark: LandmarkId;

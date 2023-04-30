@@ -35,8 +35,8 @@ function serialize(data: IGameData): ISerializedGameData {
   return serialized;
 }
 
-function deserialize(data: IGameData, serialized: ISerializedGameData) {
-  data = createGameData();
+function deserialize(serialized: ISerializedGameData): IGameData {
+  const data = createGameData();
 
   data.width = serialized.w;
   data.height = serialized.h;
@@ -49,6 +49,8 @@ function deserialize(data: IGameData, serialized: ISerializedGameData) {
 
   data.countries = serialized.countries;
   data.tiles = serialized.tiles;
+
+  return data;
 }
 
 export const serializer = {

@@ -26,7 +26,7 @@ import UnitYellow from "@/assets/units/yellow.png";
 import { TileType } from "@core/types/tile_type";
 
 function getTileSrc(tile: ITile) {
-  switch (tile.owner.id) {
+  switch (tile.owner) {
     case CountryId.None:
       if (tile.type === TileType.Nomad) return TileNoneNomad;
       return TileNoneSettled;
