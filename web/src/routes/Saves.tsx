@@ -68,11 +68,12 @@ export default function Saves() {
 }
 
 function Save({ save, deleteSave }: { save: ISave, deleteSave: (name: string) => void }) {
-  const navigate = useNavigate();
-
   const formattedDate = useMemo(() => {
     return new Intl.DateTimeFormat("en", { dateStyle: "long", timeStyle: "short" }).format(save.date);
   }, [save]);
+
+  const navigate = useNavigate();
+  const lobby = useAppStore(state => state.lobby);
 
   const onClickDelete = () => {
     deleteSave(save.name);
@@ -101,7 +102,7 @@ function Save({ save, deleteSave }: { save: ISave, deleteSave: (name: string) =>
           <IconTrash />
         </ActionIcon>
 
-        <ActionIcon onClick={onClickPlay}>
+        <ActionIcon onClick={onClickPlay} disabled={!lobby.owner}>
           <IconDeviceGamepad2 />
         </ActionIcon>
       </Flex>
