@@ -122,7 +122,9 @@ function ChatMessage({ message, seen }: { message: { playerId: string, msg: stri
       >
         <TextParser text={playerIdToPlayer(message.playerId)?.name ?? "Player"} types={[PieceType.Emoji]} />
       </Text>
+
       <Text span>:&nbsp;</Text>
+
       <Text span style={wrapContent} color={seen ? "dimmed" : undefined}>
         <TextParser text={message.msg} types={[PieceType.Emoji]} />
       </Text>
