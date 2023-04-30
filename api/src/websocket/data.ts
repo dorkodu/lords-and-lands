@@ -166,9 +166,14 @@ function changeCountry(player: IPlayer, countryStr: string): { id: string, count
   return { id: player.id, country: newCountry };
 }
 
-function gameAction(player: IPlayer, action: { id: ActionId, info?: any }): boolean {
+function gameAction(player: IPlayer, action: { id: ActionId, info?: any }, seed: number): boolean {
   const lobby = player.lobby && data.lobbies[player.lobby];
   if (!lobby) return false;
+
+  // Create new rng at every action to prevent users from cheating
+  const oldRng = lobby.gameData.rng;
+  const newRng = createSeedRandom(seed);
+  lobby.gameData.rng = newRng;
 
   let actable = false;
 
@@ -232,6 +237,9 @@ function gameAction(player: IPlayer, action: { id: ActionId, info?: any }): bool
       game.play.moveUnit(lobby.gameData, parsedMoveUnit.info);
       break;
   }
+
+  // If action is not actable (and not acted), revert the rng
+  if (!actable) lobby.gameData.rng = oldRng;
 
   return actable;
 }

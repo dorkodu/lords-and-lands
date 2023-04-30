@@ -164,6 +164,10 @@ socketio.on("server-sync-state", () => {
 
 socketio.on("server-game-action", (data) => {
   if (!data) return;
-  useGameStore.setState(s => { game.parseAction(s.data, data) });
+  useGameStore.setState(s => {
+    // Server sends a new seed on every action to prevent cheating
+    s.data.rng = createSeedRandom(data.seed);
+    game.parseAction(s.data, { id: data.id, info: data.info });
+  });
 });
 // Game events \\

@@ -8,6 +8,7 @@ export const tilemap = {
 }
 
 function generate(data: IGameData) {
+  // Always create new seed random to make sure same seed always generate same tilemap
   const rng = createSeedRandom(data.seed);
 
   const origins = chooseOrigins(data, rng);

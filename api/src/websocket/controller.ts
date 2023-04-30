@@ -1,3 +1,4 @@
+import { crypto } from "../lib/crypto";
 import { INetworkPlayer } from "../types/network_player";
 import { IPlayer } from "../types/player";
 import { dataAPI } from "./data";
@@ -133,11 +134,12 @@ function gameAction(player: IPlayer, data: Parameters<ClientToServerEvents["clie
   if (!parsed.success) return void player.socket.emit("server-game-action", undefined);
   const parsedData = parsed.data;
 
-  const actable = dataAPI.gameAction(player, parsedData);
+  const seed = crypto.seed();
+  const actable = dataAPI.gameAction(player, parsedData, seed);
 
   if (actable) {
     const players = dataAPI.getLobbyPlayers(player.lobby);
-    players.forEach(p => p.socket.emit("server-game-action", parsedData));
+    players.forEach(p => p.socket.emit("server-game-action", { id: parsedData.id, info: parsedData.info, seed }));
   }
   else {
     player.socket.emit("server-game-action", undefined);

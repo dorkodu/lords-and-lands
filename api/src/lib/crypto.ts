@@ -7,6 +7,12 @@ function id() {
   return string;
 }
 
+function seed() {
+  // 281474976710655 = ( 2^48 ) - 1
+  return cyptography.randomInt(281474976710655);
+}
+
 export const crypto = {
   id,
+  seed,
 }

@@ -45,7 +45,7 @@ export interface ServerToClientEvents {
   "server-chat-message": (data: { id: string; msg: string } | undefined) => void;
   "server-sync-state": () => void;
 
-  "server-game-action": (data: { id: ActionId, info?: any } | undefined) => void;
+  "server-game-action": (data: { id: ActionId, info?: any, seed: number } | undefined) => void;
 }
 
 /**
