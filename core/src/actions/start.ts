@@ -13,6 +13,9 @@ export function startActable(data: IGameData, _info: Info): boolean {
   // If less than 2 non-none countries exist
   if (data.countries.filter(c => c.id !== CountryId.None).length < 2) return false;
 
+  // If no tiles exist
+  if (data.tiles.length === 0) return false;
+
   return true;
 }
 
