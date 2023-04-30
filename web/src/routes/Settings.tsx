@@ -6,16 +6,14 @@ export default function Settings() {
 
   return (
     <Flex direction="column" align="center" gap="md">
-      <Flex align="center" gap="md">
-        <TextInput
-          label="Player Name"
-          description="Between 1 and 32 characters."
-          placeholder="Player Name..."
-          maxLength={32}
-          value={playerName}
-          onChange={(ev) => setPlayerName(ev.target.value)}
-        />
-      </Flex>
+      <TextInput
+        label="Player Name"
+        description="Between 1 and 32 characters."
+        placeholder="Player Name..."
+        maxLength={32}
+        value={playerName}
+        onChange={(ev) => setPlayerName(ev.target.value)}
+      />
     </Flex>
   )
 }
