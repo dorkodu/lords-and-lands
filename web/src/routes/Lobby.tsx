@@ -97,7 +97,7 @@ export default function Lobby() {
             </ActionIcon>
           </Flex>
         </Flex> :
-        <Text>&bull; lobby offline &bull;</Text>
+        <Text>&bull; Lobby Offline &bull;</Text>
       }
 
       <Flex gap="md">
