@@ -105,7 +105,7 @@ export default function Lobby() {
           <IconSettings />
         </ActionIcon>
 
-        <ActionIcon onClick={onClickSaves}>
+        <ActionIcon onClick={onClickSaves} disabled={!lobby.owner}>
           <IconDeviceFloppy />
         </ActionIcon>
 
