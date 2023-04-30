@@ -39,8 +39,10 @@ export default function Lobby() {
   const { start: resetShare } = useTimeout(() => setShare(false), 500);
 
   const toggleLobbyStatus = () => {
+    const online = useAppStore.getState().lobby.online;
+    useAppStore.getState().resetLobby();
     useAppStore.setState(s => {
-      s.lobby.online = !s.lobby.online;
+      s.lobby.online = !online;
       if (s.lobby.online) socketio.emit("client-create-lobby", { playerName });
       else socketio.emit("client-lobby-update", { online: false });
     });

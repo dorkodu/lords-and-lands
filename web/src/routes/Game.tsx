@@ -15,8 +15,12 @@ export default function Game() {
     useGameStore.setState(s => {
       if (s.data.running) return;
 
-      if (online) socketio.emit("client-game-action", { id: ActionId.Start, info: {} });
-      else game.play.start(s.data, {});
+      if (online) {
+        socketio.emit("client-game-action", { id: ActionId.Start, info: {} });
+      }
+      else {
+        game.play.start(s.data, {});
+      }
     });
 
     useGameStore.setState(s => {

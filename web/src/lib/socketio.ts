@@ -46,43 +46,40 @@ socketio.on("server-create-lobby", (data) => {
     s.data.width = data.w;
     s.data.height = data.h;
     s.data.seed = data.seed;
-    s.data.rng = createSeedRandom(data.seed);
   });
 });
 
 socketio.on("server-join-lobby", (data) => {
-  useAppStore.setState(s => {
-    // If joining a lobby
-    if (!s.lobby.lobbyId) {
+  let joining = !useAppStore.getState().lobby.lobbyId;
+
+  if (!joining) {
+    useAppStore.setState(s => {
+      s.lobby.players.push(...data?.players ?? []);
+    });
+  }
+  else {
+    useAppStore.setState(s => {
       s.lobby.players = data?.players ?? [];
       s.lobby.owner = false;
       s.lobby.online = true;
-    }
-    // If already in a lobby but a new player is joining
-    else {
-      s.lobby.players.push(...data?.players ?? []);
-      return;
-    }
 
-    s.lobby.playerId = data?.playerId;
-    s.lobby.lobbyId = data?.lobbyId;
+      s.lobby.playerId = data?.playerId;
+      s.lobby.lobbyId = data?.lobbyId;
 
-    if (data?.w !== undefined) s.lobby.map.width = data.w;
-    if (data?.h !== undefined) s.lobby.map.height = data.h;
-    if (data?.seed !== undefined) s.lobby.map.seed = data.seed;
+      if (data?.w !== undefined) s.lobby.map.width = data.w;
+      if (data?.h !== undefined) s.lobby.map.height = data.h;
+      if (data?.seed !== undefined) s.lobby.map.seed = data.seed;
 
-    // If successfully joined to the lobby, set redirect to "/lobby"
-    if (data?.lobbyId) s.redirect = "/lobby";
-  });
+      // If successfully joined to the lobby, set redirect to "/lobby"
+      if (data?.lobbyId) s.redirect = "/lobby";
+    });
 
-  useGameStore.setState(s => {
-    if (data?.w !== undefined) s.data.width = data.w;
-    if (data?.h !== undefined) s.data.height = data.h;
-    if (data?.seed !== undefined) {
-      s.data.seed = data.seed;
-      s.data.rng = createSeedRandom(data.seed);
-    }
-  });
+    useGameStore.setState(s => {
+      if (data?.w !== undefined) s.data.width = data.w;
+      if (data?.h !== undefined) s.data.height = data.h;
+      if (data?.seed !== undefined) s.data.seed = data.seed;
+    });
+  }
 });
 
 socketio.on("server-leave-lobby", (data) => {
