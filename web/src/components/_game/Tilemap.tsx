@@ -163,7 +163,12 @@ function TileModifier({ data, country, tile }: { data: IGameData, country?: ICou
     <Flex
       align="center"
       justify="center"
-      style={{ position: "absolute", zIndex: 10, width: 128, textShadow: "2px 2px 2px rgba(0, 0, 0, 1)" }}
+      style={{
+        position: "absolute",
+        zIndex: 10,
+        width: 128,
+        textShadow: "-2px -2px 0 rgba(0, 0, 0, 0.5), 2px -2px 0 rgba(0, 0, 0, 0.5), -2px 2px 0 rgba(0, 0, 0, 0.5), 2px 2px 0 rgba(0, 0, 0, 0.5)",
+      }}
     >
       <Text weight="bold" size={32} color="white">{formatter.format(modifier)}</Text>
       {dice}
