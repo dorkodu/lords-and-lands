@@ -14,6 +14,9 @@ const message = z.string().trim().min(1).max(constants.chatMessageLength);
 
 const pos = z.object({ x: z.number(), y: z.number() }).strict();
 
+const width = z.number().min(constants.minMapWidth).max(constants.maxMapWidth);
+const height = z.number().min(constants.minMapHeight).max(constants.maxMapHeight);
+
 export const createLobbySchema = z.object({
   playerName: playerName,
 }).strict();
@@ -25,8 +28,8 @@ export const joinLobbySchema = z.object({
 
 export const lobbyUpdateSchema = z.object({
   online: z.boolean().optional(),
-  w: z.number().optional(),
-  h: z.number().optional(),
+  w: width.optional(),
+  h: height.optional(),
   seed: z.number().optional(),
 }).strict();
 
@@ -39,8 +42,8 @@ export const chatMessageSchema = z.object({
 }).strict();
 
 export const syncStateSchema = z.object({
-  w: z.number(),
-  h: z.number(),
+  w: width,
+  h: height,
 
   mapSeed: z.number(),
   rngSeed: z.number(),
@@ -49,7 +52,7 @@ export const syncStateSchema = z.object({
 
   countries: z.array(
     z.object({ id: z.number(), banners: z.number() }).strict(),
-  ),
+  ).min(constants.minCountries).max(constants.maxCountries),
   tiles: z.array(
     z.object({
       pos: pos,
@@ -63,7 +66,8 @@ export const syncStateSchema = z.object({
         moved: z.boolean()
       }).strict().optional(),
     }).strict()
-  ),
+  ).min(constants.minTiles).max(constants.maxTiles)
+  ,
 }).strict();
 
 export const gameActionSchema = z.object({
@@ -95,8 +99,8 @@ export const actionNextTurnSchema = z.object({
 }).strict();
 
 export const actionGenerateSchema = z.object({
-  w: z.number(),
-  h: z.number(),
+  w: width,
+  h: height,
   seed: z.number(),
 }).strict();
 
