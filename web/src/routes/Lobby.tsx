@@ -126,6 +126,7 @@ function Players() {
 
 function Player({ player }: { player: IPlayer }) {
   const lobby = useAppStore(state => state.lobby);
+  const self = lobby.playerId === player.id;
 
   const onClickCountry = () => {
     // If not playing offline and player is not current player
@@ -197,7 +198,7 @@ function Player({ player }: { player: IPlayer }) {
         </Flex>
 
         <Flex align="center" justify="flex-end" gap="xs">
-          {lobby.owner && <ActionIcon size={24} onClick={onClickBan}><IconBan /></ActionIcon>}
+          {!self && !player.isAdmin && lobby.owner && <ActionIcon size={24} onClick={onClickBan}><IconBan /></ActionIcon>}
           {player.isAdmin && <IconStarFilled />}
         </Flex>
 
