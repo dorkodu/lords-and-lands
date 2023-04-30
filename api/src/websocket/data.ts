@@ -40,6 +40,9 @@ function removePlayer(player: IPlayer) {
   // If removed player was the last player in the lobby, remove lobby
   if (lobby && Object.values(lobby.players).length === 1) removeLobby(player);
 
+  // Remove country of the player that left
+  if (lobby) game.play.removeCountry(lobby.gameData, { country: player.country });
+
   // Delete player from lobby.players if exists
   if (lobby) delete lobby.players[player.id];
 
