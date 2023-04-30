@@ -4,11 +4,15 @@ import { Outlet, ScrollRestoration, useLocation, useNavigate } from "react-route
 import { useAppStore } from "./stores/appStore";
 import { theme } from "./styles/theme";
 import "./lib/socketio";
+import { useGameStore } from "./stores/gameStore";
+import { game } from "@core/game";
+import { assets } from "./assets/assets";
 
 export default function App() {
   const navigate = useNavigate();
   const location = useLocation();
   const redirect = useAppStore(state => state.redirect);
+  const turn = useGameStore(state => state.data.turn.type);
 
   useEffect(() => {
     if (location.pathname.indexOf("/chat") !== -1) useAppStore.setState(s => { s.route = "chat" });
@@ -23,6 +27,13 @@ export default function App() {
   }, [location.pathname]);
 
   useEffect(() => { redirect && navigate(redirect) }, [redirect]);
+
+  useEffect(() => {
+    let country = game.util.turnTypeToCountryId(turn);
+    const icon = document.querySelector('link[rel="icon"') as HTMLLinkElement | null;
+    if (!icon) return;
+    icon.href = assets.countryIdToUnitSrc(country) ?? icon.href;
+  }, [turn]);
 
   return (
     <>

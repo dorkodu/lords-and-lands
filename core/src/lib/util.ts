@@ -25,6 +25,16 @@ function turnTypeToCountry(data: IGameData, type: TurnType | undefined): ICountr
   }
 }
 
+function turnTypeToCountryId(type: TurnType | undefined): CountryId {
+  switch (type) {
+    case TurnType.CountryGreen: return CountryId.Green;
+    case TurnType.CountryPurple: return CountryId.Purple;
+    case TurnType.CountryRed: return CountryId.Red;
+    case TurnType.CountryYellow: return CountryId.Yellow;
+    default: return CountryId.None;
+  }
+}
+
 function compareTile(t1: ITile | undefined, t2: ITile | undefined): boolean {
   if (!t1 || !t2) return false;
   if (t1.pos.x === t2.pos.x && t1.pos.y === t2.pos.y) return true;
@@ -150,6 +160,7 @@ function getUnitModifier(data: IGameData, countryId: CountryId, pos: { x: number
 export const util = {
   countryToTurnType,
   turnTypeToCountry,
+  turnTypeToCountryId,
 
   compareTile,
 
