@@ -159,7 +159,8 @@ socketio.on("server-chat-message", (data) => {
 });
 
 socketio.on("server-sync-state", (data) => {
-  console.log(data);
+  if (!data) return;
+  useGameStore.setState(s => { s.data = game.serializer.deserialize(data.state) });
 });
 
 socketio.on("server-game-action", (data) => {

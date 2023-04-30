@@ -167,8 +167,19 @@ function changeCountry(player: IPlayer, country: CountryId): { id: string, count
   return { id: player.id, country: newCountry };
 }
 
-function syncState(_player: IPlayer, _state: ISerializedGameData) {
+function syncState(player: IPlayer, state: ISerializedGameData): boolean {
+  const lobby = player.lobby && data.lobbies[player.lobby];
+  if (!lobby) return false;
 
+  // If game is running, can't sync state
+  if (lobby.gameData.running) return false;
+
+  // Can't sync state if not admin
+  if (lobby.adminId !== player.id) return false;
+
+  // Deserialize & return true
+  lobby.gameData = game.serializer.deserialize(state);
+  return true;
 }
 
 function gameAction(player: IPlayer, action: { id: ActionId, info?: any }, seed: number): boolean {

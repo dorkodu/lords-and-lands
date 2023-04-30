@@ -9,7 +9,7 @@ export interface ITile {
 
   type: TileType;
   landmark: LandmarkId;
-  unit: IUnit | undefined;
+  unit?: IUnit;
 }
 
 export function createTile(pos: ITile["pos"], owner: ITile["owner"]): ITile {

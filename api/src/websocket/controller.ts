@@ -2,7 +2,7 @@ import { crypto } from "../lib/crypto";
 import { INetworkPlayer } from "../types/network_player";
 import { IPlayer } from "../types/player";
 import { dataAPI } from "./data";
-import { changeCountrySchema, chatMessageSchema, createLobbySchema, gameActionSchema, joinLobbySchema, lobbyUpdateSchema } from "./schemas";
+import { changeCountrySchema, chatMessageSchema, createLobbySchema, gameActionSchema, joinLobbySchema, lobbyUpdateSchema, syncStateSchema } from "./schemas";
 import { ClientToServerEvents } from "./types";
 
 function createLobby(player: IPlayer, data: Parameters<ClientToServerEvents["client-create-lobby"]>[0]): void {
@@ -125,8 +125,20 @@ function chatMessage(player: IPlayer, data: Parameters<ClientToServerEvents["cli
   players.forEach(p => p.socket.emit("server-chat-message", { id: player.id, msg: parsedData.message }));
 }
 
-function syncState(_player: IPlayer, _data: Parameters<ClientToServerEvents["client-sync-state"]>[0]) {
+function syncState(player: IPlayer, data: Parameters<ClientToServerEvents["client-sync-state"]>[0]): void {
+  const parsed = syncStateSchema.safeParse(data);
+  if (!parsed.success) return void player.socket.emit("server-sync-state", undefined);
+  const parsedData = parsed.data;
 
+  const status = dataAPI.syncState(player, data);
+
+  if (status) {
+    const players = dataAPI.getLobbyPlayers(player.lobby);
+    players.forEach(p => p.socket.emit("server-sync-state", { state: parsedData }));
+  }
+  else {
+    player.socket.emit("server-sync-state", undefined);
+  }
 }
 
 function gameAction(player: IPlayer, data: Parameters<ClientToServerEvents["client-game-action"]>[0]): void {
