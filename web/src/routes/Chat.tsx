@@ -10,6 +10,9 @@ import { Virtuoso } from 'react-virtuoso'
 
 // TODO: Make styles re-usable, this is copied from layouts/DefaultLayout.tsx
 const useStyles = createStyles((theme) => ({
+  main: {
+    marginBottom: 64,
+  },
   footer: {
     position: "fixed",
     bottom: 0,
@@ -78,6 +81,7 @@ export default function Chat() {
         itemContent={(index, message) => (
           <ChatMessage message={message} seen={index <= memoizedIndex} key={index} />
         )}
+        className={classes.main}
       />
 
       <Card className={classes.footer}>
