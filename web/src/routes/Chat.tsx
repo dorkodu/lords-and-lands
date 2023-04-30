@@ -4,7 +4,7 @@ import { wrapContent } from "@/styles/css";
 import { ActionIcon, Card, createStyles, Flex, Text, TextInput } from "@mantine/core";
 import { getHotkeyHandler } from "@mantine/hooks";
 import { IconArrowLeft, IconSend } from "@tabler/icons-react";
-import React from "react";
+import React, { useEffect, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { Virtuoso } from 'react-virtuoso'
 
@@ -38,6 +38,8 @@ export default function Chat() {
 
   const messages = useAppStore(state => state.lobby.messages);
   const message = useAppStore(state => state.lobby.message);
+  const lastSeenMessage = useAppStore(state => state.lobby.lastSeenMessage) ?? -1;
+  const memoizedIndex = useMemo(() => lastSeenMessage, []);
 
   const goBack = () => { navigate(-1) }
 
@@ -46,8 +48,15 @@ export default function Chat() {
 
     const online = useAppStore.getState().lobby.online;
 
-    if (online) socketio.emit("client-chat-message", { message });
-    else useAppStore.setState(s => { s.lobby.messages.push({ playerId: "player", msg: message }) })
+    if (online) {
+      socketio.emit("client-chat-message", { message });
+    }
+    else {
+      useAppStore.setState(s => {
+        s.lobby.messages.push({ playerId: "player", msg: message });
+        s.lobby.lastSeenMessage = s.lobby.messages.length - 1;
+      });
+    }
 
     useAppStore.setState(s => { s.lobby.message = "" });
   }
@@ -56,15 +65,19 @@ export default function Chat() {
     useAppStore.setState(s => { s.lobby.message = ev.target.value });
   }
 
+  useEffect(() => {
+    return () => useAppStore.setState(s => { s.lobby.lastSeenMessage = s.lobby.messages.length - 1 });
+  }, []);
+
   return (
     <Flex direction="column">
       <Virtuoso
         useWindowScroll
-        // TODO: Set index to the last seen message
-        // TODO: Show new messages (never seen before) with a different color
-        initialTopMostItemIndex={0}
+        initialTopMostItemIndex={memoizedIndex < 0 ? 0 : memoizedIndex}
         data={messages}
-        itemContent={(index, message) => <ChatMessage message={message} key={index} />}
+        itemContent={(index, message) => (
+          <ChatMessage message={message} seen={index <= memoizedIndex} key={index} />
+        )}
       />
 
       <Card className={classes.footer}>
@@ -91,7 +104,7 @@ export default function Chat() {
   )
 }
 
-function ChatMessage({ message }: { message: { playerId: string, msg: string } }) {
+function ChatMessage({ message, seen }: { message: { playerId: string, msg: string }, seen?: boolean }) {
   const playerIdToPlayer = useAppStore(state => state.playerIdToPlayer);
   const playerIdToColor = useAppStore(state => state.playerIdToColor);
 
@@ -105,7 +118,7 @@ function ChatMessage({ message }: { message: { playerId: string, msg: string } }
         {playerIdToPlayer(message.playerId)?.name ?? "Player"}
       </Text>
       <Text span>:&nbsp;</Text>
-      <Text span style={wrapContent}>{message.msg}</Text>
+      <Text span style={wrapContent} color={seen ? "dimmed" : undefined}>{message.msg}</Text>
     </>
   )
 }

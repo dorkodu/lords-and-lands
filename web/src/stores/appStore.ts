@@ -36,6 +36,7 @@ export interface AppStoreState {
 
     messages: { playerId: string, msg: string }[];
     message: string;
+    lastSeenMessage: number | undefined;
   }
 }
 
@@ -44,6 +45,8 @@ export interface AppStoreAction {
 
   playerIdToPlayer: (playerId: string) => IPlayer | undefined;
   playerIdToColor: (playerId: string) => string | undefined;
+
+  showMessageIndicator: () => boolean;
 }
 
 const initialState: AppStoreState = {
@@ -69,6 +72,7 @@ const initialState: AppStoreState = {
 
     messages: [],
     message: "",
+    lastSeenMessage: undefined,
   },
 }
 
@@ -97,6 +101,13 @@ export const useAppStore = create(
       }
 
       return undefined;
+    },
+
+    showMessageIndicator: () => {
+      const seenIndex = get().lobby.lastSeenMessage;
+      const lastIndex = get().lobby.messages.length - 1;
+      if (lastIndex < 0) return false;
+      return seenIndex === undefined || seenIndex !== lastIndex;
     },
   }))
 );

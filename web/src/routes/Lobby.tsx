@@ -7,7 +7,6 @@ import {
   IconCopy,
   IconDeviceFloppy,
   IconDeviceGamepad2,
-  IconMessageCircle2,
   IconRobot,
   IconSettings,
   IconStarFilled
@@ -24,6 +23,7 @@ import { useDebouncedValue } from "@mantine/hooks";
 import { useEffect, useState } from "react";
 import { socketio } from "@/lib/socketio";
 import { useSettings } from "@/components/hooks";
+import CustomMessageIcon from "@/components/custom/CustomMessageIcon";
 
 export default function Lobby() {
   const navigate = useNavigate();
@@ -79,7 +79,7 @@ export default function Lobby() {
         </ActionIcon>
 
         <ActionIcon onClick={onClickChat}>
-          <IconMessageCircle2 />
+          <CustomMessageIcon />
         </ActionIcon>
 
         <ActionIcon onClick={onClickGame}>

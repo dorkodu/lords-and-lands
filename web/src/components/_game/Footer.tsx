@@ -5,8 +5,9 @@ import { game } from "@core/game";
 import { ActionId } from "@core/types/action_id";
 import { Flex, createStyles, ActionIcon } from "@mantine/core";
 import { useHotkeys } from "@mantine/hooks";
-import { IconArrowRight, IconMessageCircle2, IconWorld } from "@tabler/icons-react";
+import { IconArrowRight, IconWorld } from "@tabler/icons-react";
 import { useNavigate } from "react-router-dom";
+import CustomMessageIcon from "../custom/CustomMessageIcon";
 
 const useStyles = createStyles((_theme) => ({
   footer: {
@@ -66,7 +67,7 @@ export default function Footer() {
       </ActionIcon>
 
       <ActionIcon variant="filled" size={32} onClick={onClickChat}>
-        <IconMessageCircle2 />
+        <CustomMessageIcon />
       </ActionIcon>
 
       <ActionIcon
