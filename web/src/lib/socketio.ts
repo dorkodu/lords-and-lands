@@ -5,6 +5,7 @@ import { useGameStore } from "@/stores/gameStore";
 import { CountryId } from "@core/types/country_id";
 import { game } from "@core/game";
 import { createSeedRandom } from "@core/lib/seed_random";
+import { createGameData } from "@core/gamedata";
 
 export const socketio: Socket<ServerToClientEvents, ClientToServerEvents> = io(
   { path: "/api/socket", transports: ["websocket"] }
@@ -109,8 +110,14 @@ socketio.on("server-lobby-update", (data) => {
     return;
   }
 
+  const players = useAppStore.getState().lobby.players;
+
   useGameStore.setState(s => {
     if (data.w === undefined || data.h === undefined || data.seed === undefined) return;
+
+    // Reset game date, apply countries of the current player in the lobby & generate
+    s.data = createGameData();
+    players.forEach(p => game.play.addCountry(s.data, { country: p.country }));
     game.play.generate(s.data, { w: data.w, h: data.h, seed: data.seed });
   });
 });
