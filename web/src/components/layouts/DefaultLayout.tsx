@@ -58,6 +58,9 @@ export default function DefaultLayout() {
 
         navigate("/main-menu");
         break;
+      default:
+        navigate("/main-menu");
+        break;
     }
   }
 

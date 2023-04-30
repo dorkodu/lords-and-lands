@@ -46,11 +46,11 @@ export const router = createBrowserRouter(
         <Route path="/chat" element={Chat} />
         <Route path="/settings" element={Settings} />
         <Route path="/saves" element={Saves} />
-      </Route>
 
-      {/* Error routes & catch all */}
-      <Route path="/404" element={NotFound} />
-      <Route path="*" element={<Navigate to="/404" />} />
+        {/* Error routes & catch all */}
+        <Route path="/404" element={NotFound} />
+        <Route path="*" element={<Navigate to="/404" />} />
+      </Route>
     </Route>
   )
 )
