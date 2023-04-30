@@ -16,6 +16,7 @@
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.10.0",
+    "react-virtuoso": "^4.3.3",
     "react-zoom-pan-pinch": "^3.0.7",
     "socket.io-client": "^4.6.1",
     "twemoji": "^14.0.2",

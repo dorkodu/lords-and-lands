@@ -154,8 +154,11 @@ socketio.on("server-change-country", (data) => {
   });
 });
 
-socketio.on("server-chat-message", () => {
+socketio.on("server-chat-message", (data) => {
+  if (!data) return;
 
+  const { id, msg } = data;
+  useAppStore.setState(s => { s.lobby.messages.push({ playerId: id, msg: msg }) });
 });
 
 socketio.on("server-sync-state", () => {

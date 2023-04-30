@@ -14,6 +14,7 @@ specifiers:
   react: ^18.2.0
   react-dom: ^18.2.0
   react-router-dom: ^6.10.0
+  react-virtuoso: ^4.3.3
   react-zoom-pan-pinch: ^3.0.7
   socket.io-client: ^4.6.1
   twemoji: ^14.0.2
@@ -37,6 +38,7 @@ dependencies:
   react: 18.2.0
   react-dom: 18.2.0_react@18.2.0
   react-router-dom: 6.10.0_biqbaboplfbrettd7655fr4n2y
+  react-virtuoso: 4.3.3_biqbaboplfbrettd7655fr4n2y
   react-zoom-pan-pinch: 3.0.7_biqbaboplfbrettd7655fr4n2y
   socket.io-client: 4.6.1
   twemoji: 14.0.2
@@ -3488,6 +3490,17 @@ packages:
       use-latest: 1.2.1_3mjolpizrsjgnt7s4ahgoveqvu
     transitivePeerDependencies:
       - '@types/react'
+    dev: false
+
+  /react-virtuoso/4.3.3_biqbaboplfbrettd7655fr4n2y:
+    resolution: {integrity: sha512-x0DeGmVAVOVaTXRMG7jzrHBwK7+dkt7n0G3tNmZXphQUBgkVBYuZoaJltQeZGFN42++3XvrgwStKCtmzgMJ0lA==}
+    engines: {node: '>=10'}
+    peerDependencies:
+      react: '>=16 || >=17 || >= 18'
+      react-dom: '>=16 || >=17 || >= 18'
+    dependencies:
+      react: 18.2.0
+      react-dom: 18.2.0_react@18.2.0
     dev: false
 
   /react-zoom-pan-pinch/3.0.7_biqbaboplfbrettd7655fr4n2y:

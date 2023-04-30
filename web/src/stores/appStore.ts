@@ -33,11 +33,17 @@ export interface AppStoreState {
       height: number;
       seed: number;
     }
+
+    messages: { playerId: string, msg: string }[];
+    message: string;
   }
 }
 
 export interface AppStoreAction {
   resetLobby: () => void;
+
+  playerIdToPlayer: (playerId: string) => IPlayer | undefined;
+  playerIdToColor: (playerId: string) => string | undefined;
 }
 
 const initialState: AppStoreState = {
@@ -60,16 +66,37 @@ const initialState: AppStoreState = {
       height: 10,
       seed: Date.now(),
     },
+
+    messages: [],
+    message: "",
   },
 }
 
 export const useAppStore = create(
-  immer<AppStoreState & AppStoreAction>((set, _get) => ({
+  immer<AppStoreState & AppStoreAction>((set, get) => ({
     ...initialState,
 
     resetLobby: () => {
       set(s => { s.lobby = { ...initialState.lobby } });
       useGameStore.setState(s => { s.data = createGameData() });
+    },
+
+    playerIdToPlayer: (playerId) => {
+      const player = get().lobby.players.filter(p => p.id === playerId)[0];
+      return player;
+    },
+
+    playerIdToColor: (playerId) => {
+      const player = get().playerIdToPlayer(playerId);
+
+      switch (player?.country) {
+        case CountryId.Green: return "#37D98C";
+        case CountryId.Purple: return "#9179FF";
+        case CountryId.Red: return "#FC5C65";
+        case CountryId.Yellow: return "#FFB600";
+      }
+
+      return undefined;
     },
   }))
 );

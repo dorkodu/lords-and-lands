@@ -1,7 +1,7 @@
 import { INetworkPlayer } from "../types/network_player";
 import { IPlayer } from "../types/player";
 import { dataAPI } from "./data";
-import { changeCountrySchema, createLobbySchema, gameActionSchema, joinLobbySchema, lobbyUpdateSchema } from "./schemas";
+import { changeCountrySchema, chatMessageSchema, createLobbySchema, gameActionSchema, joinLobbySchema, lobbyUpdateSchema } from "./schemas";
 import { ClientToServerEvents } from "./types";
 
 function createLobby(player: IPlayer, data: Parameters<ClientToServerEvents["client-create-lobby"]>[0]): void {
@@ -115,8 +115,13 @@ function changeCountry(player: IPlayer, data: Parameters<ClientToServerEvents["c
   }
 }
 
-function chatMessage(_player: IPlayer, _data: Parameters<ClientToServerEvents["client-chat-message"]>[0]) {
+function chatMessage(player: IPlayer, data: Parameters<ClientToServerEvents["client-chat-message"]>[0]): void {
+  const parsed = chatMessageSchema.safeParse(data);
+  if (!parsed.success) return void player.socket.emit("server-chat-message", undefined);
+  const parsedData = parsed.data;
 
+  const players = dataAPI.getLobbyPlayers(player.lobby);
+  players.forEach(p => p.socket.emit("server-chat-message", { id: player.id, msg: parsedData.message }));
 }
 
 function syncState(_player: IPlayer) {
