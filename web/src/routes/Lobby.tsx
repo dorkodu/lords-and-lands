@@ -23,16 +23,18 @@ import { CountryId } from "@core/types/country_id";
 import { useDebouncedValue } from "@mantine/hooks";
 import { useEffect, useState } from "react";
 import { socketio } from "@/lib/socketio";
+import { useSettings } from "@/components/hooks";
 
 export default function Lobby() {
   const navigate = useNavigate();
 
   const lobby = useAppStore(state => state.lobby);
+  const { playerName } = useSettings();
 
   const toggleLobbyStatus = () => {
     useAppStore.setState(s => {
       s.lobby.online = !s.lobby.online;
-      if (s.lobby.online) socketio.emit("client-create-lobby");
+      if (s.lobby.online) socketio.emit("client-create-lobby", { playerName });
       else socketio.emit("client-lobby-update", { online: false });
     });
   }

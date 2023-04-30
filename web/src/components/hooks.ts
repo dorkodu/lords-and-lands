@@ -1,3 +1,4 @@
+import { useLocalStorage } from "@mantine/hooks";
 import { useEffect, useRef, useState } from "react";
 
 export function useWait<T>(
@@ -84,5 +85,19 @@ export function useOnClick(event: () => void) {
     onMouseMove,
     onTouchStart,
     onTouchMove,
+  }
+}
+
+export function useSettings() {
+  const [playerName, setPlayerName] = useLocalStorage({
+    key: "player-name",
+    defaultValue: "Player",
+    getInitialValueInEffect: false,
+    serialize: (value) => value,
+    deserialize: (value) => value,
+  });
+
+  return {
+    playerName, setPlayerName,
   }
 }

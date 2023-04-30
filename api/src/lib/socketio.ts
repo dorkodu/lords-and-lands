@@ -13,7 +13,7 @@ socketio.on("connection", (socket): void => {
   const player = dataAPI.createPlayer(socket);
   if (!player) return void socket.disconnect(true);
 
-  socket.on("client-create-lobby", () => { websocketController.createLobby(player) });
+  socket.on("client-create-lobby", (data) => { websocketController.createLobby(player, data) });
   socket.on("client-join-lobby", (data) => { websocketController.joinLobby(player, data) });
   socket.on("client-leave-lobby", () => { websocketController.leaveLobby(player) });
   socket.on("client-lobby-update", (data) => { websocketController.lobbyUpdate(player, data) });

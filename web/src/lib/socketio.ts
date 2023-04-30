@@ -34,7 +34,7 @@ socketio.on("server-create-lobby", (data) => {
     s.lobby.owner = true;
 
     s.lobby.players = [
-      { id: data.playerId, name: data.playerId, country: CountryId.None, isAdmin: true }
+      { id: data.playerId, name: data.playerName, country: CountryId.None, isAdmin: true }
     ];
 
     s.lobby.map.width = data.w;

@@ -1,12 +1,14 @@
+import { useSettings } from "@/components/hooks";
 import { socketio } from "@/lib/socketio";
 import { Button, Flex, TextInput } from "@mantine/core";
 import { useState } from "react";
 
 export default function JoinLobby() {
   const [lobbyId, setLobbyId] = useState("");
+  const { playerName } = useSettings();
 
   const onClickJoin = () => {
-    socketio.emit("client-join-lobby", { lobbyId });
+    socketio.emit("client-join-lobby", { lobbyId, playerName });
   }
 
   return (

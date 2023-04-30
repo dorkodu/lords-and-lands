@@ -3,7 +3,10 @@ import { IPlayer } from "../types/player";
 import { dataAPI } from "./data";
 import { ClientToServerEvents } from "./types";
 
-function createLobby(player: IPlayer) {
+function createLobby(player: IPlayer, data: Parameters<ClientToServerEvents["client-create-lobby"]>[0]) {
+  // Set player's name
+  player.name = data.playerName;
+
   // Try to create a lobby
   const lobby = dataAPI.createLobby(player);
 
@@ -15,12 +18,15 @@ function createLobby(player: IPlayer) {
     const { width, height, seed } = lobby.gameData;
     player.socket.emit(
       "server-create-lobby",
-      { playerId: player.id, lobbyId: lobby.id, w: width, h: height, seed }
+      { playerName: player.name, playerId: player.id, lobbyId: lobby.id, w: width, h: height, seed }
     );
   }
 }
 
 function joinLobby(player: IPlayer, data: Parameters<ClientToServerEvents["client-join-lobby"]>[0]) {
+  // Set player's name
+  player.name = data.playerName;
+
   const lobby = dataAPI.joinLobby(player, data.lobbyId);
 
   if (!lobby) {

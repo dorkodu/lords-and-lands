@@ -2,6 +2,7 @@ import { z } from "zod";
 import {
   changeCountrySchema,
   chatMessageSchema,
+  createLobbySchema,
   gameActionSchema,
   joinLobbySchema,
   updateLobbySchema
@@ -35,7 +36,7 @@ import { ActionId } from "@core/types/action_id";
  * 
  */
 export interface ServerToClientEvents {
-  "server-create-lobby": (data: { playerId: string, lobbyId: string, w: number, h: number, seed: number } | undefined) => void;
+  "server-create-lobby": (data: { playerName: string, playerId: string, lobbyId: string, w: number, h: number, seed: number } | undefined) => void;
   "server-join-lobby": (data: { playerId?: string, lobbyId?: string, w?: number, h?: number, seed?: number, players: INetworkPlayer[] } | undefined) => void;
   "server-leave-lobby": (data: { playerId: string }) => void;
   "server-lobby-update": (data: { w?: number, h?: number, seed?: number, online?: boolean } | undefined) => void;
@@ -51,7 +52,7 @@ export interface ServerToClientEvents {
  * 
  */
 export interface ClientToServerEvents {
-  "client-create-lobby": () => void;
+  "client-create-lobby": (data: z.infer<typeof createLobbySchema>) => void;
   "client-join-lobby": (data: z.infer<typeof joinLobbySchema>) => void;
   "client-leave-lobby": () => void;
   "client-lobby-update": (data: z.infer<typeof updateLobbySchema>) => void;

@@ -3,8 +3,13 @@ import { CountryId } from "@core/types/country_id";
 import { z } from "zod";
 import { constants } from "../types/constants";
 
+export const createLobbySchema = z.object({
+  playerName: z.string().trim().min(1).max(32),
+}).strict();
+
 export const joinLobbySchema = z.object({
   lobbyId: z.string().trim().length(constants.lobbyIdLength),
+  playerName: z.string().trim().min(1).max(32),
 }).strict();
 
 export const updateLobbySchema = z.object({
