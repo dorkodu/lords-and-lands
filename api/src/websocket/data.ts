@@ -186,6 +186,9 @@ function gameAction(player: IPlayer, action: { id: ActionId, info?: any }, seed:
   const lobby = player.lobby && data.lobbies[player.lobby];
   if (!lobby) return false;
 
+  // Some actions require player to be admin, get player's admin status
+  const isAdmin = player.id === lobby.adminId;
+
   // Create new rng at every action to prevent users from cheating
   const oldRng = lobby.gameData.rng;
   const newRng = createSeedRandom(seed);
@@ -197,6 +200,9 @@ function gameAction(player: IPlayer, action: { id: ActionId, info?: any }, seed:
     case ActionId.Start:
       if (!actionStartSchema.safeParse(action.info).success) break;
       const parsedStart = action as IActionStart;
+
+      // Only admin can start the game
+      if (!isAdmin) break;
 
       actable = game.play.startActable(lobby.gameData, parsedStart.info);
       game.play.start(lobby.gameData, parsedStart.info);
@@ -216,6 +222,9 @@ function gameAction(player: IPlayer, action: { id: ActionId, info?: any }, seed:
     case ActionId.Generate:
       if (!actionGenerateSchema.safeParse(action.info).success) break;
       const parsedGenerate = action as IActionGenerate;
+
+      // Only admin can generate map
+      if (!isAdmin) break;
 
       actable = game.play.generateActable(lobby.gameData, parsedGenerate.info);
       game.play.generate(lobby.gameData, parsedGenerate.info);
