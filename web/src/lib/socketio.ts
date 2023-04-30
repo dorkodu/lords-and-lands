@@ -78,9 +78,9 @@ socketio.on("server-join-lobby", (data) => {
 socketio.on("server-leave-lobby", (data) => {
   let needLobbyReset = false;
 
-  useAppStore.setState(s => {
-    const player = s.lobby.players.filter(p => p.id === data.playerId)[0];
+  const player = useAppStore.getState().lobby.players.filter(p => p.id === data.playerId)[0];
 
+  useAppStore.setState(s => {
     // If current player left the lobby
     if (s.lobby.playerId === data.playerId) {
       needLobbyReset = true;
@@ -96,6 +96,11 @@ socketio.on("server-leave-lobby", (data) => {
        */
       if (player && player.isAdmin) socketio.emit("client-leave-lobby");
     }
+  });
+
+  useGameStore.setState(s => {
+    if (!player) return;
+    game.play.removeCountry(s.data, { country: player.country });
   });
 
   if (needLobbyReset) useAppStore.getState().resetLobby();

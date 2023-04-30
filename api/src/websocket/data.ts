@@ -31,12 +31,17 @@ function createPlayer(socket: ISocket) {
 function removePlayer(player: IPlayer) {
   const lobby = player.lobby && data.lobbies[player.lobby];
 
+  // Delete player from players
+  delete data.players[player.id];
+
+  // Check if player is in the lobby, if not don't execute code below
+  if (lobby && !lobby.players[player.id]) return;
+
   // If removed player was the last player in the lobby, remove lobby
   if (lobby && Object.values(lobby.players).length === 1) removeLobby(player);
 
-  // Delete player from players and from lobby.players if exists
+  // Delete player from lobby.players if exists
   if (lobby) delete lobby.players[player.id];
-  delete data.players[player.id];
 
   // If the removed player is admin, assign another player as admin
   if (lobby && lobby.adminId === player.id) {
@@ -102,6 +107,9 @@ function joinLobby(player: IPlayer, lobbyId: string): ILobby | undefined {
 function leaveLobby(player: IPlayer) {
   const lobby = player.lobby && data.lobbies[player.lobby];
   if (!lobby) return;
+
+  // Remove country of the player that left
+  game.play.removeCountry(lobby.gameData, { country: player.country });
 
   // If removed player was the last player in the lobby, remove lobby
   if (lobby && Object.values(lobby.players).length === 1) removeLobby(player);
