@@ -31,6 +31,7 @@ export default function Lobby() {
   const navigate = useNavigate();
 
   const lobby = useAppStore(state => state.lobby);
+  const data = useGameStore(state => state.data);
   const { playerName } = useSettings();
 
   const [clipboard, setClipboard] = useState(false);
@@ -113,7 +114,7 @@ export default function Lobby() {
           <CustomMessageIcon />
         </ActionIcon>
 
-        <ActionIcon onClick={onClickGame}>
+        <ActionIcon onClick={onClickGame} disabled={!game.play.startActable(data, {})}>
           <IconArrowRight />
         </ActionIcon>
       </Flex>
