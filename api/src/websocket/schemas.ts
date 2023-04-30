@@ -4,15 +4,15 @@ import { z } from "zod";
 import { constants } from "../types/constants";
 
 export const createLobbySchema = z.object({
-  playerName: z.string().trim().min(1).max(32),
+  playerName: z.string().trim().min(1).max(constants.playerNameLength),
 }).strict();
 
 export const joinLobbySchema = z.object({
   lobbyId: z.string().trim().length(constants.lobbyIdLength),
-  playerName: z.string().trim().min(1).max(32),
+  playerName: z.string().trim().min(1).max(constants.playerNameLength),
 }).strict();
 
-export const updateLobbySchema = z.object({
+export const lobbyUpdateSchema = z.object({
   online: z.boolean().optional(),
   w: z.number().optional(),
   h: z.number().optional(),
@@ -24,7 +24,7 @@ export const changeCountrySchema = z.object({
 }).strict();
 
 export const chatMessageSchema = z.object({
-  message: z.string().trim().min(0).max(constants.chatMessageLength),
+  message: z.string().trim().min(1).max(constants.chatMessageLength),
 }).strict();
 
 export const gameActionSchema = z.object({

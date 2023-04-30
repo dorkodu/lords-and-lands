@@ -1,11 +1,16 @@
 import { INetworkPlayer } from "../types/network_player";
 import { IPlayer } from "../types/player";
 import { dataAPI } from "./data";
+import { changeCountrySchema, createLobbySchema, gameActionSchema, joinLobbySchema, lobbyUpdateSchema } from "./schemas";
 import { ClientToServerEvents } from "./types";
 
-function createLobby(player: IPlayer, data: Parameters<ClientToServerEvents["client-create-lobby"]>[0]) {
+function createLobby(player: IPlayer, data: Parameters<ClientToServerEvents["client-create-lobby"]>[0]): void {
+  const parsed = createLobbySchema.safeParse(data);
+  if (!parsed.success) return void player.socket.emit("server-create-lobby", undefined);
+  const parsedData = parsed.data;
+
   // Set player's name
-  player.name = data.playerName;
+  player.name = parsedData.playerName;
 
   // Try to create a lobby
   const lobby = dataAPI.createLobby(player);
@@ -23,11 +28,15 @@ function createLobby(player: IPlayer, data: Parameters<ClientToServerEvents["cli
   }
 }
 
-function joinLobby(player: IPlayer, data: Parameters<ClientToServerEvents["client-join-lobby"]>[0]) {
-  // Set player's name
-  player.name = data.playerName;
+function joinLobby(player: IPlayer, data: Parameters<ClientToServerEvents["client-join-lobby"]>[0]): void {
+  const parsed = joinLobbySchema.safeParse(data);
+  if (!parsed.success) return void player.socket.emit("server-join-lobby", undefined);
+  const parsedData = parsed.data;
 
-  const lobby = dataAPI.joinLobby(player, data.lobbyId);
+  // Set player's name
+  player.name = parsedData.playerName;
+
+  const lobby = dataAPI.joinLobby(player, parsedData.lobbyId);
 
   if (!lobby) {
     // Send the joined player, that player couldn't join
@@ -63,11 +72,15 @@ function leaveLobby(player: IPlayer) {
   dataAPI.leaveLobby(player);
 }
 
-function lobbyUpdate(player: IPlayer, data: Parameters<ClientToServerEvents["client-lobby-update"]>[0]) {
-  const status = dataAPI.lobbyUpdate(player, data.w, data.h, data.seed);
+function lobbyUpdate(player: IPlayer, data: Parameters<ClientToServerEvents["client-lobby-update"]>[0]): void {
+  const parsed = lobbyUpdateSchema.safeParse(data);
+  if (!parsed.success) return void player.socket.emit("server-lobby-update", undefined);
+  const { w, h, seed, online } = parsed.data;
+
+  const status = dataAPI.lobbyUpdate(player, w, h, seed);
 
   // If lobby is made offline, remove the lobby and all the players connected to the lobby
-  if (data.online !== undefined && !data.online) {
+  if (online !== undefined && !online) {
     const players = dataAPI.getLobbyPlayers(player.lobby);
     dataAPI.removeLobby(player);
     players.forEach(p => p.socket.emit("server-lobby-update", { online: false }));
@@ -77,7 +90,7 @@ function lobbyUpdate(player: IPlayer, data: Parameters<ClientToServerEvents["cli
   if (status) {
     const players = dataAPI.getLobbyPlayers(player.lobby);
     players.forEach(p => {
-      p.socket.emit("server-lobby-update", { w: data.w, h: data.h, seed: data.seed, online: data.online });
+      p.socket.emit("server-lobby-update", { w, h, seed, online });
     });
   }
   else {
@@ -85,8 +98,12 @@ function lobbyUpdate(player: IPlayer, data: Parameters<ClientToServerEvents["cli
   }
 }
 
-function changeCountry(player: IPlayer, data: Parameters<ClientToServerEvents["client-change-country"]>[0]) {
-  const result = dataAPI.changeCountry(player, data.country);
+function changeCountry(player: IPlayer, data: Parameters<ClientToServerEvents["client-change-country"]>[0]): void {
+  const parsed = changeCountrySchema.safeParse(data);
+  if (!parsed.success) return void player.socket.emit("server-change-country", undefined);
+  const parsedData = parsed.data;
+
+  const result = dataAPI.changeCountry(player, parsedData.country);
 
   // If "change country" is done successfully, send it to all players, if not, only send to current player
   if (result) {
@@ -106,12 +123,16 @@ function syncState(_player: IPlayer) {
 
 }
 
-function gameAction(player: IPlayer, data: Parameters<ClientToServerEvents["client-game-action"]>[0]) {
-  const actable = dataAPI.gameAction(player, data);
+function gameAction(player: IPlayer, data: Parameters<ClientToServerEvents["client-game-action"]>[0]): void {
+  const parsed = gameActionSchema.safeParse(data);
+  if (!parsed.success) return void player.socket.emit("server-game-action", undefined);
+  const parsedData = parsed.data;
+
+  const actable = dataAPI.gameAction(player, parsedData);
 
   if (actable) {
     const players = dataAPI.getLobbyPlayers(player.lobby);
-    players.forEach(p => p.socket.emit("server-game-action", data));
+    players.forEach(p => p.socket.emit("server-game-action", parsedData));
   }
   else {
     player.socket.emit("server-game-action", undefined);

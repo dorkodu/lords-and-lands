@@ -5,7 +5,7 @@ import {
   createLobbySchema,
   gameActionSchema,
   joinLobbySchema,
-  updateLobbySchema
+  lobbyUpdateSchema,
 } from "./schemas";
 import { CountryId } from "@core/types/country_id";
 import { INetworkPlayer } from "../types/network_player";
@@ -42,7 +42,7 @@ export interface ServerToClientEvents {
   "server-lobby-update": (data: { w?: number, h?: number, seed?: number, online?: boolean } | undefined) => void;
   "server-change-country": (data: { id: string, country: CountryId } | undefined) => void;
 
-  "server-chat-message": () => void;
+  "server-chat-message": (data: { id: string; msg: string } | undefined) => void;
   "server-sync-state": () => void;
 
   "server-game-action": (data: { id: ActionId, info?: any } | undefined) => void;
@@ -55,7 +55,7 @@ export interface ClientToServerEvents {
   "client-create-lobby": (data: z.infer<typeof createLobbySchema>) => void;
   "client-join-lobby": (data: z.infer<typeof joinLobbySchema>) => void;
   "client-leave-lobby": () => void;
-  "client-lobby-update": (data: z.infer<typeof updateLobbySchema>) => void;
+  "client-lobby-update": (data: z.infer<typeof lobbyUpdateSchema>) => void;
   "client-change-country": (data: z.infer<typeof changeCountrySchema>) => void;
 
   "client-chat-message": (data: z.infer<typeof chatMessageSchema>) => void;
