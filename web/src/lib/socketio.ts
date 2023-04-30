@@ -112,19 +112,16 @@ socketio.on("server-leave-lobby", (data) => {
 });
 
 socketio.on("server-lobby-update", (data) => {
+  // Lobby is made offline, reset lobby
+  if (data !== undefined && !data.online) {
+    useAppStore.getState().resetLobby();
+    return;
+  }
+
   useAppStore.setState(s => {
     if (data?.w) s.lobby.map.width = data.w;
     if (data?.h) s.lobby.map.height = data.h;
     if (data?.seed) s.lobby.map.seed = data.seed;
-
-    if (data && data.online !== undefined) {
-      s.lobby.online = data.online;
-
-      // If lobby is made offline
-      if (!data.online) {
-        s.lobby.lobbyId = undefined;
-      }
-    }
   });
 
   useGameStore.setState(s => {
