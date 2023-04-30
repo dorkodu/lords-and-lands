@@ -1,3 +1,4 @@
+import { game } from "@core/game";
 import { crypto } from "../lib/crypto";
 import { INetworkPlayer } from "../types/network_player";
 import { IPlayer } from "../types/player";
@@ -57,6 +58,11 @@ function joinLobby(player: IPlayer, data: Parameters<ClientToServerEvents["clien
       "server-join-lobby",
       { playerId: player.id, lobbyId: lobby.id, w: width, h: height, seed, players: networkPlayers }
     );
+
+    // Send the joined player sync state to syncronize game state because:
+    // 1. Admin might have loaded a save
+    // 2. Game might have already started
+    player.socket.emit("server-sync-state", { state: game.serializer.serialize(lobby.gameData) });
 
     // Send the already joined players, only the joined player
     players
