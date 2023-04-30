@@ -1,3 +1,4 @@
+import TextParser, { PieceType } from "@/components/TextParser";
 import { socketio } from "@/lib/socketio";
 import { useAppStore } from "@/stores/appStore";
 import { wrapContent } from "@/styles/css";
@@ -119,10 +120,12 @@ function ChatMessage({ message, seen }: { message: { playerId: string, msg: stri
         style={wrapContent}
         span
       >
-        {playerIdToPlayer(message.playerId)?.name ?? "Player"}
+        <TextParser text={playerIdToPlayer(message.playerId)?.name ?? "Player"} types={[PieceType.Emoji]} />
       </Text>
       <Text span>:&nbsp;</Text>
-      <Text span style={wrapContent} color={seen ? "dimmed" : undefined}>{message.msg}</Text>
+      <Text span style={wrapContent} color={seen ? "dimmed" : undefined}>
+        <TextParser text={message.msg} types={[PieceType.Emoji]} />
+      </Text>
     </>
   )
 }

@@ -1,16 +1,12 @@
-import { Anchor } from "@mantine/core";
 import React, { useMemo } from "react";
 import { emoji as emojiCSS } from "../styles/css";
 import twemoji from "twemoji";
 
-import urlRegexp from "url-regex";
 import emojiRegexp from "emoji-regex";
 
-const urlRegex = urlRegexp();
 const emojiRegex = emojiRegexp();
 
 export enum PieceType {
-  Url,
   Emoji,
 }
 
@@ -24,9 +20,6 @@ function TextParser({ text, types }: Props) {
     const elements: React.ReactNode[] = [];
     let pieces: { index: number, text: string, type: PieceType }[] = [];
 
-    if (!types || types.indexOf(PieceType.Url) !== -1) {
-      pieces.push(...index(text, urlRegex, PieceType.Url))
-    }
     if (!types || types.indexOf(PieceType.Emoji) !== -1) {
       pieces.push(...index(text, emojiRegex, PieceType.Emoji))
     }
@@ -45,9 +38,6 @@ function TextParser({ text, types }: Props) {
         }
 
         switch (piece.type) {
-          case PieceType.Url:
-            elements.push(<UrlPiece key={key++} url={piece.text} />)
-            break;
           case PieceType.Emoji:
             elements.push(<EmojiPiece key={key++} emoji={piece.text} />)
             break;
@@ -89,10 +79,6 @@ function TextPiece({ text }: { text: string }) {
   return <>{text}</>
 }
 
-function UrlPiece({ url }: { url: string }) {
-  return <Anchor href={url}>{url}</Anchor>
-}
-
 function EmojiPiece({ emoji, ...props }: React.ComponentPropsWithoutRef<"img"> & { emoji: string }) {
   const element = document.createElement("div");
   element.innerHTML = twemoji.parse(
@@ -114,6 +100,5 @@ function EmojiPiece({ emoji, ...props }: React.ComponentPropsWithoutRef<"img"> &
 
 export const Piece = {
   Text: TextPiece,
-  Url: UrlPiece,
   Emoji: EmojiPiece,
 }

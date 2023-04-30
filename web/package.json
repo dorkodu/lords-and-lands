@@ -20,7 +20,6 @@
     "react-zoom-pan-pinch": "^3.0.7",
     "socket.io-client": "^4.6.1",
     "twemoji": "^14.0.2",
-    "url-regex": "^5.0.0",
     "zustand": "^4.3.7"
   },
   "devDependencies": {
