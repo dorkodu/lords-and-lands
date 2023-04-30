@@ -114,7 +114,10 @@ export default function Lobby() {
           <CustomMessageIcon />
         </ActionIcon>
 
-        <ActionIcon onClick={onClickGame} disabled={!game.play.startActable(data, {})}>
+        <ActionIcon
+          onClick={onClickGame}
+          disabled={!data.running && !game.play.startActable(data, {})}
+        >
           <IconArrowRight />
         </ActionIcon>
       </Flex>
