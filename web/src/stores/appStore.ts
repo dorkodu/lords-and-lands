@@ -18,6 +18,7 @@ export interface AppStoreState {
   "settings" |
   "saves" |
   "any";
+  status: boolean;
 
   lobby: {
     lobbyId: string | undefined;
@@ -52,6 +53,7 @@ export interface AppStoreAction {
 const initialState: AppStoreState = {
   redirect: undefined,
   route: "any",
+  status: false,
 
   lobby: {
     lobbyId: undefined,

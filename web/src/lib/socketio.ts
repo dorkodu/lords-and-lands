@@ -12,15 +12,15 @@ export const socketio: Socket<ServerToClientEvents, ClientToServerEvents> = io(
 
 // Default events \\
 socketio.on("connect", () => {
-  console.log("connect");
+  useAppStore.setState(s => { s.status = true });
 });
 
 socketio.on("connect_error", (_err) => {
-  console.log("connect_error");
+  useAppStore.setState(s => { s.status = false });
 });
 
 socketio.on("disconnect", (_reason, _description) => {
-  console.log("disconnect");
+  useAppStore.setState(s => { s.status = false });
 });
 // Default events \\
 

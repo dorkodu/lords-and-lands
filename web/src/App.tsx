@@ -3,6 +3,7 @@ import { useEffect } from "react";
 import { Outlet, ScrollRestoration, useLocation, useNavigate } from "react-router-dom"
 import { useAppStore } from "./stores/appStore";
 import { theme } from "./styles/theme";
+import "./lib/socketio";
 
 export default function App() {
   const navigate = useNavigate();
