@@ -2,6 +2,7 @@ import { useAppStore } from "@/stores/appStore";
 import { Button, Flex, Image, Text, Title } from "@mantine/core";
 import { useNavigate } from "react-router-dom";
 import DorkoduLogo from "@/assets/dorkodu_logo.svg";
+import { util } from "@/lib/util";
 
 export default function MainMenu() {
   const navigate = useNavigate();
@@ -19,7 +20,7 @@ export default function MainMenu() {
 
         <Flex direction="column" align="center">
           <Title align="center">Lords and Lands</Title>
-          <Text size="xs" weight="bold" color="dimmed">v0.1.0</Text>
+          <Text size="xs" weight="bold" color="dimmed">{util.version(30, 4, 2023)}</Text>
         </Flex>
 
         <Flex direction="column" my="md" gap="md" style={{ maxWidth: 240, width: "100%" }}>
