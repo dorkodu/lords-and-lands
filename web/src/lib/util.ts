@@ -2,8 +2,8 @@ function share(text: string, url: string): Promise<boolean> {
   return new Promise(resolve => {
     if (navigator.share) {
       navigator.share({ text, url })
-        .then(() => resolve(true))
         .catch(() => resolve(false))
+        .then(() => resolve(true))
     } else {
       resolve(false);
     }
@@ -12,9 +12,14 @@ function share(text: string, url: string): Promise<boolean> {
 
 function copyToClipboard(text: string): Promise<boolean> {
   return new Promise(resolve => {
-    navigator.clipboard.writeText(text)
-      .then(() => resolve(true))
-      .catch(() => resolve(false))
+    if (navigator.clipboard) {
+      navigator.clipboard.writeText(text)
+        .catch(() => resolve(false))
+        .then(() => resolve(true))
+    }
+    else {
+      resolve(false);
+    }
   })
 }
 
