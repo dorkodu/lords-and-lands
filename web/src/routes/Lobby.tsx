@@ -118,7 +118,7 @@ export default function Lobby() {
           onClick={onClickGame}
           disabled={!(
             lobby.owner && game.play.startActable(data, {}) ||
-            !lobby.owner && data.running
+            data.running
           )}
         >
           <IconArrowRight />

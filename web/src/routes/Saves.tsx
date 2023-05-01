@@ -26,11 +26,15 @@ export default function Saves() {
   const onClickSave = () => {
     if (saveable()) return;
 
+    // Get serialized data from game data & set running to false since it's saved
     const gameData = useGameStore.getState().data;
+    const serializedData = game.serializer.serialize(gameData);
+    serializedData.running = false;
+
     const save: ISave = {
       name: saveName,
       date: Date.now(),
-      data: game.serializer.serialize(gameData),
+      data: serializedData,
     };
 
     setSaves({ ...saves, [saveName]: save });

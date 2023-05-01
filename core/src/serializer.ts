@@ -10,8 +10,11 @@ export interface ISerializedGameData {
 
   mapSeed: number;
   rngSeed: number;
+
   turnCount: number;
   turnType: TurnType;
+
+  running: boolean;
 
   countries: ICountry[];
   tiles: ITile[];
@@ -27,6 +30,8 @@ function serialize(data: IGameData): ISerializedGameData {
 
     turnCount: data.turn.count,
     turnType: data.turn.type,
+
+    running: data.running,
 
     countries: data.countries,
     tiles: data.tiles,
@@ -46,6 +51,8 @@ function deserialize(serialized: ISerializedGameData): IGameData {
 
   data.turn.count = serialized.turnCount;
   data.turn.type = serialized.turnType;
+
+  data.running = serialized.running;
 
   data.countries = serialized.countries;
   data.tiles = serialized.tiles;

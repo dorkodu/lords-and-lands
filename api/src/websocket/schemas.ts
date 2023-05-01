@@ -49,6 +49,7 @@ export const syncStateSchema = z.object({
   rngSeed: z.number(),
   turnCount: z.number(),
   turnType: turnType,
+  running: z.boolean(),
 
   countries: z.array(
     z.object({ id: z.number(), banners: z.number() }).strict(),
