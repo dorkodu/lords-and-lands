@@ -3,7 +3,7 @@ import { useAppStore } from "@/stores/appStore";
 import { useGameStore } from "@/stores/gameStore";
 import { game } from "@core/game";
 import { ActionId } from "@core/types/action_id";
-import { Flex, createStyles, ActionIcon } from "@mantine/core";
+import { Flex, createStyles, ActionIcon, Tooltip } from "@mantine/core";
 import { useHotkeys } from "@mantine/hooks";
 import { IconArrowRight, IconWorld } from "@tabler/icons-react";
 import { useNavigate } from "react-router-dom";
@@ -62,22 +62,28 @@ export default function Footer() {
   return (
     <Flex className={classes.footer} direction="row" align="center" justify="center" gap="md">
 
-      <ActionIcon variant="filled" size={32} onClick={onClickLobby}>
-        <IconWorld />
-      </ActionIcon>
+      <Tooltip label="Lobby" events={{ hover: true, focus: false, touch: true }}>
+        <ActionIcon variant="filled" size={32} onClick={onClickLobby}>
+          <IconWorld />
+        </ActionIcon>
+      </Tooltip>
 
-      <ActionIcon variant="filled" size={32} onClick={onClickChat}>
-        <CustomMessageIcon />
-      </ActionIcon>
+      <Tooltip label="Chat" events={{ hover: true, focus: false, touch: true }}>
+        <ActionIcon variant="filled" size={32} onClick={onClickChat}>
+          <CustomMessageIcon />
+        </ActionIcon>
+      </Tooltip>
 
-      <ActionIcon
-        variant="filled"
-        size={32}
-        onClick={onClickNextTurn}
-        disabled={!game.play.nextTurnActable(data, { country: country?.id })}
-      >
-        <IconArrowRight />
-      </ActionIcon>
+      <Tooltip label="Next Turn" events={{ hover: true, focus: false, touch: true }}>
+        <ActionIcon
+          variant="filled"
+          size={32}
+          onClick={onClickNextTurn}
+          disabled={!game.play.nextTurnActable(data, { country: country?.id })}
+        >
+          <IconArrowRight />
+        </ActionIcon>
+      </Tooltip>
 
     </Flex>
   )
