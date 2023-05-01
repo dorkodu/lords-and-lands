@@ -29,6 +29,7 @@ export default function JoinLobby() {
           placeholder="Lobby ID..."
           value={lobbyId}
           onChange={(e) => setLobbyId(e.currentTarget.value)}
+          autoFocus
         />
 
         <Button onClick={onClickJoin}>Join</Button>

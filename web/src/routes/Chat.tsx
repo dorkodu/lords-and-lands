@@ -98,6 +98,7 @@ export default function Chat() {
             onChange={onChangeMessage}
             onKeyDown={getHotkeyHandler([["Enter", sendMessage]])}
             style={{ flexGrow: 1 }}
+            autoFocus
           />
 
           <ActionIcon onClick={sendMessage}>
