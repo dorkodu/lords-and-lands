@@ -1,8 +1,14 @@
 import { useSettings } from "@/components/hooks";
 import { Flex, TextInput } from "@mantine/core";
+import { getHotkeyHandler, useHotkeys } from "@mantine/hooks";
+import { useNavigate } from "react-router-dom";
 
 export default function Settings() {
   const { playerName, setPlayerName } = useSettings();
+
+  const navigate = useNavigate();
+  const goBack = () => { navigate(-1) }
+  useHotkeys([["Escape", goBack]]);
 
   return (
     <Flex direction="column" gap="md" maw={360} style={{ width: "100%", margin: "0 auto" }}>
@@ -13,6 +19,7 @@ export default function Settings() {
         maxLength={32}
         value={playerName}
         onChange={(ev) => setPlayerName(ev.target.value)}
+        onKeyDown={getHotkeyHandler([["Escape", goBack]])}
       />
     </Flex>
   )

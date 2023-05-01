@@ -5,7 +5,7 @@ import { wrapContent } from "@/styles/css";
 import { ISave } from "@/types/save";
 import { game } from "@core/game";
 import { ActionIcon, Button, Divider, Flex, Text, TextInput } from "@mantine/core";
-import { useLocalStorage } from "@mantine/hooks";
+import { getHotkeyHandler, useHotkeys, useLocalStorage } from "@mantine/hooks";
 import { IconDeviceGamepad2, IconTrash } from "@tabler/icons-react";
 import React, { useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -23,6 +23,10 @@ export default function Saves() {
   const [saveName, setSaveName] = useState("");
   const saveable = () => !saveName || !!saves[saveName];
 
+  const navigate = useNavigate();
+  const goBack = () => { navigate(-1) }
+  useHotkeys([["Escape", goBack]]);
+
   const onClickSave = () => {
     if (saveable()) return;
 
@@ -38,6 +42,7 @@ export default function Saves() {
     };
 
     setSaves({ ...saves, [saveName]: save });
+    setSaveName("");
   }
 
   const deleteSave = (name: string) => {
@@ -54,6 +59,7 @@ export default function Saves() {
           placeholder="Save Name..."
           value={saveName}
           onChange={(e) => setSaveName(e.currentTarget.value)}
+          onKeyDown={getHotkeyHandler([["Enter", onClickSave], ["Escape", goBack]])}
         />
 
         <Button onClick={onClickSave} disabled={saveable()}>Save</Button>

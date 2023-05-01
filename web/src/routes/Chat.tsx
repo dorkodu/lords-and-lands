@@ -3,7 +3,7 @@ import { socketio } from "@/lib/socketio";
 import { useAppStore } from "@/stores/appStore";
 import { wrapContent } from "@/styles/css";
 import { ActionIcon, Card, createStyles, Flex, Text, TextInput } from "@mantine/core";
-import { getHotkeyHandler, useOs } from "@mantine/hooks";
+import { getHotkeyHandler, useHotkeys, useOs } from "@mantine/hooks";
 import { IconArrowLeft, IconSend } from "@tabler/icons-react";
 import React, { useEffect, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
@@ -73,6 +73,8 @@ export default function Chat() {
   useEffect(() => {
     return () => useAppStore.setState(s => { s.lobby.lastSeenMessage = s.lobby.messages.length - 1 });
   }, []);
+
+  useHotkeys([["Escape", goBack]]);
 
   return (
     <Flex direction="column">

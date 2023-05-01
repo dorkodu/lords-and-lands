@@ -54,6 +54,7 @@ export default function Footer() {
   }
 
   useHotkeys([
+    ["Escape", () => onClickLobby()],
     ["1", () => onClickLobby()],
     ["2", () => onClickChat()],
     ["3", () => onClickNextTurn()],
@@ -62,19 +63,19 @@ export default function Footer() {
   return (
     <Flex className={classes.footer} direction="row" align="center" justify="center" gap="md">
 
-      <Tooltip label="Lobby" events={{ hover: true, focus: false, touch: true }}>
+      <Tooltip label="Lobby (1)" events={{ hover: true, focus: false, touch: true }}>
         <ActionIcon variant="filled" size={32} onClick={onClickLobby}>
           <IconWorld />
         </ActionIcon>
       </Tooltip>
 
-      <Tooltip label="Chat" events={{ hover: true, focus: false, touch: true }}>
+      <Tooltip label="Chat (2)" events={{ hover: true, focus: false, touch: true }}>
         <ActionIcon variant="filled" size={32} onClick={onClickChat}>
           <CustomMessageIcon />
         </ActionIcon>
       </Tooltip>
 
-      <Tooltip label="Next Turn" events={{ hover: true, focus: false, touch: true }}>
+      <Tooltip label="Next Turn (3)" events={{ hover: true, focus: false, touch: true }}>
         <ActionIcon
           variant="filled"
           size={32}

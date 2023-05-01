@@ -5,6 +5,7 @@ import { useGameStore } from "@/stores/gameStore";
 import { game } from "@core/game";
 import { ActionId } from "@core/types/action_id";
 import { ActionIcon, createStyles, Flex, Tooltip } from "@mantine/core";
+import { useHotkeys } from "@mantine/hooks";
 import { IconArrowLeft, IconRefresh } from "@tabler/icons-react";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
@@ -67,17 +68,23 @@ function Footer() {
     });
   }
 
+  useHotkeys([
+    ["Escape", onClickLobby],
+    ["1", () => onClickLobby()],
+    ["2", () => onClickGenerate()],
+  ]);
+
   return (
     <Flex className={classes.footer} direction="row" align="center" justify="center" gap="md">
 
-      <Tooltip label="Go Back" events={{ hover: true, focus: false, touch: true }}>
+      <Tooltip label="Go Back (1)" events={{ hover: true, focus: false, touch: true }}>
         <ActionIcon variant="filled" size={32} onClick={onClickLobby}>
           <IconArrowLeft />
         </ActionIcon>
       </Tooltip>
 
       {lobbyOwner &&
-        <Tooltip label="Re-generate" events={{ hover: true, focus: false, touch: true }}>
+        <Tooltip label="Re-generate (2)" events={{ hover: true, focus: false, touch: true }}>
           <ActionIcon variant="filled" size={32} onClick={onClickGenerate} disabled={running}>
             <IconRefresh />
           </ActionIcon>
