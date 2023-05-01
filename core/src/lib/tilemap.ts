@@ -11,9 +11,23 @@ function generate(data: IGameData) {
   // Always create new seed random to make sure same seed always generate same tilemap
   const rng = createSeedRandom(data.seed);
 
+  // Choose origins and make deep copy of the origins since "chooseTiles" modify it
   const origins = chooseOrigins(data, rng);
+  const originsCopy: ReturnType<typeof chooseOrigins> = JSON.parse(JSON.stringify(origins));
+
   chooseTiles(data, origins);
   sprinkleNature(data, rng);
+
+  // Always make sure the origins are empty
+  originsCopy.forEach(origin => {
+    const pos = origin[0];
+    if (!pos) return;
+
+    const tile = data.tiles[pos.x + pos.y * data.width];
+    if (!tile) return;
+
+    tile.landmark = LandmarkId.None;
+  });
 }
 
 function chooseOrigins(data: IGameData, rng: ISeedRandom) {
@@ -82,13 +96,17 @@ function sprinkleNature(data: IGameData, rng: ISeedRandom) {
   for (let y = 0; y < data.height; ++y) {
     for (let x = 0; x < data.width; ++x) {
       const tile = data.tiles[x + y * data.width];
+      if (!tile) continue;
+
       const landmark = rng.percent([
         { percent: 10, result: LandmarkId.Mountains },
         { percent: 15, result: LandmarkId.Forest },
         { percent: 75, result: LandmarkId.None }
-      ])
+      ]);
+      if (!landmark) continue;
 
-      if (tile && landmark) tile.landmark = landmark;
+      // If tile has no landmark, set the landmark to the randomly selected one
+      if (tile.landmark === LandmarkId.None) tile.landmark = landmark;
     }
   }
 }
