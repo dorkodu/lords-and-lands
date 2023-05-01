@@ -70,9 +70,9 @@ export default function Lobby() {
   const onClickGame = () => { navigate("/game") }
 
   return (
-    <Flex direction="column" align="center" gap="md">
+    <Flex direction="column" gap="md" maw={360} style={{ width: "100%", margin: "0 auto" }}>
 
-      <Flex gap="md">
+      <Flex align="center" justify="center" gap="md">
         <ActionIcon onClick={toggleLobbyStatus} disabled={!lobby.owner}>
           <IconArrowBigLeftFilled />
         </ActionIcon>
@@ -84,45 +84,49 @@ export default function Lobby() {
         </ActionIcon>
       </Flex>
 
-      {lobby.lobbyId ?
-        <Flex gap="md">
-          <Text>{`Lobby ID: ${lobby.lobbyId}`}</Text>
+      <Flex align="center" justify="center" gap="md">
+        {lobby.lobbyId ?
+          <>
+            <Text>{`Lobby ID: ${lobby.lobbyId}`}</Text>
 
-          <Flex>
-            <ActionIcon onClick={onClickClipboard} color={clipboard ? "green" : undefined}>
-              {!clipboard ? <IconClipboardText /> : <IconCheck />}
-            </ActionIcon>
+            <Flex pos="absolute">
+              <ActionIcon onClick={onClickClipboard} color={clipboard ? "green" : undefined}>
+                {!clipboard ? <IconClipboardText /> : <IconCheck />}
+              </ActionIcon>
 
-            <ActionIcon onClick={onClickShare} color={share ? "green" : undefined}>
-              {!share ? <IconShare /> : <IconCheck />}
-            </ActionIcon>
-          </Flex>
-        </Flex> :
-        <Text>&bull; Lobby Offline &bull;</Text>
-      }
+              <ActionIcon onClick={onClickShare} color={share ? "green" : undefined}>
+                {!share ? <IconShare /> : <IconCheck />}
+              </ActionIcon>
+            </Flex>
+          </>
+          :
+          <Text>&bull; Lobby Offline &bull;</Text>
+        }
+      </Flex>
 
-      <Flex gap="md">
-        <ActionIcon onClick={onClickSettings}>
-          <IconSettings />
-        </ActionIcon>
+      <Flex justify="center" gap="md" wrap="wrap">
+        <Button leftIcon={<IconSettings />} onClick={onClickSettings}>
+          Settings
+        </Button>
 
-        <ActionIcon onClick={onClickSaves}>
-          <IconDeviceFloppy />
-        </ActionIcon>
+        <Button leftIcon={<IconDeviceFloppy />} onClick={onClickSaves}>
+          Saves
+        </Button>
 
-        <ActionIcon onClick={onClickChat}>
-          <CustomMessageIcon />
-        </ActionIcon>
+        <Button leftIcon={<CustomMessageIcon />} onClick={onClickChat}>
+          Chat
+        </Button>
 
-        <ActionIcon
+        <Button
+          leftIcon={<IconArrowRight />}
           onClick={onClickGame}
           disabled={!(
             lobby.owner && game.play.startActable(data, {}) ||
             data.running
           )}
         >
-          <IconArrowRight />
-        </ActionIcon>
+          Game
+        </Button>
       </Flex>
 
       <Players />
@@ -150,15 +154,21 @@ function Players() {
   const addBotPlayer = () => { }
 
   return (
-    <Flex direction="column" gap="xs">
-      <Divider />
-      {lobby.players.map((player, i) => <Player player={player} key={i} />)}
-
-      <Flex justify="center" gap="md">
-        <ActionIcon size={24} onClick={addLocalPlayer} disabled={lobby.online}><IconDeviceGamepad2 /></ActionIcon>
-        <ActionIcon size={24} onClick={addBotPlayer} disabled={lobby.online}><IconRobot /></ActionIcon>
+    <>
+      <Flex direction="column" gap="xs">
+        <Divider />
+        {lobby.players.map((player, i) => <Player player={player} key={i} />)}
       </Flex>
-    </Flex>
+
+      <Flex direction="row" justify="center" gap="md" wrap="wrap">
+        <Button leftIcon={<IconDeviceGamepad2 />} onClick={addLocalPlayer} disabled={lobby.online}>
+          Add Local Player
+        </Button>
+        <Button leftIcon={<IconRobot />} onClick={addBotPlayer} disabled={lobby.online}>
+          Add Bot Player
+        </Button>
+      </Flex>
+    </>
   )
 }
 
