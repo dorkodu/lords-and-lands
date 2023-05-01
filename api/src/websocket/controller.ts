@@ -87,10 +87,11 @@ function lobbyUpdate(player: IPlayer, data: Parameters<ClientToServerEvents["cli
   const status = dataAPI.lobbyUpdate(player, w, h, seed);
 
   // If lobby is made offline, remove the lobby and all the players connected to the lobby
-  if (online !== undefined && !online) {
+  if (status && online !== undefined && !online) {
     const players = dataAPI.getLobbyPlayers(player.lobby);
     dataAPI.removeLobby(player);
     players.forEach(p => p.socket.emit("server-lobby-update", { online: false }));
+    return;
   }
 
   // If "lobby update" is done successfully, send it to all players, if not, only send to current player

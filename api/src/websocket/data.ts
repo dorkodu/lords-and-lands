@@ -138,10 +138,7 @@ function lobbyUpdate(player: IPlayer, width?: number, height?: number, seed?: nu
 
   if (width !== undefined) lobby.gameData.width = width;
   if (height !== undefined) lobby.gameData.height = height;
-  if (seed !== undefined) {
-    lobby.gameData.rng = createSeedRandom(seed);
-    lobby.gameData.seed = seed;
-  }
+  if (seed !== undefined) lobby.gameData.seed = seed;
 
   return true;
 }
