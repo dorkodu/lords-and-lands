@@ -84,36 +84,36 @@ export default function Lobby() {
         </ActionIcon>
       </Flex>
 
-      <Flex align="center" justify="center" gap="md">
-        {lobby.lobbyId ?
-          <>
-            <Text>{`Lobby ID: ${lobby.lobbyId}`}</Text>
+      <Flex justify="center" gap="md" wrap="wrap">
+        <Button
+          leftIcon={<IconClipboardText />}
+          onClick={onClickClipboard}
+          disabled={!lobby.lobbyId}
+          style={{ flex: 1 }}
+        >
+          Copy Lobby
+        </Button>
 
-            <Flex pos="absolute">
-              <ActionIcon onClick={onClickClipboard} color={clipboard ? "green" : undefined}>
-                {!clipboard ? <IconClipboardText /> : <IconCheck />}
-              </ActionIcon>
-
-              <ActionIcon onClick={onClickShare} color={share ? "green" : undefined}>
-                {!share ? <IconShare /> : <IconCheck />}
-              </ActionIcon>
-            </Flex>
-          </>
-          :
-          <Text>&bull; Lobby Offline &bull;</Text>
-        }
+        <Button
+          leftIcon={<IconShare />}
+          onClick={onClickShare}
+          disabled={!lobby.lobbyId}
+          style={{ flex: 1 }}
+        >
+          Share Lobby
+        </Button>
       </Flex>
 
       <Flex justify="center" gap="md" wrap="wrap">
-        <Button leftIcon={<IconSettings />} onClick={onClickSettings}>
+        <Button leftIcon={<IconSettings />} onClick={onClickSettings} style={{ flex: 1 }}>
           Settings
         </Button>
 
-        <Button leftIcon={<IconDeviceFloppy />} onClick={onClickSaves}>
+        <Button leftIcon={<IconDeviceFloppy />} onClick={onClickSaves} style={{ flex: 1 }}>
           Saves
         </Button>
 
-        <Button leftIcon={<CustomMessageIcon />} onClick={onClickChat}>
+        <Button leftIcon={<CustomMessageIcon />} onClick={onClickChat} style={{ flex: 1 }}>
           Chat
         </Button>
 
@@ -124,8 +124,9 @@ export default function Lobby() {
             lobby.owner && game.play.startActable(data, {}) ||
             data.running
           )}
+          style={{ flex: 1 }}
         >
-          Game
+          Play
         </Button>
       </Flex>
 
@@ -160,11 +161,11 @@ function Players() {
         {lobby.players.map((player, i) => <Player player={player} key={i} />)}
       </Flex>
 
-      <Flex direction="row" justify="center" gap="md" wrap="wrap">
-        <Button leftIcon={<IconDeviceGamepad2 />} onClick={addLocalPlayer} disabled={lobby.online}>
+      <Flex justify="center" gap="md" wrap="wrap">
+        <Button leftIcon={<IconDeviceGamepad2 />} onClick={addLocalPlayer} disabled={lobby.online} style={{ flex: 1 }}>
           Add Local Player
         </Button>
-        <Button leftIcon={<IconRobot />} onClick={addBotPlayer} disabled={lobby.online}>
+        <Button leftIcon={<IconRobot />} onClick={addBotPlayer} disabled={lobby.online} style={{ flex: 1 }}>
           Add Bot Player
         </Button>
       </Flex>
