@@ -101,6 +101,9 @@ function joinLobby(player: IPlayer, lobbyId: string): ILobby | undefined {
   const playerCount = Object.values(lobby.players).length;
   if (playerCount >= constants.lobbyMaxPlayerCount) return undefined;
 
+  // Check if player is already in the lobby
+  if (lobby.players[player.id]) return undefined;
+
   lobby.players[player.id] = player;
   player.lobby = lobbyId;
 
