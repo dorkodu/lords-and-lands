@@ -20,6 +20,11 @@ export interface AppStoreState {
   "any";
   status: boolean;
 
+  modals: {
+    showQuitLobby: boolean;
+    showUpdateSW: boolean;
+  }
+
   lobby: {
     lobbyId: string | undefined;
     playerId: string | undefined;
@@ -48,6 +53,11 @@ const initialState: AppStoreState = {
   redirect: undefined,
   route: "any",
   status: false,
+
+  modals: {
+    showQuitLobby: false,
+    showUpdateSW: false,
+  },
 
   lobby: {
     lobbyId: undefined,

@@ -7,6 +7,8 @@ import "./lib/socketio";
 import { useGameStore } from "./stores/gameStore";
 import { game } from "@core/game";
 import { assets } from "./assets/assets";
+import ModalQuitLobby from "./components/modals/ModalQuitLobby";
+import ModalUpdateSW from "./components/modals/ModalUpdateSW";
 
 export default function App() {
   const navigate = useNavigate();
@@ -39,6 +41,9 @@ export default function App() {
     <>
       <MantineProvider theme={{ ...theme }} withNormalizeCSS withGlobalStyles>
         <Outlet />
+
+        <ModalQuitLobby />
+        <ModalUpdateSW />
       </MantineProvider>
 
       <ScrollRestoration />

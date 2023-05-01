@@ -1,4 +1,3 @@
-import { socketio } from "@/lib/socketio";
 import { useAppStore } from "@/stores/appStore";
 import { ActionIcon, Card, createStyles, Flex, px, Title } from "@mantine/core";
 import { IconArrowLeft } from "@tabler/icons-react";
@@ -51,12 +50,13 @@ export default function DefaultLayout() {
         navigate(-1);
         break;
       case "join-lobby":
-      case "lobby":
-        // If playing online, send "leave lobby" event
-        const online = useAppStore.getState().lobby.online;
-        if (online) socketio.emit("client-leave-lobby");
-
         navigate("/main-menu");
+        break;
+      case "lobby":
+        // If playing online, show quit lobby modal
+        const online = useAppStore.getState().lobby.online;
+        if (online) useAppStore.setState(s => { s.modals.showQuitLobby = true });
+        else navigate("/main-menu");
         break;
       default:
         navigate("/main-menu");
