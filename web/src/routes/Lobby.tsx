@@ -86,7 +86,7 @@ export default function Lobby() {
 
       <Flex justify="center" gap="md" wrap="wrap">
         <Button
-          leftIcon={<IconClipboardText />}
+          leftIcon={!clipboard ? <IconClipboardText /> : <IconCheck />}
           onClick={onClickClipboard}
           disabled={!lobby.lobbyId}
           style={{ flex: 1 }}
@@ -95,7 +95,7 @@ export default function Lobby() {
         </Button>
 
         <Button
-          leftIcon={<IconShare />}
+          leftIcon={!share ? <IconShare /> : <IconCheck />}
           onClick={onClickShare}
           disabled={!lobby.lobbyId}
           style={{ flex: 1 }}
