@@ -4,7 +4,7 @@ import { useAppStore } from "@/stores/appStore";
 import { useGameStore } from "@/stores/gameStore";
 import { game } from "@core/game";
 import { ActionId } from "@core/types/action_id";
-import { ActionIcon, createStyles, Flex } from "@mantine/core";
+import { ActionIcon, createStyles, Flex, Tooltip } from "@mantine/core";
 import { IconArrowLeft, IconRefresh } from "@tabler/icons-react";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
@@ -47,7 +47,9 @@ const useStyles = createStyles((_theme) => ({
 function Footer() {
   const navigate = useNavigate();
   const { classes } = useStyles();
+
   const lobbyOwner = useAppStore(state => state.lobby.owner);
+  const running = useGameStore(state => state.data.running);
 
   const onClickLobby = () => {
     navigate("/lobby")
@@ -68,14 +70,18 @@ function Footer() {
   return (
     <Flex className={classes.footer} direction="row" align="center" justify="center" gap="md">
 
-      <ActionIcon variant="filled" size={32} onClick={onClickLobby}>
-        <IconArrowLeft />
-      </ActionIcon>
+      <Tooltip label="Go Back" events={{ hover: true, focus: false, touch: true }}>
+        <ActionIcon variant="filled" size={32} onClick={onClickLobby}>
+          <IconArrowLeft />
+        </ActionIcon>
+      </Tooltip>
 
       {lobbyOwner &&
-        <ActionIcon variant="filled" size={32} onClick={onClickGenerate}>
-          <IconRefresh />
-        </ActionIcon>
+        <Tooltip label="Re-generate" events={{ hover: true, focus: false, touch: true }}>
+          <ActionIcon variant="filled" size={32} onClick={onClickGenerate} disabled={running}>
+            <IconRefresh />
+          </ActionIcon>
+        </Tooltip>
       }
 
     </Flex>
