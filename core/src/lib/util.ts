@@ -151,7 +151,7 @@ function getUnitModifier(data: IGameData, countryId: CountryId, pos: { x: number
     if (!t.unit || !tile.unit) return;
 
     if (t.unit.id === tile.unit.id) modifier += 0.5;
-    else modifier += -1.0;
+    else modifier += -0.5;
   });
 
   return modifier;
