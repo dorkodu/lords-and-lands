@@ -257,12 +257,12 @@ function Map() {
     // but since it's listening for changes here, lobby update event is sent.
     // "modified" variable is to prevent this from happening.
     if (!modified) return;
+    setMofidied(false);
 
     useGameStore.setState(s => {
       const info = { w: debouncedWidth, h: debouncedHeight, seed: debouncedSeed };
-
-      game.play.generate(s.data, info);
       if (lobby.online) socketio.emit("client-lobby-update", info);
+      else game.play.generate(s.data, info);
     });
   }, [debouncedWidth, debouncedHeight, debouncedSeed]);
 
