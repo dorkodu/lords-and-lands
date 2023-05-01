@@ -47,7 +47,7 @@ export default function Saves() {
   }
 
   return (
-    <Flex direction="column" align="center" gap="md">
+    <Flex direction="column" gap="md" maw={360} style={{ width: "100%", margin: "0 auto" }}>
       <Flex direction="column" gap="md">
         <TextInput
           label="Save Name"

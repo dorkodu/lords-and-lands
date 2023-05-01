@@ -5,7 +5,7 @@ export default function Settings() {
   const { playerName, setPlayerName } = useSettings();
 
   return (
-    <Flex direction="column" align="center" gap="md">
+    <Flex direction="column" gap="md" maw={360} style={{ width: "100%", margin: "0 auto" }}>
       <TextInput
         label="Player Name"
         description="Between 1 and 32 characters."

@@ -21,7 +21,7 @@ export default function JoinLobby() {
   }, []);
 
   return (
-    <Flex direction="column" align="center">
+    <Flex direction="column" gap="md" maw={360} style={{ width: "100%", margin: "0 auto" }}>
       <Flex direction="column" gap="md">
 
         <TextInput
