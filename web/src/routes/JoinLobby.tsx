@@ -1,6 +1,7 @@
 import { useSettings } from "@/components/hooks";
 import { socketio } from "@/lib/socketio";
 import { Button, Flex, TextInput } from "@mantine/core";
+import { getHotkeyHandler } from "@mantine/hooks";
 import { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 
@@ -29,6 +30,7 @@ export default function JoinLobby() {
           placeholder="Lobby ID..."
           value={lobbyId}
           onChange={(e) => setLobbyId(e.currentTarget.value)}
+          onKeyDown={getHotkeyHandler([["Enter", onClickJoin]])}
           autoFocus
         />
 
