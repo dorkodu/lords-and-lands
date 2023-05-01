@@ -120,9 +120,18 @@ socketio.on("server-lobby-update", (data) => {
   useGameStore.setState(s => {
     if (data.w === undefined || data.h === undefined || data.seed === undefined) return;
 
-    // Reset game date, apply countries of the current player in the lobby & generate
+    // Reset game data
     s.data = createGameData();
+
+    // Set width, height & seed
+    s.data.width = data.w;
+    s.data.height = data.h;
+    s.data.seed = data.seed;
+
+    // Add countries of the current players in the lobby
     players.forEach(p => game.play.addCountry(s.data, { country: p.country }));
+
+    // Generate
     game.play.generate(s.data, { w: data.w, h: data.h, seed: data.seed });
   });
 });
