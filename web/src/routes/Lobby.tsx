@@ -116,7 +116,10 @@ export default function Lobby() {
 
         <ActionIcon
           onClick={onClickGame}
-          disabled={!data.running && !game.play.startActable(data, {})}
+          disabled={!(
+            lobby.owner && game.play.startActable(data, {}) ||
+            !lobby.owner && data.running
+          )}
         >
           <IconArrowRight />
         </ActionIcon>
