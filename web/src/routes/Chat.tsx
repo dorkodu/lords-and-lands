@@ -3,7 +3,7 @@ import { socketio } from "@/lib/socketio";
 import { useAppStore } from "@/stores/appStore";
 import { wrapContent } from "@/styles/css";
 import { ActionIcon, Card, createStyles, Flex, Text, TextInput } from "@mantine/core";
-import { getHotkeyHandler } from "@mantine/hooks";
+import { getHotkeyHandler, useOs } from "@mantine/hooks";
 import { IconArrowLeft, IconSend } from "@tabler/icons-react";
 import React, { useEffect, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
@@ -39,6 +39,7 @@ const useStyles = createStyles((theme) => ({
 export default function Chat() {
   const navigate = useNavigate();
   const { classes } = useStyles();
+  const os = useOs({ getValueInEffect: false });
 
   const messages = useAppStore(state => state.lobby.messages);
   const message = useAppStore(state => state.lobby.message);
@@ -96,9 +97,10 @@ export default function Chat() {
             maxLength={200}
             value={message}
             onChange={onChangeMessage}
-            onKeyDown={getHotkeyHandler([["Enter", sendMessage]])}
+            onKeyDown={getHotkeyHandler([["Enter", sendMessage], ["Escape", goBack]])}
             style={{ flexGrow: 1 }}
-            autoFocus
+            autoFocus={os === "windows" || os === "linux" || os === "macos"}
+            autoComplete="off"
           />
 
           <ActionIcon onClick={sendMessage}>
