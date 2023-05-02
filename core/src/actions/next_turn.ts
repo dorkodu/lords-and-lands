@@ -1,3 +1,4 @@
+import { game } from "../game";
 import { IGameData } from "../gamedata";
 import { ICountry } from "../lib/country";
 import { createUnit } from "../lib/unit";
@@ -29,9 +30,6 @@ export function nextTurn(data: IGameData, info: Info) {
   const currentTurn = data.turn.type;
   const currentCountry = util.turnTypeToCountry(data, data.turn.type);
 
-  data.turn.count++;
-  data.turn.type = util.getTurnType(data, data.turn.count);
-
   switch (currentTurn) {
     case TurnType.Banner:
       bannerTurn(data);
@@ -48,6 +46,16 @@ export function nextTurn(data: IGameData, info: Info) {
     default:
       break;
   }
+
+  // Get alive countries and if a country is not alive, remove country
+  const aliveCountries = util.getAliveCountries(data);
+  data.countries.forEach(c => {
+    if (aliveCountries[c.id]) return;
+    game.play.removeCountry(data, { country: c.id });
+  });
+
+  data.turn.count++;
+  data.turn.type = util.getTurnType(data, data.turn.count);
 }
 
 function bannerTurn(data: IGameData) {

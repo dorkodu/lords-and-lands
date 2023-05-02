@@ -1,6 +1,7 @@
 import { IGameData } from "../gamedata";
 import { CountryId } from "../types/country_id";
 import { LandmarkId } from "../types/landmark_id";
+import { TileType } from "../types/tile_type";
 import { TurnType } from "../types/turn_type";
 import { ICountry } from "./country";
 import { ITile } from "./tile";
@@ -157,6 +158,33 @@ function getUnitModifier(data: IGameData, countryId: CountryId, pos: { x: number
   return modifier;
 }
 
+function getAliveCountries(data: IGameData): Record<CountryId, boolean> {
+  const status = {} as Record<CountryId, boolean>;
+  const countries = {} as Record<CountryId, ICountry>;
+
+  // Initialize the statuses
+  data.countries.forEach(c => {
+    status[c.id] = false;
+    countries[c.id] = c;
+  });
+
+  data.tiles.forEach(t => {
+    // If country has a banner, it's alive
+    if (t.landmark === LandmarkId.Banner) { status[t.owner] = true; return; }
+
+    // If country has a unit, it's alive
+    if (t.unit && t.unit.id) { status[t.unit.id] = true; return; }
+
+    const country = countries[t.owner];
+    if (!country) return;
+
+    // If country has a nomad tile & banner to place, it's alive
+    if (t.type === TileType.Nomad && country.banners > 0) { status[t.owner] = true; return; }
+  });
+
+  return status;
+}
+
 export const util = {
   countryToTurnType,
   turnTypeToCountry,
@@ -171,4 +199,6 @@ export const util = {
 
   getWarModifier,
   getUnitModifier,
+
+  getAliveCountries,
 }
