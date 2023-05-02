@@ -40,10 +40,13 @@ export default defineConfig({
     //}),
   ],
   server: {
+    watch: { usePolling: true },
     host: true,
+    port: 8008,
+    strictPort: true,
     proxy: {
       "/api": {
-        target: "ws://0.0.0.0:9000",
+        target: "ws://0.0.0.0:8009",
         ws: true,
       },
     },
@@ -58,4 +61,5 @@ export default defineConfig({
   build: {
     reportCompressedSize: false,
   },
+  base: process.env.NODE_ENV === "production" ? "https://cdn.dorkodu.com/lordsandlands/" : "",
 });

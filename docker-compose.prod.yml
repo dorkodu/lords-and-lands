@@ -1,0 +1,37 @@
+version: '3.8'
+name: lordsandlands_prod
+
+services:
+  lordsandlands_api:
+    build:
+      context: .
+      dockerfile: ./api/Dockerfile.prod
+    env_file:
+      - ./.env
+    environment:
+      - NODE_ENV=production
+      - VIRTUAL_HOST=${VIRTUAL_HOST:-lordsandlands.dorkodu.com}
+      - VIRTUAL_PORT=${API_PORT:-8009}
+      - LETSENCRYPT_HOST=${LETSENCRYPT_HOST:-lordsandlands.dorkodu.com}
+      - LETSENCRYPT_EMAIL=${LETSENCRYPT_EMAIL:-hey@dorkodu.com}
+      - VIRTUAL_PATH=/api
+    expose:
+      - ${API_PORT:-8009}
+    restart: always
+    networks:
+      - app
+      - nginx-proxy
+
+  lordsandlands_web:
+    build:
+      context: .
+      dockerfile: ./web/Dockerfile.prod
+    env_file:
+      - ./.env
+    environment:
+      - NODE_ENV=production
+
+networks:
+  nginx-proxy:
+    external: true
+  app:
