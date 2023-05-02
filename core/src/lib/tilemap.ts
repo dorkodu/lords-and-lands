@@ -45,10 +45,12 @@ function chooseOrigins(data: IGameData, rng: ISeedRandom) {
   }
 
   for (let i = 0; i < data.countries.length; ++i) {
-    data.tiles[origins[i]![0]!.x + origins[i]![0]!.y * data.width] = createTile(
+    const tile = createTile(
       { x: origins[i]![0]!.x, y: origins[i]![0]!.y },
       data.countries[i]!.id
     );
+
+    data.tiles[origins[i]![0]!.x + origins[i]![0]!.y * data.width] = tile;
   }
 
   return origins;
