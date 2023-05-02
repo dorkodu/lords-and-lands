@@ -49,6 +49,9 @@ export default function ModalTutorial() {
     useAppStore.setState(s => { s.modals.showTutorial = true });
   }, [seenTutorial]);
 
+  // When tutorial modal is opened, always set current tutorial to first one "Welcome"
+  useEffect(() => { showTutorial && setCurrent(1) }, [showTutorial]);
+
   return (
     <Modal
       opened={showTutorial}
