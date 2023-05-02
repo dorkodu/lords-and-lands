@@ -23,6 +23,9 @@ export interface AppStoreState {
   modals: {
     showLobbyOnline: boolean;
     showQuitLobby: boolean;
+
+    showPlayerWin: boolean;
+
     showUpdateSW: boolean;
   }
 
@@ -58,6 +61,9 @@ const initialState: AppStoreState = {
   modals: {
     showLobbyOnline: false,
     showQuitLobby: false,
+
+    showPlayerWin: false,
+
     showUpdateSW: false,
   },
 

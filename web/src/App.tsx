@@ -10,6 +10,7 @@ import { assets } from "./assets/assets";
 import ModalQuitLobby from "./components/modals/ModalQuitLobby";
 import ModalUpdateSW from "./components/modals/ModalUpdateSW";
 import ModalLobbyOnline from "./components/modals/ModalLobbyOnline";
+import ModalPlayerWin from "./components/modals/ModalPlayerWin";
 
 export default function App() {
   const navigate = useNavigate();
@@ -45,6 +46,7 @@ export default function App() {
 
         <ModalLobbyOnline />
         <ModalQuitLobby />
+        <ModalPlayerWin />
         <ModalUpdateSW />
       </MantineProvider>
 
