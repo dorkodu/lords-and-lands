@@ -27,7 +27,7 @@ export default function ModalNextTurn() {
     >
       <Flex direction="column" gap="md">
         <Flex justify="center">
-          <Image src={assets.countryIdToUnitSrc(countryId)} width={100} height={100} withPlaceholder />
+          <Image src={assets.countryIdToUnitSrc(countryId)} width={100} height={100} />
         </Flex>
 
         <Title order={4} align="center">

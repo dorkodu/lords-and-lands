@@ -31,7 +31,7 @@ export default function ModalUpdateSW() {
       size={360}
     >
       <Flex direction="column" gap="md" align="center">
-        <img src={UnitGreen} width={100} height={100} alt="Forum" />
+        <img src={UnitGreen} width={100} height={100} />
 
         <Title order={4} align="center">
           Updating the Game
