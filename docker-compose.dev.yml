@@ -19,6 +19,7 @@ services:
       - ${API_PORT:-8009}
     volumes:
       - ./api:/lordsandlands/api
+      - ./core:/lordsandlands/core
       - api_node_modules:/lordsandlands/api/node_modules
     restart: always
     networks:
@@ -43,6 +44,7 @@ services:
     volumes:
       - ./web:/lordsandlands/web
       - ./api:/lordsandlands/api
+      - ./core:/lordsandlands/core
       - web_node_modules:/lordsandlands/web/node_modules
     restart: always
     networks:
