@@ -9,6 +9,7 @@ import { game } from "@core/game";
 import { assets } from "./assets/assets";
 import ModalQuitLobby from "./components/modals/ModalQuitLobby";
 import ModalUpdateSW from "./components/modals/ModalUpdateSW";
+import ModalLobbyOnline from "./components/modals/ModalLobbyOnline";
 
 export default function App() {
   const navigate = useNavigate();
@@ -42,6 +43,7 @@ export default function App() {
       <MantineProvider theme={{ ...theme }} withNormalizeCSS withGlobalStyles>
         <Outlet />
 
+        <ModalLobbyOnline />
         <ModalQuitLobby />
         <ModalUpdateSW />
       </MantineProvider>

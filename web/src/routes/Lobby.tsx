@@ -24,7 +24,6 @@ import { CountryId } from "@core/types/country_id";
 import { useDebouncedValue, useTimeout } from "@mantine/hooks";
 import { useEffect, useState } from "react";
 import { socketio } from "@/lib/socketio";
-import { useSettings } from "@/components/hooks";
 import CustomMessageIcon from "@/components/custom/CustomMessageIcon";
 
 export default function Lobby() {
@@ -32,7 +31,6 @@ export default function Lobby() {
 
   const lobby = useAppStore(state => state.lobby);
   const data = useGameStore(state => state.data);
-  const { playerName } = useSettings();
 
   const [clipboard, setClipboard] = useState(false);
   const [share, setShare] = useState(false);
@@ -40,13 +38,7 @@ export default function Lobby() {
   const { start: resetShare } = useTimeout(() => setShare(false), 500);
 
   const toggleLobbyStatus = () => {
-    const online = useAppStore.getState().lobby.online;
-    useAppStore.getState().resetLobby();
-    useAppStore.setState(s => {
-      s.lobby.online = !online;
-      if (s.lobby.online) socketio.emit("client-create-lobby", { playerName });
-      else socketio.emit("client-lobby-update", { online: false });
-    });
+    useAppStore.setState(s => { s.modals.showLobbyOnline = true });
   }
 
   const onClickClipboard = async () => {
