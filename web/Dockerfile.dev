@@ -13,4 +13,4 @@ COPY ./core /lordsandlands/core
 RUN cd /lordsandlands && pnpm install -r
 
 WORKDIR /lordsandlands/web
-RUN pnpm dev
+CMD [ "pnpm", "run", "dev" ]
