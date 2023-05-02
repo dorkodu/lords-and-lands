@@ -56,6 +56,11 @@ export function nextTurn(data: IGameData, info: Info) {
 
   data.turn.count++;
   data.turn.type = util.getTurnType(data, data.turn.count);
+
+  // Skip non-country turns like (banner or chest turns)
+  if (util.turnTypeToCountryId(data.turn.type) === CountryId.None) {
+    game.play.nextTurn(data, { country: undefined });
+  }
 }
 
 function bannerTurn(data: IGameData) {

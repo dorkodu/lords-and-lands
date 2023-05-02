@@ -1,3 +1,4 @@
+import { game } from "../game";
 import { IGameData } from "../gamedata";
 import { util } from "../lib/util";
 import { ActionId } from "../types/action_id";
@@ -24,4 +25,9 @@ export function start(data: IGameData, info: Info) {
 
   data.running = true;
   data.turn.type = util.getTurnType(data, data.turn.count);
+
+  // Skip non-country turns like (banner or chest turns)
+  if (util.turnTypeToCountryId(data.turn.type) === CountryId.None) {
+    game.play.nextTurn(data, { country: undefined });
+  }
 }
