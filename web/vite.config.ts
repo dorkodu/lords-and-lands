@@ -4,7 +4,7 @@ import path from "path";
 
 import react from "@vitejs/plugin-react";
 import viteCompression from "vite-plugin-compression";
-import { VitePWA } from "vite-plugin-pwa";
+//import { VitePWA } from "vite-plugin-pwa";
 import { createHtmlPlugin as html } from "vite-plugin-html";
 import svgr from 'vite-plugin-svgr'
 
@@ -16,28 +16,28 @@ export default defineConfig({
     html({ minify: true }),
     viteCompression({ algorithm: "gzip" }),
     viteCompression({ algorithm: "brotliCompress" }),
-    VitePWA({
-      devOptions: { enabled: false },
-      minify: true,
-      registerType: "prompt",
-      injectRegister: "inline",
-      workbox: {
-        globPatterns: ["**/*.{html,css,js,ico,json,png,svg,webp,woff2}"],
-      },
-      base: "/",
-      manifest: {
-        name: "Lords and Lands",
-        short_name: "Lords and Lands",
-        description: "Lords and Lands",
-        categories: [],
-        start_url: "/",
-        display: "standalone",
-        orientation: "any",
-        theme_color: "#1A1B1E",
-        background_color: "#1A1B1E",
-        icons: [],
-      },
-    }),
+    //VitePWA({
+    //  devOptions: { enabled: false },
+    //  minify: true,
+    //  registerType: "prompt",
+    //  injectRegister: "inline",
+    //  workbox: {
+    //    globPatterns: ["**/*.{html,css,js,ico,json,png,svg,webp,woff2}"],
+    //  },
+    //  base: "/",
+    //  manifest: {
+    //    name: "Lords and Lands",
+    //    short_name: "Lords and Lands",
+    //    description: "Lords and Lands",
+    //    categories: [],
+    //    start_url: "/",
+    //    display: "standalone",
+    //    orientation: "any",
+    //    theme_color: "#1A1B1E",
+    //    background_color: "#1A1B1E",
+    //    icons: [],
+    //  },
+    //}),
   ],
   server: {
     host: true,
