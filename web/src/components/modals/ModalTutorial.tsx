@@ -142,7 +142,7 @@ function TutorialBonuses() {
     <Flex direction="column" gap="md">
       <Flex align="center" gap="md">
         <Image src={LandmarkMountains} width={48} height={48} style={{ filter: "invert(100%)" }} />
-        <Text>• Mountains provide +2 defence bonus</Text>
+        <Text>• Mountains provide +2 defense bonus</Text>
       </Flex>
 
       <Flex align="center" gap="md">
