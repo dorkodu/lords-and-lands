@@ -130,6 +130,7 @@ export default function Lobby() {
 
 function Players() {
   const lobby = useAppStore(state => state.lobby);
+  const running = useGameStore(state => state.data.running);
 
   const addLocalPlayer = () => {
     // TODO: Implement and enable adding local players in online mode
@@ -154,10 +155,21 @@ function Players() {
       </Flex>
 
       <Flex justify="center" gap="md" wrap="wrap">
-        <Button leftIcon={<IconDeviceGamepad2 />} onClick={addLocalPlayer} disabled={lobby.online} style={{ flex: 1 }}>
+        <Button
+          leftIcon={<IconDeviceGamepad2 />}
+          onClick={addLocalPlayer}
+          disabled={lobby.online || running}
+          style={{ flex: 1 }}
+        >
           Add Local Player
         </Button>
-        <Button leftIcon={<IconRobot />} onClick={addBotPlayer} disabled={lobby.online} style={{ flex: 1 }}>
+
+        <Button
+          leftIcon={<IconRobot />}
+          onClick={addBotPlayer}
+          disabled={lobby.online || running}
+          style={{ flex: 1 }}
+        >
           Add Bot Player
         </Button>
       </Flex>
@@ -244,6 +256,8 @@ function Player({ player }: { player: IPlayer }) {
 function Map() {
   const navigate = useNavigate();
 
+  const running = useGameStore(state => state.data.running);
+
   const lobby = useAppStore(state => state.lobby);
   const width = useGameStore(state => state.data.width);
   const height = useGameStore(state => state.data.height);
@@ -254,6 +268,8 @@ function Map() {
   const [debouncedWidth] = useDebouncedValue(width, 250);
   const [debouncedHeight] = useDebouncedValue(height, 250);
   const [debouncedSeed] = useDebouncedValue(seed, 250);
+
+  const inputDisabled = !lobby.owner || running;
 
   useEffect(() => {
     // When player joins a lobby, lobby sends width, height & seed,
@@ -291,15 +307,15 @@ function Map() {
       <Title order={4}>Map Settings</Title>
 
       <Flex align="center" justify="space-between" gap="md">
-        Width: <NumberInput value={width} onChange={onChangeWidth} disabled={!lobby.owner} min={5} max={25} />
+        Width: <NumberInput value={width} onChange={onChangeWidth} disabled={inputDisabled} min={5} max={25} />
       </Flex>
 
       <Flex align="center" justify="space-between" gap="md">
-        Height: <NumberInput value={height} onChange={onChangeHeight} disabled={!lobby.owner} min={5} max={25} />
+        Height: <NumberInput value={height} onChange={onChangeHeight} disabled={inputDisabled} min={5} max={25} />
       </Flex>
 
       <Flex align="center" justify="space-between" gap="md">
-        Seed: <NumberInput value={seed} onChange={onChangeSeed} disabled={!lobby.owner} />
+        Seed: <NumberInput value={seed} onChange={onChangeSeed} disabled={inputDisabled} />
       </Flex>
 
       <Button onClick={onClickPreview}>Preview</Button>
