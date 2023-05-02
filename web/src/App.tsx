@@ -12,6 +12,7 @@ import ModalUpdateSW from "./components/modals/ModalUpdateSW";
 import ModalLobbyOnline from "./components/modals/ModalLobbyOnline";
 import ModalPlayerWin from "./components/modals/ModalPlayerWin";
 import ModalNextTurn from "./components/modals/ModalNextTurn";
+import ModalTutorial from "./components/modals/ModalTutorial";
 
 export default function App() {
   const navigate = useNavigate();
@@ -45,6 +46,7 @@ export default function App() {
       <MantineProvider theme={{ ...theme }} withNormalizeCSS withGlobalStyles>
         <Outlet />
 
+        <ModalTutorial />
         <ModalLobbyOnline />
         <ModalQuitLobby />
         <ModalNextTurn />

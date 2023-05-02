@@ -21,6 +21,8 @@ export interface AppStoreState {
   status: boolean;
 
   modals: {
+    showTutorial: boolean;
+
     showLobbyOnline: boolean;
     showQuitLobby: boolean;
 
@@ -60,6 +62,8 @@ const initialState: AppStoreState = {
   status: false,
 
   modals: {
+    showTutorial: false,
+
     showLobbyOnline: false,
     showQuitLobby: false,
 
