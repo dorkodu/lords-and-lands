@@ -39,7 +39,7 @@ export default function ModalLobbyOnline() {
         </Flex>
 
         <Title order={4} align="center">
-          {`Are you sure you want to change lobby to ${online ? '"Offline"' : '"Online"'} ?`}
+          {`Are you sure you want to change lobby to ${online ? '"Offline"' : '"Online"'}?`}
         </Title>
 
         <Button onClick={close}>No</Button>
