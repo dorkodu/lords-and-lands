@@ -53,10 +53,8 @@ export default function DefaultLayout() {
         navigate("/main-menu");
         break;
       case "lobby":
-        // If playing online, show quit lobby modal
-        const online = useAppStore.getState().lobby.online;
-        if (online) useAppStore.setState(s => { s.modals.showQuitLobby = true });
-        else navigate("/main-menu");
+        // If playing online, show quit lobby modal instead of directly quitting
+        useAppStore.setState(s => { s.modals.showQuitLobby = true });
         break;
       default:
         navigate("/main-menu");
