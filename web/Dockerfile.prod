@@ -1,16 +1,16 @@
-FROM node:16.17.1-alpine as base
+FROM node:16.17.1-alpine
 WORKDIR /lordsandlands
 
 RUN mkdir -p /lordsandlands/web
 RUN mkdir -p /lordsandlands/api
+RUN mkdir -p /lordsandlands/core
 
 RUN npm install -g pnpm && pnpm config set --global store-dir /root/.local/share/pnpm/store/v3
 
-WORKDIR /lordsandlands/web
-
 COPY ./web /lordsandlands/web
 COPY ./api /lordsandlands/api
+COPY ./core /lordsandlands/core
 RUN cd /lordsandlands && pnpm install -r
 
-#RUN pnpm test
+WORKDIR /lordsandlands/web
 RUN pnpm build

@@ -3,12 +3,14 @@ WORKDIR /lordsandlands
 
 RUN mkdir -p /lordsandlands/web
 RUN mkdir -p /lordsandlands/api
+RUN mkdir -p /lordsandlands/core
 
 RUN npm install -g pnpm && pnpm config set --global store-dir /root/.local/share/pnpm/store/v3
 
 COPY ./web /lordsandlands/web
 COPY ./api /lordsandlands/api
-RUN cd /lordsandlands/web && pnpm install && cd /lordsandlands/api && pnpm install
+COPY ./core /lordsandlands/core
+RUN cd /lordsandlands && pnpm install -r
 
 WORKDIR /lordsandlands/web
-CMD [ "pnpm", "run", "dev" ]
+RUN pnpm dev
