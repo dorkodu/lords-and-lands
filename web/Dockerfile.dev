@@ -1,0 +1,14 @@
+FROM node:16.17.1-alpine
+WORKDIR /lordsandlands
+
+RUN mkdir -p /lordsandlands/web
+RUN mkdir -p /lordsandlands/api
+
+RUN npm install -g pnpm && pnpm config set --global store-dir /root/.local/share/pnpm/store/v3
+
+COPY ./web /lordsandlands/web
+COPY ./api /lordsandlands/api
+RUN cd /lordsandlands/web && pnpm install && cd /lordsandlands/api && pnpm install
+
+WORKDIR /lordsandlands/web
+CMD [ "pnpm", "run", "dev" ]

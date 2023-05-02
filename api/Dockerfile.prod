@@ -1,0 +1,31 @@
+FROM node:16.17.1-alpine as base
+WORKDIR /lordsandlands
+RUN mkdir -p /lordsandlands/api
+
+RUN npm install -g pnpm && pnpm config set --global store-dir /root/.local/share/pnpm/store/v3
+
+COPY ./api/pnpm-lock.yaml /lordsandlands/api
+RUN cd api && pnpm fetch
+COPY ./api /lordsandlands/api
+RUN cd api && pnpm install --offline
+
+FROM base as test
+# TODO: Test
+
+FROM base as build
+WORKDIR /lordsandlands/api
+RUN pnpm build
+
+FROM node:16.17.1-alpine
+WORKDIR /lordsandlands
+RUN mkdir -p /lordsandlands/api
+
+RUN npm install -g pnpm && pnpm config set --global store-dir /root/.local/share/pnpm/store/v3
+
+COPY ./api/pnpm-lock.yaml /lordsandlands/api
+RUN cd api && pnpm fetch --prod
+COPY --from=build /lordsandlands/api/dist /lordsandlands/api/dist
+COPY ./api/package.json /lordsandlands/api
+RUN cd api && pnpm install --offline --prod
+
+CMD [ "node", "/lordsandlands/api/dist/index.js" ]
