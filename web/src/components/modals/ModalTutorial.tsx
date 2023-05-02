@@ -3,6 +3,17 @@ import { Button, Flex, Image, Modal, Text } from "@mantine/core";
 import { useEffect, useState } from "react";
 import { Piece } from "../TextParser";
 import { useSettings } from "../hooks";
+
+import TutorialGeneral from "@/assets/misc/tutorial_general.png";
+import TutorialAlly from "@/assets/misc/tutorial_ally.png";
+import TutorialEnemy from "@/assets/misc/tutorial_enemy.png";
+import TutorialConquer from "@/assets/misc/tutorial_conquer.png";
+
+import LandmarkBanner from "@/assets/landmarks/banner.png";
+import LandmarkChest from "@/assets/landmarks/chest.png";
+import LandmarkForest from "@/assets/landmarks/forest.png";
+import LandmarkMountains from "@/assets/landmarks/mountains.png";
+
 import UnitGreen from "@/assets/units/green.png";
 
 export default function ModalTutorial() {
@@ -91,7 +102,7 @@ function TutorialMovement() {
   return (
     <Flex direction="column" gap="md">
       <Flex justify="center">
-        <Image src={UnitGreen} width={64 * 3} height={64 * 3} />
+        <Image src={TutorialGeneral} width={48 * 3} height={48 * 3} />
       </Flex>
 
       <Flex direction="column">
@@ -108,7 +119,7 @@ function TutorialAttacking() {
   return (
     <Flex direction="column" gap="md">
       <Flex justify="center">
-        <Image src={UnitGreen} width={64 * 3} height={64 * 3} />
+        <Image src={TutorialEnemy} width={48 * 3} height={48 * 3} />
       </Flex>
 
       <Flex direction="column">
@@ -129,23 +140,23 @@ function TutorialAttacking() {
 function TutorialBonuses() {
   return (
     <Flex direction="column" gap="md">
-      <Flex align="center">
-        <Image src={UnitGreen} width={48} height={48} />
+      <Flex align="center" gap="md">
+        <Image src={LandmarkMountains} width={48} height={48} style={{ filter: "invert(100%)" }} />
         <Text>• Mountains provide +2 defence bonus</Text>
       </Flex>
 
-      <Flex align="center">
-        <Image src={UnitGreen} width={48} height={48} />
+      <Flex align="center" gap="md">
+        <Image src={LandmarkForest} width={48} height={48} style={{ filter: "invert(100%)" }} />
         <Text>• Forests provide +2 attack bonus</Text>
       </Flex>
 
-      <Flex align="center">
-        <Image src={UnitGreen} width={48 * 3} height={48 * 3} />
+      <Flex align="center" gap="md">
+        <Image src={TutorialAlly} width={48 * 3} height={48 * 3} />
         <Text>• Each ally unit in any 8 direction provide +0.5 bonus</Text>
       </Flex>
 
-      <Flex align="center">
-        <Image src={UnitGreen} width={48 * 3} height={48 * 3} />
+      <Flex align="center" gap="md">
+        <Image src={TutorialEnemy} width={48 * 3} height={48 * 3} />
         <Text>• Each enemy unit in any 8 direction reduce -0.5 bonus</Text>
       </Flex>
     </Flex>
@@ -155,17 +166,17 @@ function TutorialBonuses() {
 function TutorialTurns() {
   return (
     <Flex direction="column" gap="md">
-      <Flex align="center">
-        <Image src={UnitGreen} width={48} height={48} />
+      <Flex align="center" gap="md">
+        <Image src={LandmarkBanner} width={48} height={48} style={{ filter: "invert(100%)" }} />
         <Text>• All players receive 1 banner</Text>
       </Flex>
 
-      <Flex align="center">
-        <Image src={UnitGreen} width={48} height={48} />
+      <Flex align="center" gap="md">
+        <Image src={LandmarkChest} width={48} height={48} style={{ filter: "invert(100%)" }} />
         <Text>• A chest appears in a random tile, first unit to go there, receives 1 banner</Text>
       </Flex>
 
-      <Flex align="center">
+      <Flex align="center" gap="md">
         <Image src={UnitGreen} width={48} height={48} />
         <Text>• Player can place banners or move units</Text>
       </Flex>
@@ -176,13 +187,13 @@ function TutorialTurns() {
 function TutorialHowToWin() {
   return (
     <Flex direction="column" gap="md">
-      <Flex align="center">
-        <Image src={UnitGreen} width={48} height={48} />
+      <Flex align="center" gap="md">
+        <Image src={LandmarkBanner} width={48} height={48} style={{ filter: "invert(100%)" }} />
         <Text>• Press on white banners to place banner</Text>
       </Flex>
 
-      <Flex align="center">
-        <Image src={UnitGreen} width={48} height={48} />
+      <Flex align="center" gap="md">
+        <Image src={TutorialConquer} width={48} height={48} />
         <Text>• Stay in enemy tiles to conquer them</Text>
       </Flex>
 
