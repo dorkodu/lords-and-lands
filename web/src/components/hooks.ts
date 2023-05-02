@@ -97,7 +97,14 @@ export function useSettings() {
     deserialize: (value) => value,
   });
 
+  const [seenTutorial, setSeenTutorial] = useLocalStorage({
+    key: "seen-tutorial",
+    defaultValue: false,
+    getInitialValueInEffect: false,
+  });
+
   return {
     playerName, setPlayerName,
+    seenTutorial, setSeenTutorial,
   }
 }

@@ -1,5 +1,6 @@
 import { useSettings } from "@/components/hooks";
-import { Flex, TextInput } from "@mantine/core";
+import { useAppStore } from "@/stores/appStore";
+import { Button, Divider, Flex, TextInput } from "@mantine/core";
 import { getHotkeyHandler, useHotkeys } from "@mantine/hooks";
 import { useNavigate } from "react-router-dom";
 
@@ -9,6 +10,8 @@ export default function Settings() {
   const navigate = useNavigate();
   const goBack = () => { navigate(-1) }
   useHotkeys([["Escape", goBack]]);
+
+  const showTutorial = () => { useAppStore.setState(s => { s.modals.showTutorial = true }) }
 
   return (
     <Flex direction="column" gap="md" maw={360} style={{ width: "100%", margin: "0 auto" }}>
@@ -21,6 +24,10 @@ export default function Settings() {
         onChange={(ev) => setPlayerName(ev.target.value)}
         onKeyDown={getHotkeyHandler([["Escape", goBack]])}
       />
+
+      <Divider />
+
+      <Button onClick={showTutorial}>Show Tutorial</Button>
     </Flex>
   )
 }

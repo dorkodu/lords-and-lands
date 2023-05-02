@@ -1,50 +1,86 @@
 import { useAppStore } from "@/stores/appStore";
-import { ActionIcon, Button, Flex, Image, Modal, Text } from "@mantine/core";
-import { IconChevronLeft, IconChevronRight } from "@tabler/icons-react";
-import { useState } from "react";
+import { Button, Flex, Image, Modal, Text } from "@mantine/core";
+import { useEffect, useState } from "react";
 import { Piece } from "../TextParser";
-
+import { useSettings } from "../hooks";
 import UnitGreen from "@/assets/units/green.png";
 
 export default function ModalTutorial() {
   const showTutorial = useAppStore(state => state.modals.showTutorial);
   const close = () => { useAppStore.setState(s => { s.modals.showTutorial = false }) }
 
-  const [current, setCurrent] = useState(0);
-  const previous = () => { if (current > 0) setCurrent(current - 1) }
-  const next = () => { if (current < 5) setCurrent(current + 1) }
+  const tutorialCount = 7;
+  const [current, setCurrent] = useState(1);
+  const previous = () => { if (current > 1) setCurrent(current - 1) }
+  const next = () => {
+    if (current < tutorialCount) { setCurrent(current + 1) }
+    else { close(); setSeenTutorial(true); }
+  }
 
-  const CurrentTutorial = () => {
+  const getTutorialTitle = () => {
     switch (current) {
-      case 0: return <TutorialMovement />
-      case 1: return <TutorialAttacking />
-      case 2: return <TutorialBonuses />
-      case 3: return <TutorialTurns />
-      case 4: return <TutorialHowToWin />
-      case 5: return <TutorialEnjoy />
+      case 1: return "• Welcome"
+      case 2: return "• Movement"
+      case 3: return "• Attacking"
+      case 4: return "• Bonuses"
+      case 5: return "• Turns"
+      case 6: return "• How To Win"
+      case 7: return "• Enjoy"
       default: return <></>
     }
   }
 
+  const CurrentTutorial = () => {
+    switch (current) {
+      case 1: return <TutorialWelcome />
+      case 2: return <TutorialMovement />
+      case 3: return <TutorialAttacking />
+      case 4: return <TutorialBonuses />
+      case 5: return <TutorialTurns />
+      case 6: return <TutorialHowToWin />
+      case 7: return <TutorialEnjoy />
+      default: return <></>
+    }
+  }
+
+  const { seenTutorial, setSeenTutorial } = useSettings();
+  useEffect(() => {
+    if (seenTutorial) return;
+    useAppStore.setState(s => { s.modals.showTutorial = true });
+  }, [seenTutorial]);
+
   return (
     <Modal
-      opened={true}
+      opened={showTutorial}
       onClose={() => { }}
       lockScroll={false}
       centered
       size={360}
-      title="Tutorial"
+      title={`Tutorial ${current} of ${tutorialCount} ${getTutorialTitle()}`}
       withCloseButton={false}
     >
       <Flex direction="column" gap="md">
         <CurrentTutorial />
 
         <Flex justify="center" gap="md">
-          <Button style={{ flex: 1 }} onClick={previous}>Previous</Button>
-          <Button style={{ flex: 1 }} onClick={next}>Next</Button>
+          <Button style={{ flex: 1 }} onClick={previous} disabled={current <= 1}>
+            Previous
+          </Button>
+          <Button style={{ flex: 1 }} onClick={next}>
+            {current !== tutorialCount ? "Next" : "Let's Go!"}
+          </Button>
         </Flex>
       </Flex>
     </Modal>
+  )
+}
+
+function TutorialWelcome() {
+  return (
+    <Flex direction="column" gap="md">
+      <Text align="center">Welcome to Lords and Lands!</Text>
+      <Text align="center">Let's prepare you for the battlefield.</Text>
+    </Flex>
   )
 }
 
