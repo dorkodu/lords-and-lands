@@ -1,3 +1,9 @@
+import { useAppStore } from "@/stores/appStore";
+import { useGameStore } from "@/stores/gameStore";
+import { game } from "@core/game";
+import { ActionId } from "@core/types/action_id";
+import { socketio } from "./socketio";
+
 function share(text: string, url: string): Promise<boolean> {
   return new Promise(resolve => {
     if (navigator.share) {
@@ -36,10 +42,36 @@ function version(day: number, month: number, year: number) {
   return `version ${new Intl.DateTimeFormat("en", { dateStyle: "long" }).format(date)}`;
 }
 
+function nextTurn() {
+  const online = useAppStore.getState().lobby.online;
+
+  useGameStore.setState(s => {
+    if (online) {
+      // If next turn action is actable
+      if (game.play.nextTurnActable(s.data, { country: s.country?.id })) {
+        socketio.emit("client-game-action", { id: ActionId.NextTurn, info: {} });
+      }
+    }
+    else {
+      game.play.nextTurn(s.data, { country: s.country?.id });
+      s.country = game.util.turnTypeToCountry(s.data, s.data.turn.type);
+    }
+
+    // Clear any previous tile selections (excluding hovered tile)
+    s.moveableTiles = [];
+    s.selectedUnitTile = undefined;
+
+    // Clear "didAction"
+    s.didAction = false;
+  });
+}
+
 export const util = {
   share,
   copyToClipboard,
 
   generateId,
   version,
+
+  nextTurn,
 }

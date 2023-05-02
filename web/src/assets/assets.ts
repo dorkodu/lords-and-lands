@@ -71,7 +71,7 @@ function getUnitSrc(tile: ITile) {
   }
 }
 
-function countryIdToUnitSrc(countryId: CountryId): string | undefined {
+function countryIdToUnitSrc(countryId: CountryId | undefined): string | undefined {
   switch (countryId) {
     case CountryId.Green: return UnitGreen;
     case CountryId.Purple: return UnitPurple;

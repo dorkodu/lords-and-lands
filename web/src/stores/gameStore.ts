@@ -15,6 +15,12 @@ export interface GameStoreState {
   moveableTiles: ITile[];
 
   map: { positionX: number, positionY: number, scale: number };
+
+  /**
+   * Used to display "ModalNextTurn", if player didn't do any actions,
+   * require confirmation to pass the turn.
+   */
+  didAction: boolean;
 }
 
 export interface GameStoreAction {
@@ -30,6 +36,8 @@ const initialState: GameStoreState = {
   moveableTiles: [],
 
   map: { positionX: 0, positionY: 0, scale: 1 },
+
+  didAction: false,
 }
 
 export const useGameStore = create(

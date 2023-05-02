@@ -63,6 +63,9 @@ function Tile({ tile }: { tile: ITile }) {
       if (game.play.placeBannerActable(s.data, info)) {
         if (online) socketio.emit("client-game-action", { id: ActionId.PlaceBanner, info });
         else game.play.placeBanner(s.data, info);
+
+        // Player did action
+        s.didAction = true;
       }
 
       if (s.selectedUnitTile?.pos.x === tile.pos.x && s.selectedUnitTile?.pos.y === tile.pos.y) {
@@ -77,6 +80,9 @@ function Tile({ tile }: { tile: ITile }) {
         if (game.play.moveUnitActable(s.data, info)) {
           if (online) socketio.emit("client-game-action", { id: ActionId.MoveUnit, info });
           else game.play.moveUnit(s.data, info);
+
+          // Player did action
+          s.didAction = true;
         }
       }
 

@@ -11,6 +11,7 @@ import ModalQuitLobby from "./components/modals/ModalQuitLobby";
 import ModalUpdateSW from "./components/modals/ModalUpdateSW";
 import ModalLobbyOnline from "./components/modals/ModalLobbyOnline";
 import ModalPlayerWin from "./components/modals/ModalPlayerWin";
+import ModalNextTurn from "./components/modals/ModalNextTurn";
 
 export default function App() {
   const navigate = useNavigate();
@@ -46,6 +47,7 @@ export default function App() {
 
         <ModalLobbyOnline />
         <ModalQuitLobby />
+        <ModalNextTurn />
         <ModalPlayerWin />
         <ModalUpdateSW />
       </MantineProvider>

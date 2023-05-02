@@ -1,8 +1,7 @@
-import { socketio } from "@/lib/socketio";
+import { util } from "@/lib/util";
 import { useAppStore } from "@/stores/appStore";
 import { useGameStore } from "@/stores/gameStore";
 import { game } from "@core/game";
-import { ActionId } from "@core/types/action_id";
 import { Flex, createStyles, ActionIcon, Tooltip } from "@mantine/core";
 import { useHotkeys } from "@mantine/hooks";
 import { IconArrowRight, IconWorld } from "@tabler/icons-react";
@@ -33,24 +32,15 @@ export default function Footer() {
   const onClickLobby = () => { navigate("/lobby") }
   const onClickChat = () => { navigate("/chat") }
   const onClickNextTurn = () => {
-    const online = useAppStore.getState().lobby.online;
+    const didAction = useGameStore.getState().didAction;
 
-    useGameStore.setState(s => {
-      if (online) {
-        // If next turn action is actable
-        if (game.play.nextTurnActable(s.data, { country: s.country?.id })) {
-          socketio.emit("client-game-action", { id: ActionId.NextTurn, info: {} });
-        }
-      }
-      else {
-        game.play.nextTurn(s.data, { country: s.country?.id });
-        s.country = game.util.turnTypeToCountry(s.data, s.data.turn.type);
-      }
+    // If didn't do action, show "ModalNextTurn"
+    if (!didAction) {
+      useAppStore.setState(s => { s.modals.showNextTurn = true });
+      return;
+    }
 
-      // Clear any previous tile selections (excluding hovered tile)
-      s.moveableTiles = [];
-      s.selectedUnitTile = undefined;
-    });
+    util.nextTurn();
   }
 
   useHotkeys([
