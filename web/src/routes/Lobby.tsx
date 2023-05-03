@@ -108,7 +108,9 @@ export default function Lobby() {
         <Button leftIcon={<CustomMessageIcon />} onClick={onClickChat} style={{ flex: 1 }}>
           Chat
         </Button>
+      </Flex>
 
+      <Flex justify="center" gap="md" wrap="wrap">
         <Button
           leftIcon={<IconArrowRight />}
           onClick={onClickGame}
