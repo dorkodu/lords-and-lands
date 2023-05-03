@@ -32,4 +32,4 @@ COPY --from=build /lordsandlands/api/dist /lordsandlands/api/dist
 COPY ./api/package.json /lordsandlands/api
 RUN cd api && pnpm install --offline --prod
 
-CMD [ "node", "/lordsandlands/api/dist/api/index.js" ]
+CMD [ "node", "/lordsandlands/api/dist/api/src/index.js" ]
