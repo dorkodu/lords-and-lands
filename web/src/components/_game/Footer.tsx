@@ -32,6 +32,9 @@ export default function Footer() {
   const onClickLobby = () => { navigate("/lobby") }
   const onClickChat = () => { navigate("/chat") }
   const onClickNextTurn = () => {
+    const actable = game.play.nextTurnActable(data, { country: country?.id });
+    if (!actable) return;
+
     const didAction = useGameStore.getState().didAction;
 
     // If didn't do action, show "ModalNextTurn"
