@@ -1,3 +1,4 @@
+import "./paths";
 import { config } from "./config";
 import { server } from "./lib/server";
 import "./lib/socketio";
