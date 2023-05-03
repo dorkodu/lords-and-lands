@@ -134,10 +134,12 @@ function Players() {
   const lobby = useAppStore(state => state.lobby);
   const running = useGameStore(state => state.data.running);
 
+  const localPlayerAddable = lobby.players.length < 4;
   const addLocalPlayer = () => {
     // TODO: Implement and enable adding local players in online mode
     // Disable adding local players in online mode
     if (lobby.online) return;
+    if (!localPlayerAddable) return;
 
     useAppStore.setState(s => {
       const newPlayer = { id: util.generateId(), name: "Local Player", country: CountryId.None };
@@ -147,7 +149,13 @@ function Players() {
     });
   }
 
-  const addBotPlayer = () => { }
+  const botPlayerAddable = lobby.players.length < 4;
+  const addBotPlayer = () => {
+    // TODO: Implement and enable adding local players in online mode
+    // Disable adding local players in online mode
+    if (lobby.online) return;
+    if (!localPlayerAddable) return;
+  }
 
   return (
     <>
@@ -160,7 +168,7 @@ function Players() {
         <Button
           leftIcon={<IconDeviceGamepad2 />}
           onClick={addLocalPlayer}
-          disabled={lobby.online || running}
+          disabled={lobby.online || running || !localPlayerAddable}
           style={{ flex: 1 }}
         >
           Add Local Player
@@ -169,7 +177,7 @@ function Players() {
         <Button
           leftIcon={<IconRobot />}
           onClick={addBotPlayer}
-          disabled={lobby.online || running}
+          disabled={lobby.online || running || !botPlayerAddable}
           style={{ flex: 1 }}
         >
           Add Bot Player
