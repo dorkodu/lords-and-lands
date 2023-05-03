@@ -2,7 +2,7 @@
   "name": "lords-and-lands-api",
   "version": "0.1.0",
   "scripts": {
-    "build": "rimraf ./dist && tsc",
+    "build": "rimraf ./dist && tsc && tsc-alias",
     "dev": "ts-node-dev --poll --respawn --quiet --require tsconfig-paths/register src/index.ts"
   },
   "dependencies": {
@@ -19,6 +19,7 @@
     "rimraf": "^3.0.2",
     "ts-node": "^10.9.1",
     "ts-node-dev": "^2.0.0",
+    "tsc-alias": "^1.8.6",
     "tsconfig-paths": "^4.2.0",
     "typescript": "^4.9.5"
   }
