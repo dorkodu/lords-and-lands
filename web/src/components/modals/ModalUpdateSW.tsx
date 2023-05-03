@@ -1,3 +1,4 @@
+/*
 import { useAppStore } from "@/stores/appStore";
 import { Flex, Loader, Modal, Title } from "@mantine/core";
 import { useEffect } from "react";
@@ -43,4 +44,9 @@ export default function ModalUpdateSW() {
       </Flex>
     </Modal>
   )
+}
+*/
+
+export default function ModalUpdateSW() {
+  return (<></>)
 }
