@@ -17,7 +17,7 @@ export default function MainMenu() {
 
   return (
     <div style={{ position: "absolute", top: 0, bottom: 0, left: 0, right: 0 }}>
-      <Flex direction="column" align="center" justify="center" gap="md" p="md" style={{ height: "100%" }}>
+      <Flex direction="column" align="center" justify="center" gap="md" p="md" style={{ minHeight: "100%" }}>
 
         <Flex direction="column" align="center">
           <Title align="center">Lords and Lands</Title>
