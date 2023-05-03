@@ -143,6 +143,17 @@ function lobbyUpdate(player: IPlayer, width?: number, height?: number, seed?: nu
   if (height !== undefined) lobby.gameData.height = height;
   if (seed !== undefined) lobby.gameData.seed = seed;
 
+  // If at least one of width/height/seed has changed, generate tilemap
+  if (width !== undefined || height !== undefined || seed !== undefined) {
+    const info = {
+      w: width ?? lobby.gameData.width,
+      h: height ?? lobby.gameData.height,
+      seed: seed ?? lobby.gameData.seed,
+    };
+
+    game.play.generate(lobby.gameData, info);
+  }
+
   return true;
 }
 
