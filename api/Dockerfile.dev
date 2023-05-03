@@ -4,7 +4,7 @@ WORKDIR /lordsandlands
 RUN mkdir -p /lordsandlands/api
 RUN mkdir -p /lordsandlands/core
 
-RUN npm install -g pnpm && pnpm config set --global store-dir /root/.local/share/pnpm/store/v3
+RUN npm install -g pnpm@7.29.3 && pnpm config set --global store-dir /root/.local/share/pnpm/store/v3
 
 COPY ./api /lordsandlands/api
 COPY ./core /lordsandlands/core
