@@ -1,4 +1,5 @@
 import { IGameData } from "../gamedata";
+import { util } from "../lib/util";
 import { ActionId } from "../types/action_id";
 import { CountryId } from "../types/country_id";
 
@@ -17,4 +18,11 @@ export function removeCountry(data: IGameData, info: Info) {
   if (!removeCountryActable(data, info)) return;
 
   data.countries = data.countries.filter(c => c.id !== info.country);
+
+  // If current turn was the removed country's, skip to next turn
+  const currentCountry = util.turnTypeToCountryId(data.turn.type);
+  if (currentCountry === info.country) {
+    data.turn.count++;
+    data.turn.type = util.getTurnType(data, data.turn.count);
+  }
 }
