@@ -8,6 +8,7 @@ type Info = {
   countryId: CountryId;
   from: { x: number, y: number };
   to: { x: number, y: number };
+  bonus?: number;
 }
 export type IActionMoveUnit = { id: ActionId.MoveUnit, info: Info };
 
@@ -43,7 +44,7 @@ export function moveUnit(data: IGameData, info: Info) {
     const modifier = util.getWarModifier(data, fromTile, toTile);
     const fromDice = data.rng.dice();
     const toDice = data.rng.dice();
-    const total = (fromDice - toDice) + modifier;
+    const total = (fromDice - toDice) + modifier + (info.bonus ?? 0);
 
     // If war is won
     if (total > 0) {

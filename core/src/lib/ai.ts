@@ -5,7 +5,21 @@ import { LandmarkId } from "../types/landmark_id";
 import { ITile } from "./tile";
 import { util } from "./util";
 
-function play(data: IGameData, countryId: CountryId, aggressiveness: number) {
+interface IAISettings {
+  aggressiveness: number;
+  difficulty: number;
+}
+
+/**
+ * 
+ * @param data 
+ * @param countryId 
+ * @param settings
+ * Aggressiveness (-6 to +6) -> minimum war modifier threshold before attacking.
+ * Difficulty (-6 to +6) -> war modifier bonus to AI.
+ * @returns 
+ */
+function play(data: IGameData, countryId: CountryId, settings: IAISettings) {
   const country = data.countries.filter(c => c.id === countryId)[0];
   if (!country) return;
 
@@ -47,7 +61,7 @@ function play(data: IGameData, countryId: CountryId, aggressiveness: number) {
 
   // 4. Attack if accepted attack modifier level is met
   unitTiles.forEach(t => {
-    attackUnit(data, t, aggressiveness);
+    attackUnit(data, t, settings);
   });
 }
 
@@ -156,7 +170,7 @@ function moveUnitAway(data: IGameData, tile: ITile): boolean {
   return false;
 }
 
-function attackUnit(data: IGameData, tile: ITile, aggressiveness: number) {
+function attackUnit(data: IGameData, tile: ITile, settings: IAISettings) {
   const countryId = tile.unit?.id;
   if (countryId === undefined) return;
 
@@ -166,10 +180,10 @@ function attackUnit(data: IGameData, tile: ITile, aggressiveness: number) {
     if (!t.unit) continue;
     if (t.unit.id === countryId) continue;
 
-    const info = { from: tile.pos, to: t.pos, countryId };
+    const info = { from: tile.pos, to: t.pos, countryId, bonus: settings.difficulty };
     if (!game.play.moveUnitActable(data, info)) continue;
 
-    if (aggressiveness > util.getWarModifier(data, tile, t) * -1) {
+    if (settings.aggressiveness + settings.difficulty > util.getWarModifier(data, tile, t) * -1) {
       game.play.moveUnit(data, info);
       break;
     }

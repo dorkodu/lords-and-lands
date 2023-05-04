@@ -57,7 +57,7 @@ function nextTurn() {
     else {
       game.play.nextTurn(s.data, { country: s.country?.id });
       skipAITurns(s.data);
-      s.country = game.util.turnTypeToCountry(s.data, s.data.turn.type);
+      s.country = getLocalCountry(s.data);
     }
 
     // Clear any previous tile selections (excluding hovered tile)
@@ -72,17 +72,40 @@ function nextTurn() {
 function skipAITurns(data: IGameData) {
   const players = useAppStore.getState().lobby.players;
 
-  // If current turn is a bot, make it play it's turn
   let currentCountry = game.util.turnTypeToCountryId(data.turn.type);
   let player = players.filter(p => p.country === currentCountry)[0];
+  let nonBotPlayerCount = players.filter(p => !p.isBot && data.countries.filter(c => c.id === p.country).length).length;
 
-  while (player && player.isBot) {
-    ai.play(data, player.country, player.aggressiveness ?? 0);
+  // If current turn is a bot, make it play it's turn, if no players left in the game, stop
+  while (player && player.isBot && nonBotPlayerCount > 0) {
+    const settings = {
+      aggressiveness: player.aggressiveness ?? 0,
+      difficulty: player.difficulty === "hard" ? 3 : player.difficulty === "normal" ? 1 : 0,
+    };
+    ai.play(data, player.country, settings);
     game.play.nextTurn(data, { country: player.country });
 
     currentCountry = game.util.turnTypeToCountryId(data.turn.type);
     player = players.filter(p => p.country === currentCountry)[0];
+    nonBotPlayerCount = players.filter(p => !p.isBot && data.countries.filter(c => c.id === p.country).length).length;
   }
+}
+
+/**
+ * Only use in offline mode, picks the next local country.
+ * @param data 
+ * @returns 
+ */
+function getLocalCountry(data: IGameData) {
+  const players = useAppStore.getState().lobby.players;
+
+  const country = game.util.turnTypeToCountry(data, data.turn.type);
+  if (!country) return undefined;
+
+  const count = players.filter(p => !p.isBot && data.countries.filter(c => c.id === p.country).length).length;
+  if (count > 0) country;
+
+  return undefined;
 }
 
 export const util = {
@@ -94,4 +117,5 @@ export const util = {
 
   nextTurn,
   skipAITurns,
+  getLocalCountry,
 }

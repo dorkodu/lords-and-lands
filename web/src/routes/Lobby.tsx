@@ -1,4 +1,4 @@
-import { ActionIcon, Button, Divider, Flex, Image, NumberInput, Text, Title } from "@mantine/core";
+import { ActionIcon, Button, Divider, Flex, Image, Menu, NumberInput, Text, Title } from "@mantine/core";
 import {
   IconArrowBigLeftFilled,
   IconArrowBigRightFilled,
@@ -150,7 +150,7 @@ function Players() {
   }
 
   const botPlayerAddable = lobby.players.length < 4;
-  const addBotPlayer = () => {
+  const addBotPlayer = (name: string, difficulty: "easy" | "normal" | "hard") => {
     // TODO: Implement and enable adding local players in online mode
     // Disable adding local players in online mode
     if (lobby.online) return;
@@ -159,10 +159,11 @@ function Players() {
     useAppStore.setState(s => {
       const newPlayer: IPlayer = {
         id: util.generateId(),
-        name: "Bot Player",
+        name: name,
         country: CountryId.None,
         isBot: true,
         aggressiveness: useGameStore.getState().data.rng.number(-6, +6 + 1),
+        difficulty: difficulty,
       }
 
       const exists = s.lobby.players.filter(p => p.id === newPlayer.id).length > 0;
@@ -179,6 +180,7 @@ function Players() {
         {lobby.players.map((player, i) => <Player player={player} key={i} />)}
       </Flex>
 
+
       <Flex justify="center" gap="md" wrap="wrap">
         <Button
           leftIcon={<IconDeviceGamepad2 />}
@@ -189,14 +191,46 @@ function Players() {
           Add Local Player
         </Button>
 
-        <Button
-          leftIcon={<IconRobot />}
-          onClick={addBotPlayer}
-          disabled={lobby.online || running || !botPlayerAddable}
-          style={{ flex: 1 }}
-        >
-          Add Bot Player
-        </Button>
+        <Menu>
+          <Menu.Target>
+            <Button
+              leftIcon={<IconRobot />}
+              disabled={lobby.online || running || !botPlayerAddable}
+              style={{ flex: 1 }}
+            >
+              Add Bot Player
+            </Button>
+          </Menu.Target>
+
+          <Menu.Dropdown>
+            <Menu.Item
+              icon={<IconRobot />}
+              onClick={() => addBotPlayer("Easy Bot", "easy")}
+              disabled={lobby.online || running || !botPlayerAddable}
+              color="green"
+            >
+              Add Easy Bot
+            </Menu.Item>
+
+            <Menu.Item
+              icon={<IconRobot />}
+              onClick={() => addBotPlayer("Normal Bot", "normal")}
+              disabled={lobby.online || running || !botPlayerAddable}
+              color="yellow"
+            >
+              Add Normal Bot
+            </Menu.Item>
+
+            <Menu.Item
+              icon={<IconRobot />}
+              onClick={() => addBotPlayer("Hard Bot", "hard")}
+              disabled={lobby.online || running || !botPlayerAddable}
+              color="red"
+            >
+              Add Hard Bot
+            </Menu.Item>
+          </Menu.Dropdown>
+        </Menu>
       </Flex>
     </>
   )

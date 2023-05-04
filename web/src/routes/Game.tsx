@@ -28,15 +28,9 @@ export default function Game() {
       //game.play.generate(s.data, { w: 15, h: 15, seed: 123 })
       //s.data.rng = createSeedRandom(123);
 
-      if (online) socketio.emit("client-game-action", { id: ActionId.Start, info: {} });
-      else {
-        game.play.start(s.data, {});
-        util.skipAITurns(s.data);
-      }
-    });
-
-    useGameStore.setState(s => {
       if (online) {
+        socketio.emit("client-game-action", { id: ActionId.Start, info: {} });
+
         const players = useAppStore.getState().lobby.players;
         const playerId = useAppStore.getState().lobby.playerId;
         const player = players.filter(p => p.id === playerId)[0];
@@ -44,7 +38,9 @@ export default function Game() {
         if (country) s.country = country;
       }
       else {
-        s.country = game.util.turnTypeToCountry(s.data, s.data.turn.type);
+        game.play.start(s.data, {});
+        util.skipAITurns(s.data);
+        s.country = util.getLocalCountry(s.data);
       }
     });
   }, []);
