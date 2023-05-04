@@ -114,10 +114,9 @@ export default function Lobby() {
         <Button
           leftIcon={<IconArrowRight />}
           onClick={onClickGame}
-          disabled={!(
-            lobby.owner && game.play.startActable(data, {}) ||
-            data.running
-          )}
+          disabled={
+            !((lobby.owner && game.play.startActable(data, {})) || data.running) && lobby.online
+          }
           style={{ flex: 1 }}
         >
           Play

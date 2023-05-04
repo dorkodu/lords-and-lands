@@ -103,7 +103,7 @@ function getLocalCountry(data: IGameData) {
   if (!country) return undefined;
 
   const count = players.filter(p => !p.isBot && data.countries.filter(c => c.id === p.country).length).length;
-  if (count > 0) country;
+  if (count > 0) return country;
 
   return undefined;
 }

@@ -81,7 +81,8 @@ const initialState: AppStoreState = {
     online: false,
 
     players: [
-      { id: util.generateId(), name: "Player", country: CountryId.None, isAdmin: true },
+      { id: util.generateId(), name: "Player", country: CountryId.Green, isAdmin: true },
+      { id: util.generateId(), name: "Normal Bot", country: CountryId.Red, isBot: true, aggressiveness: 1, difficulty: "normal" },
     ],
 
     messages: [],
@@ -100,7 +101,11 @@ export const useAppStore = create(
         s.lobby = { ...initialState.lobby };
       });
 
-      useGameStore.setState(s => { s.data = createGameData() });
+      useGameStore.setState(s => {
+        s.data = createGameData();
+        s.data.width = 7;
+        s.data.height = 7;
+      });
     },
 
     playerIdToPlayer: (playerId) => {

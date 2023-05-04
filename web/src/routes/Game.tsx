@@ -16,7 +16,7 @@ import { util } from "@/lib/util";
 
 export default function Game() {
   useEffect(() => {
-    const online = useAppStore.getState().lobby.online;
+    const lobby = useAppStore.getState().lobby;
 
     useGameStore.setState(s => {
       if (s.data.running) return;
@@ -28,16 +28,17 @@ export default function Game() {
       //game.play.generate(s.data, { w: 15, h: 15, seed: 123 })
       //s.data.rng = createSeedRandom(123);
 
-      if (online) {
+      if (lobby.online) {
         socketio.emit("client-game-action", { id: ActionId.Start, info: {} });
 
-        const players = useAppStore.getState().lobby.players;
-        const playerId = useAppStore.getState().lobby.playerId;
-        const player = players.filter(p => p.id === playerId)[0];
+        const player = lobby.players.filter(p => p.id === lobby.playerId)[0];
         const country = player && s.data.countries.filter(c => c.id === player.country)[0];
         if (country) s.country = country;
       }
       else {
+        lobby.players.forEach(p => game.play.addCountry(s.data, { country: p.country }));
+        game.play.generate(s.data, { w: s.data.width, h: s.data.height, seed: s.data.seed });
+
         game.play.start(s.data, {});
         util.skipAITurns(s.data);
         s.country = util.getLocalCountry(s.data);
