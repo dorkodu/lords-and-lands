@@ -5,7 +5,7 @@ import { LandmarkId } from "../types/landmark_id";
 import { ITile } from "./tile";
 import { util } from "./util";
 
-function play(data: IGameData, countryId: CountryId) {
+function play(data: IGameData, countryId: CountryId, minimumAttackModifier: number) {
   const country = data.countries.filter(c => c.id === countryId)[0];
   if (!country) return;
 
@@ -23,8 +23,7 @@ function play(data: IGameData, countryId: CountryId) {
   // 1. Place banner
   // 2. Move armies away from the banner
   // 3. Move armies to better tiles that have better modifiers
-  // 4. Attack if rng accepted "safety" level is met
-  // 5. Next turn
+  // 4. Attack if accepted attack modifier level is met
 
   // 1. Place banner
   if (country.banners > 0) {
@@ -41,10 +40,15 @@ function play(data: IGameData, countryId: CountryId) {
   // 2. Move armies away from the banner
   bannerTiles.forEach(t => {
     if (!t.unit || t.unit.id !== countryId) return;
-    moveArmyAway(data, t);
+    moveUnitAway(data, t);
   });
 
   // 3. Move armies to better tiles that have better modifiers
+
+  // 4. Attack if accepted attack modifier level is met
+  unitTiles.forEach(t => {
+    attackUnit(data, t, minimumAttackModifier);
+  });
 }
 
 function getTileSafety(data: IGameData, tile: ITile): { tile: ITile, safety: number } {
@@ -106,7 +110,7 @@ function getTileSafety(data: IGameData, tile: ITile): { tile: ITile, safety: num
  * @param tile 
  * @returns 
  */
-function moveArmyAway(data: IGameData, tile: ITile): boolean {
+function moveUnitAway(data: IGameData, tile: ITile): boolean {
   const countryId = tile.unit?.id;
   if (countryId === undefined) return false;
 
@@ -129,7 +133,7 @@ function moveArmyAway(data: IGameData, tile: ITile): boolean {
 
   if (!moved) {
     for (const [_key, t] of Object.entries(blocked)) {
-      moved = moveArmyAway(data, t);
+      moved = moveUnitAway(data, t);
       if (moved) {
         game.play.moveUnit(data, { from: tile.pos, to: t.pos, countryId });
         break;
@@ -138,6 +142,23 @@ function moveArmyAway(data: IGameData, tile: ITile): boolean {
   }
 
   return moved;
+}
+
+function attackUnit(data: IGameData, tile: ITile, minimumModifier: number) {
+  const countryId = tile.unit?.id;
+  if (countryId === undefined) return;
+
+  const adjacent = util.getAdjacentTiles(data, tile.pos);
+
+  for (const [_key, t] of Object.entries(adjacent)) {
+    const info = { from: tile.pos, to: t.pos, countryId };
+    if (!game.play.moveUnitActable(data, info)) continue;
+
+    if (util.getWarModifier(data, tile, t) > minimumModifier) {
+      game.play.moveUnit(data, info);
+      break;
+    }
+  }
 }
 
 export const ai = {
