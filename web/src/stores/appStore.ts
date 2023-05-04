@@ -103,11 +103,7 @@ export const useAppStore = create(
         s.lobby = { ...initialState.lobby };
       });
 
-      useGameStore.setState(s => {
-        s.data = createGameData();
-        s.data.width = 7;
-        s.data.height = 7;
-      });
+      useGameStore.setState(s => { s.data = createGameData() });
     },
 
     playerIdToPlayer: (playerId) => {
