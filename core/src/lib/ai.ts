@@ -9,13 +9,12 @@ function play(data: IGameData, countryId: CountryId) {
   const country = data.countries.filter(c => c.id === countryId)[0];
   if (!country) return;
 
-  // Use as -> unitTiles["5:2"], (x,y) = (5,2)
-  const unitTiles = {} as Record<string, ITile>;
+  const unitTiles: ITile[] = [];
   const bannerTiles: ITile[] = [];
   const emptyOwnTiles: ITile[] = [];
 
   data.tiles.forEach(t => {
-    if (t.unit && t.unit.id === countryId) unitTiles[`${t.pos.x}:${t.pos.y}`] = t;
+    if (t.unit && t.unit.id === countryId) unitTiles.push(t);
     if (t.owner === countryId && t.landmark === LandmarkId.Banner) bannerTiles.push(t);
     if (t.owner === countryId && t.landmark === LandmarkId.None) emptyOwnTiles.push(t);
   });
@@ -38,9 +37,31 @@ function play(data: IGameData, countryId: CountryId) {
       game.play.placeBanner(data, { countryId, pos: tile.tile.pos });
     }
   }
+
+  // 2. Move armies away from the banner
+  bannerTiles.forEach(t => {
+    if (!t.unit || t.unit.id !== countryId) return;
+    moveArmyAway(data, t);
+  });
+
+  // 3. Move armies to better tiles that have better modifiers
 }
 
 function getTileSafety(data: IGameData, tile: ITile): { tile: ITile, safety: number } {
+  // X X X X X
+  // X X X X X
+  // X Y Y Y X
+  // Y Y Y Y Y
+  // Y Y Y Y Y
+  //
+  // Assume calculating safety of tiles for Y:
+  //
+  // X X X X X
+  // X X X X X
+  // X 1 1 1 X
+  // 1 1 2 1 1
+  // 2 2 2 2 2
+
   let x = tile.pos.x;
   let y = tile.pos.y;
 
@@ -77,7 +98,48 @@ function getTileSafety(data: IGameData, tile: ITile): { tile: ITile, safety: num
   return { tile, safety: -1 };
 }
 
+/**
+ * Check all adjacent tiles of a unit, if empty tile exists moves the unit.
+ * Otherwise finds friendly units in adjacent tiles, then performs the same
+ * check again for that unit. If unit is moved, the previous units are also moved.
+ * @param data 
+ * @param tile 
+ * @returns 
+ */
+function moveArmyAway(data: IGameData, tile: ITile): boolean {
+  const countryId = tile.unit?.id;
+  if (countryId === undefined) return false;
+
+  const adjacent = util.getAdjacentTiles(data, tile.pos);
+  const blocked: ITile[] = [];
+  let moved = false;
+
+  for (const [_key, t] of Object.entries(adjacent)) {
+    if (t.unit && t.unit.id !== countryId) continue;
+
+    if (!game.play.moveUnitActable(data, { from: tile.pos, to: t.pos, countryId })) {
+      if (t.unit) blocked.push(t);
+    }
+    else {
+      game.play.moveUnit(data, { from: tile.pos, to: t.pos, countryId });
+      moved = true;
+      break;
+    }
+  }
+
+  if (!moved) {
+    for (const [_key, t] of Object.entries(blocked)) {
+      moved = moveArmyAway(data, t);
+      if (moved) {
+        game.play.moveUnit(data, { from: tile.pos, to: t.pos, countryId });
+        break;
+      }
+    }
+  }
+
+  return moved;
+}
+
 export const ai = {
   play,
-  getTileSafety,
 }
