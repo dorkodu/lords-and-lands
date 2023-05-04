@@ -185,6 +185,17 @@ function getAliveCountries(data: IGameData): Record<CountryId, boolean> {
   return status;
 }
 
+function getTile(data: IGameData, x: number, y: number): ITile | undefined {
+  if (x < 0 || x >= data.width) return undefined;
+  if (y < 0 || y >= data.height) return undefined;
+  return data.tiles[x + y * data.width];
+}
+
+function isEnemyTile(tile: ITile | undefined, country: CountryId) {
+  if (!tile) return false;
+  return tile.owner !== country;
+}
+
 export const util = {
   countryToTurnType,
   turnTypeToCountry,
@@ -201,4 +212,7 @@ export const util = {
   getUnitModifier,
 
   getAliveCountries,
+
+  getTile,
+  isEnemyTile,
 }
