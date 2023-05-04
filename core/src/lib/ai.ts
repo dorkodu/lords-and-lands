@@ -111,37 +111,47 @@ function getTileSafety(data: IGameData, tile: ITile): { tile: ITile, safety: num
  * @returns 
  */
 function moveUnitAway(data: IGameData, tile: ITile): boolean {
-  const countryId = tile.unit?.id;
-  if (countryId === undefined) return false;
+  const stack: ITile[] = [tile];
+  const visited: Set<string> = new Set();
 
-  const adjacent = util.getAdjacentTiles(data, tile.pos);
-  const blocked: ITile[] = [];
-  let moved = false;
+  while (stack.length > 0) {
+    const currentTile = stack.pop() as ITile;
+    const tileKey = `${currentTile.pos.x},${currentTile.pos.y}`;
+    if (visited.has(tileKey)) continue;
 
-  for (const [_key, t] of Object.entries(adjacent)) {
-    if (t.unit && t.unit.id !== countryId) continue;
+    visited.add(tileKey);
 
-    if (!game.play.moveUnitActable(data, { from: tile.pos, to: t.pos, countryId })) {
-      if (t.unit) blocked.push(t);
-    }
-    else {
-      game.play.moveUnit(data, { from: tile.pos, to: t.pos, countryId });
-      moved = true;
-      break;
-    }
-  }
+    const countryId = currentTile.unit?.id;
+    if (countryId === undefined) continue;
 
-  if (!moved) {
-    for (const [_key, t] of Object.entries(blocked)) {
-      moved = moveUnitAway(data, t);
-      if (moved) {
-        game.play.moveUnit(data, { from: tile.pos, to: t.pos, countryId });
+    const adjacent = util.getAdjacentTiles(data, currentTile.pos);
+    const blocked: ITile[] = [];
+    let moved = false;
+
+    for (const [_key, t] of Object.entries(adjacent)) {
+      if (t.unit && t.unit.id !== countryId) continue;
+      if (t.landmark === LandmarkId.Banner) continue;
+
+      if (!game.play.moveUnitActable(data, { from: currentTile.pos, to: t.pos, countryId })) {
+        if (t.unit && t.unit.id === countryId) blocked.push(t);
+      }
+      else {
+        game.play.moveUnit(data, { from: currentTile.pos, to: t.pos, countryId });
+        moved = true;
         break;
       }
     }
+
+    if (!moved) {
+      for (const [_key, t] of Object.entries(blocked)) {
+        stack.push(t);
+      }
+    } else {
+      return true;
+    }
   }
 
-  return moved;
+  return false;
 }
 
 function attackUnit(data: IGameData, tile: ITile, minimumModifier: number) {
@@ -151,6 +161,9 @@ function attackUnit(data: IGameData, tile: ITile, minimumModifier: number) {
   const adjacent = util.getAdjacentTiles(data, tile.pos);
 
   for (const [_key, t] of Object.entries(adjacent)) {
+    if (!t.unit) continue;
+    if (t.unit.id === countryId) continue;
+
     const info = { from: tile.pos, to: t.pos, countryId };
     if (!game.play.moveUnitActable(data, info)) continue;
 
