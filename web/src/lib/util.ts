@@ -3,6 +3,8 @@ import { useGameStore } from "@/stores/gameStore";
 import { game } from "@core/game";
 import { ActionId } from "@core/types/action_id";
 import { socketio } from "./socketio";
+import { ai } from "@core/lib/ai";
+import { IGameData } from "@core/gamedata";
 
 function share(text: string, url: string): Promise<boolean> {
   return new Promise(resolve => {
@@ -54,6 +56,7 @@ function nextTurn() {
     }
     else {
       game.play.nextTurn(s.data, { country: s.country?.id });
+      skipAITurns(s.data);
       s.country = game.util.turnTypeToCountry(s.data, s.data.turn.type);
     }
 
@@ -66,6 +69,22 @@ function nextTurn() {
   });
 }
 
+function skipAITurns(data: IGameData) {
+  const players = useAppStore.getState().lobby.players;
+
+  // If current turn is a bot, make it play it's turn
+  let currentCountry = game.util.turnTypeToCountryId(data.turn.type);
+  let player = players.filter(p => p.country === currentCountry)[0];
+
+  while (player && player.isBot) {
+    ai.play(data, player.country, player.aggressiveness ?? 0);
+    game.play.nextTurn(data, { country: player.country });
+
+    currentCountry = game.util.turnTypeToCountryId(data.turn.type);
+    player = players.filter(p => p.country === currentCountry)[0];
+  }
+}
+
 export const util = {
   share,
   copyToClipboard,
@@ -74,4 +93,5 @@ export const util = {
   version,
 
   nextTurn,
+  skipAITurns,
 }

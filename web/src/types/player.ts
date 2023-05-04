@@ -5,4 +5,6 @@ export interface IPlayer {
   name: string;
   country: CountryId;
   isAdmin?: boolean;
+  isBot?: boolean;
+  aggressiveness?: number;
 }

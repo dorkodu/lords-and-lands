@@ -142,7 +142,7 @@ function Players() {
     if (!localPlayerAddable) return;
 
     useAppStore.setState(s => {
-      const newPlayer = { id: util.generateId(), name: "Local Player", country: CountryId.None };
+      const newPlayer: IPlayer = { id: util.generateId(), name: "Local Player", country: CountryId.None };
       const exists = s.lobby.players.filter(p => p.id === newPlayer.id).length > 0;
       if (exists) return;
       s.lobby.players.push(newPlayer);
@@ -154,7 +154,22 @@ function Players() {
     // TODO: Implement and enable adding local players in online mode
     // Disable adding local players in online mode
     if (lobby.online) return;
-    if (!localPlayerAddable) return;
+    if (!botPlayerAddable) return;
+
+    useAppStore.setState(s => {
+      const newPlayer: IPlayer = {
+        id: util.generateId(),
+        name: "Bot Player",
+        country: CountryId.None,
+        isBot: true,
+        aggressiveness: useGameStore.getState().data.rng.number(-6, +6 + 1),
+      }
+
+      const exists = s.lobby.players.filter(p => p.id === newPlayer.id).length > 0;
+      if (exists) return;
+
+      s.lobby.players.push(newPlayer);
+    });
   }
 
   return (
@@ -192,7 +207,7 @@ function Player({ player }: { player: IPlayer }) {
   const self = lobby.playerId === player.id;
 
   const onClickCountry = () => {
-    // If not playing offline and player is not current player
+    // If playing online and player is not current player
     if (lobby.online && lobby.playerId !== player.id) return;
 
     let oldCountry = player.country;

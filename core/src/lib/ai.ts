@@ -5,7 +5,7 @@ import { LandmarkId } from "../types/landmark_id";
 import { ITile } from "./tile";
 import { util } from "./util";
 
-function play(data: IGameData, countryId: CountryId, minimumAttackModifier: number) {
+function play(data: IGameData, countryId: CountryId, aggressiveness: number) {
   const country = data.countries.filter(c => c.id === countryId)[0];
   if (!country) return;
 
@@ -47,7 +47,7 @@ function play(data: IGameData, countryId: CountryId, minimumAttackModifier: numb
 
   // 4. Attack if accepted attack modifier level is met
   unitTiles.forEach(t => {
-    attackUnit(data, t, minimumAttackModifier);
+    attackUnit(data, t, aggressiveness);
   });
 }
 
@@ -156,7 +156,7 @@ function moveUnitAway(data: IGameData, tile: ITile): boolean {
   return false;
 }
 
-function attackUnit(data: IGameData, tile: ITile, minimumModifier: number) {
+function attackUnit(data: IGameData, tile: ITile, aggressiveness: number) {
   const countryId = tile.unit?.id;
   if (countryId === undefined) return;
 
@@ -169,7 +169,7 @@ function attackUnit(data: IGameData, tile: ITile, minimumModifier: number) {
     const info = { from: tile.pos, to: t.pos, countryId };
     if (!game.play.moveUnitActable(data, info)) continue;
 
-    if (util.getWarModifier(data, tile, t) > minimumModifier) {
+    if (aggressiveness > util.getWarModifier(data, tile, t) * -1) {
       game.play.moveUnit(data, info);
       break;
     }
