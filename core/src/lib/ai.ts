@@ -115,7 +115,9 @@ function moveUnitAway(data: IGameData, tile: ITile): boolean {
   const visited: Set<string> = new Set();
 
   while (stack.length > 0) {
-    const currentTile = stack.pop() as ITile;
+    const currentTile = stack.pop();
+    if (!currentTile) continue;
+
     const tileKey = `${currentTile.pos.x},${currentTile.pos.y}`;
     if (visited.has(tileKey)) continue;
 
