@@ -82,7 +82,9 @@ const initialState: AppStoreState = {
 
     players: [
       { id: util.generateId(), name: "Player", country: CountryId.Green, isAdmin: true },
-      { id: util.generateId(), name: "Normal Bot", country: CountryId.Red, isBot: true, aggressiveness: 1, difficulty: "normal" },
+      { id: util.generateId(), name: "Normal Bot", country: CountryId.Purple, isBot: true, aggressiveness: 2, difficulty: "normal" },
+      { id: util.generateId(), name: "Normal Bot", country: CountryId.Red, isBot: true, aggressiveness: 0, difficulty: "normal" },
+      { id: util.generateId(), name: "Normal Bot", country: CountryId.Yellow, isBot: true, aggressiveness: -2, difficulty: "normal" },
     ],
 
     messages: [],

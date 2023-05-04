@@ -28,7 +28,7 @@ export interface GameStoreAction {
 }
 
 const initialState: GameStoreState = {
-  data: { ...game.createGameData(), width: 6, height: 6 },
+  data: game.createGameData(),
   country: undefined,
 
   hoveredTile: undefined,
