@@ -1,7 +1,7 @@
-const maxMapWidth = 25;
+const maxMapWidth = 10;
 const minMapWidth = 5;
 
-const maxMapHeight = 25;
+const maxMapHeight = 10;
 const minMapHeight = 5;
 
 const maxCountries = 4;

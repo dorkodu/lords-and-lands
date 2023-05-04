@@ -317,11 +317,11 @@ function Map() {
       <Title order={4}>Map Settings</Title>
 
       <Flex align="center" justify="space-between" gap="md">
-        Width: <NumberInput value={width} onChange={onChangeWidth} disabled={inputDisabled} min={5} max={25} />
+        Width: <NumberInput value={width} onChange={onChangeWidth} disabled={inputDisabled} min={5} max={10} />
       </Flex>
 
       <Flex align="center" justify="space-between" gap="md">
-        Height: <NumberInput value={height} onChange={onChangeHeight} disabled={inputDisabled} min={5} max={25} />
+        Height: <NumberInput value={height} onChange={onChangeHeight} disabled={inputDisabled} min={5} max={10} />
       </Flex>
 
       <Flex align="center" justify="space-between" gap="md">
