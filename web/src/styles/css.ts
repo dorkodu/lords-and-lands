@@ -1,6 +1,6 @@
 import { CSSObject } from "@mantine/core";
 
-export const wrapContent = { whiteSpace: "pre-wrap", wordBreak: "break-all" } satisfies CSSObject
+export const wrapContent = { whiteSpace: "pre-wrap", wordBreak: "break-word" } satisfies CSSObject
 
 export const emoji = {
   height: "1em",
