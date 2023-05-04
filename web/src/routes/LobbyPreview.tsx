@@ -12,14 +12,20 @@ import { useNavigate } from "react-router-dom";
 
 export default function LobbyPreview() {
   useEffect(() => {
-    const online = useAppStore.getState().lobby.online;
-    const owner = useAppStore.getState().lobby.owner;
+    const lobby = useAppStore.getState().lobby;
 
     useGameStore.setState(s => {
       if (s.data.tiles.length !== 0) return;
+
       const info = { w: s.data.width, h: s.data.height, seed: s.data.seed };
-      if (!online) game.play.generate(s.data, info);
-      else if (online && owner) socketio.emit("client-game-action", { id: ActionId.Generate, info });
+
+      if (!lobby.online) {
+        lobby.players.forEach(p => game.play.addCountry(s.data, { country: p.country }));
+        game.play.generate(s.data, info);
+      }
+      else if (lobby.online && lobby.owner) {
+        socketio.emit("client-game-action", { id: ActionId.Generate, info });
+      }
     });
   }, []);
 
