@@ -112,6 +112,8 @@ socketio.on("server-lobby-update", (data) => {
   const players = useAppStore.getState().lobby.players;
 
   useGameStore.setState(s => {
+    if (data.w === undefined && data.h === undefined && data.seed === undefined) return;
+
     // Reset game data
     s.data = createGameData();
 
