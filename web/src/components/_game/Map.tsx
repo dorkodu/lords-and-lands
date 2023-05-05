@@ -23,6 +23,7 @@ export default function Map() {
 
       limitToBounds={false}
       doubleClick={{ disabled: true }}
+      panning={{ velocityDisabled: true }}
 
       onInit={(ref) => {
         useGameStore.setState(s => {
