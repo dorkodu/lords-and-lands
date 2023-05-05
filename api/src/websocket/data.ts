@@ -59,12 +59,6 @@ function getLobbyPlayers(lobbyId: string | undefined) {
   return Object.values(lobby.players);
 }
 
-function isPlayerAdmin(player: IPlayer) {
-  const lobby = player.lobby && data.lobbies[player.lobby];
-  if (!lobby) return undefined;
-  return player.id === lobby.adminId;
-}
-
 
 function createLobby(player: IPlayer) {
   // If player is already in a lobby
@@ -295,7 +289,6 @@ export const dataAPI = {
   createPlayer,
   removePlayer,
   getLobbyPlayers,
-  isPlayerAdmin,
 
   createLobby,
   removeLobby,

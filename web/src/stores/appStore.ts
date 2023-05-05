@@ -35,8 +35,8 @@ export interface AppStoreState {
   lobby: {
     lobbyId: string | undefined;
     playerId: string | undefined;
+    adminId: string | undefined;
 
-    owner: boolean;
     online: boolean;
 
     players: IPlayer[];
@@ -54,6 +54,8 @@ export interface AppStoreAction {
   playerIdToColor: (playerId: string) => string | undefined;
 
   showMessageIndicator: () => boolean;
+
+  isLobbyOwner: () => boolean;
 }
 
 const initialState: AppStoreState = {
@@ -76,12 +78,12 @@ const initialState: AppStoreState = {
   lobby: {
     lobbyId: undefined,
     playerId: undefined,
+    adminId: undefined,
 
-    owner: true,
     online: false,
 
     players: [
-      { id: util.generateId(), name: "Player", country: CountryId.Green, isAdmin: true },
+      { id: util.generateId(), name: "Player", country: CountryId.Green },
       { id: util.generateId(), name: "Normal Bot", country: CountryId.Purple, isBot: true, aggressiveness: 2, difficulty: "normal" },
       { id: util.generateId(), name: "Normal Bot", country: CountryId.Red, isBot: true, aggressiveness: 0, difficulty: "normal" },
       { id: util.generateId(), name: "Normal Bot", country: CountryId.Yellow, isBot: true, aggressiveness: -2, difficulty: "normal" },
@@ -130,5 +132,9 @@ export const useAppStore = create(
       if (lastIndex < 0) return false;
       return seenIndex === undefined || seenIndex !== lastIndex;
     },
+
+    isLobbyOwner: () => {
+      return !get().lobby.online || get().lobby.playerId === get().lobby.adminId;
+    }
   }))
 );

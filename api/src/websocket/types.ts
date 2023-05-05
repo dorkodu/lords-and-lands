@@ -39,7 +39,7 @@ import { ISerializedGameData } from "@core/serializer";
  */
 export interface ServerToClientEvents {
   "server-create-lobby": (data: { playerName: string, playerId: string, lobbyId: string, w: number, h: number, seed: number } | undefined) => void;
-  "server-join-lobby": (data: { playerId?: string, lobbyId?: string, w?: number, h?: number, seed?: number, players: INetworkPlayer[] } | undefined) => void;
+  "server-join-lobby": (data: { playerId?: string, lobbyId?: string, adminId?: string, w?: number, h?: number, seed?: number, players: INetworkPlayer[] } | undefined) => void;
   "server-leave-lobby": (data: { playerId: string }) => void;
   "server-lobby-update": (data: { w?: number, h?: number, seed?: number, online?: boolean } | undefined) => void;
   "server-change-country": (data: { id: string, country: CountryId } | undefined) => void;

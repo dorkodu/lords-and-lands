@@ -32,10 +32,10 @@ socketio.on("server-create-lobby", (data) => {
   useAppStore.setState(s => {
     s.lobby.playerId = data.playerId;
     s.lobby.lobbyId = data.lobbyId;
-    s.lobby.owner = true;
+    s.lobby.adminId = data.playerId;
 
     s.lobby.players = [
-      { id: data.playerId, name: data.playerName, country: CountryId.None, isAdmin: true }
+      { id: data.playerId, name: data.playerName, country: CountryId.None }
     ];
   });
 
@@ -57,7 +57,7 @@ socketio.on("server-join-lobby", (data) => {
   else {
     useAppStore.setState(s => {
       s.lobby.players = data?.players ?? [];
-      s.lobby.owner = false;
+      s.lobby.adminId = data?.adminId;
       s.lobby.online = true;
 
       s.lobby.playerId = data?.playerId;
@@ -94,7 +94,7 @@ socketio.on("server-leave-lobby", (data) => {
        * TODO: In server when admin leaves, another player is chosen as admin,
        * but in client, if admin leaves, other players also leave automatically.
        */
-      if (player && player.isAdmin) socketio.emit("client-leave-lobby");
+      if (player && s.lobby.adminId === player.id) socketio.emit("client-leave-lobby");
     }
   });
 

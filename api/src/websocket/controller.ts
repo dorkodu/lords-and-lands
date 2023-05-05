@@ -46,17 +46,23 @@ function joinLobby(player: IPlayer, data: Parameters<ClientToServerEvents["clien
   }
   else {
     const players = Object.values(lobby.players);
-    const networkPlayer: INetworkPlayer = { id: player.id, name: player.name, country: player.country, isAdmin: dataAPI.isPlayerAdmin(player) }
-    const networkPlayers: INetworkPlayer[] = players.map(p =>
-      ({ id: p.id, name: p.name, country: p.country, isAdmin: dataAPI.isPlayerAdmin(p) })
-    );
+    const networkPlayer: INetworkPlayer = { id: player.id, name: player.name, country: player.country }
+    const networkPlayers = players.map(p => ({ id: p.id, name: p.name, country: p.country }));
 
     const { width, height, seed } = lobby.gameData;
 
     // Send the joined player: player id, lobby id, width, height, seed, and all players
     player.socket.emit(
       "server-join-lobby",
-      { playerId: player.id, lobbyId: lobby.id, w: width, h: height, seed, players: networkPlayers }
+      {
+        playerId: player.id,
+        lobbyId: lobby.id,
+        adminId: lobby.adminId,
+        w: width,
+        h: height,
+        seed,
+        players: networkPlayers
+      }
     );
 
     // Send the joined player sync state to syncronize game state because:

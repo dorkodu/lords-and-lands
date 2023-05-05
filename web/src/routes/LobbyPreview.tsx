@@ -13,6 +13,7 @@ import { useNavigate } from "react-router-dom";
 export default function LobbyPreview() {
   useEffect(() => {
     const lobby = useAppStore.getState().lobby;
+    const lobbyOwner = useAppStore.getState().isLobbyOwner();
 
     useGameStore.setState(s => {
       if (s.data.tiles.length !== 0) return;
@@ -23,7 +24,7 @@ export default function LobbyPreview() {
         lobby.players.forEach(p => game.play.addCountry(s.data, { country: p.country }));
         game.play.generate(s.data, info);
       }
-      else if (lobby.online && lobby.owner) {
+      else if (lobbyOwner) {
         socketio.emit("client-game-action", { id: ActionId.Generate, info });
       }
     });
@@ -56,7 +57,7 @@ function Footer() {
   const { classes } = useStyles();
   const theme = useMantineTheme();
 
-  const lobbyOwner = useAppStore(state => state.lobby.owner);
+  const lobbyOwner = useAppStore(state => state.isLobbyOwner());
   const running = useGameStore(state => state.data.running);
 
   const onClickLobby = () => {

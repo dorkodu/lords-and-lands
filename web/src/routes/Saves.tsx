@@ -83,7 +83,7 @@ function Save({ save, deleteSave }: { save: ISave, deleteSave: (name: string) =>
   }, [save]);
 
   const navigate = useNavigate();
-  const lobby = useAppStore(state => state.lobby);
+  const lobbyOwner = useAppStore(state => state.isLobbyOwner());
   const running = useGameStore(state => state.data.running);
 
   const onClickDelete = () => {
@@ -113,7 +113,7 @@ function Save({ save, deleteSave }: { save: ISave, deleteSave: (name: string) =>
           <IconTrash />
         </ActionIcon>
 
-        <ActionIcon onClick={onClickPlay} disabled={!lobby.owner || running}>
+        <ActionIcon onClick={onClickPlay} disabled={!lobbyOwner || running}>
           <IconDeviceGamepad2 />
         </ActionIcon>
       </Flex>

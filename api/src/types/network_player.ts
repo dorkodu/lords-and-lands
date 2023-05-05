@@ -4,5 +4,4 @@ export interface INetworkPlayer {
   id: string;
   name: string;
   country: CountryId;
-  isAdmin?: boolean;
 }

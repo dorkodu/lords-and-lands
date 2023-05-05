@@ -30,6 +30,7 @@ export default function Lobby() {
   const navigate = useNavigate();
 
   const lobby = useAppStore(state => state.lobby);
+  const lobbyOwner = useAppStore(state => state.isLobbyOwner());
   const data = useGameStore(state => state.data);
 
   const [clipboard, setClipboard] = useState(false);
@@ -65,13 +66,13 @@ export default function Lobby() {
     <Flex direction="column" gap="md" maw={360} style={{ width: "100%", margin: "0 auto" }}>
 
       <Flex align="center" justify="center" gap="md">
-        <ActionIcon onClick={toggleLobbyStatus} disabled={!lobby.owner}>
+        <ActionIcon onClick={toggleLobbyStatus} disabled={!lobbyOwner}>
           <IconArrowBigLeftFilled />
         </ActionIcon>
 
         <Text>{lobby.online ? "Online" : "Offline"}</Text>
 
-        <ActionIcon onClick={toggleLobbyStatus} disabled={!lobby.owner}>
+        <ActionIcon onClick={toggleLobbyStatus} disabled={!lobbyOwner}>
           <IconArrowBigRightFilled />
         </ActionIcon>
       </Flex>
@@ -115,7 +116,7 @@ export default function Lobby() {
           leftIcon={<IconArrowRight />}
           onClick={onClickGame}
           disabled={
-            !((lobby.owner && game.play.startActable(data, {})) || data.running) && lobby.online
+            !((lobbyOwner && game.play.startActable(data, {})) || data.running) && lobby.online
           }
           style={{ flex: 1 }}
         >
@@ -237,7 +238,7 @@ function Players() {
 
 function Player({ player }: { player: IPlayer }) {
   const lobby = useAppStore(state => state.lobby);
-  const self = lobby.playerId === player.id;
+  const lobbyOwner = useAppStore(state => state.isLobbyOwner());
 
   const onClickCountry = () => {
     // If playing online and player is not current player
@@ -277,7 +278,7 @@ function Player({ player }: { player: IPlayer }) {
   }
 
   const onClickBan = () => {
-    if (!lobby.owner) return;
+    if (!lobbyOwner) return;
 
     useAppStore.setState(s => {
       s.lobby.players = s.lobby.players.filter(p => p.id !== player.id);
@@ -300,8 +301,8 @@ function Player({ player }: { player: IPlayer }) {
         </Flex>
 
         <Flex align="center" justify="flex-end" gap="xs">
-          {!self && !player.isAdmin && lobby.owner && <ActionIcon size={24} onClick={onClickBan}><IconBan /></ActionIcon>}
-          {player.isAdmin && <IconStarFilled />}
+          {lobbyOwner && <ActionIcon size={24} onClick={onClickBan}><IconBan /></ActionIcon>}
+          {player.id === lobby.adminId && <IconStarFilled />}
         </Flex>
 
       </Flex>
@@ -317,6 +318,7 @@ function Map() {
   const running = useGameStore(state => state.data.running);
 
   const lobby = useAppStore(state => state.lobby);
+  const lobbyOwner = useAppStore(state => state.isLobbyOwner());
   const width = useGameStore(state => state.data.width);
   const height = useGameStore(state => state.data.height);
   const seed = useGameStore(state => state.data.seed);
@@ -327,7 +329,7 @@ function Map() {
   const [debouncedHeight] = useDebouncedValue(height, 250);
   const [debouncedSeed] = useDebouncedValue(seed, 250);
 
-  const inputDisabled = !lobby.owner || running;
+  const inputDisabled = !lobbyOwner || running;
 
   useEffect(() => {
     // When player joins a lobby, lobby sends width, height & seed,
