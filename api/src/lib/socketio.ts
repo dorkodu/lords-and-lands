@@ -3,6 +3,7 @@ import { ClientToServerEvents, ServerToClientEvents } from "../websocket/types";
 import { dataAPI } from "../websocket/data";
 import { server } from "./server";
 import { websocketController } from "../websocket/controller";
+import { IPlayer } from "../types/player";
 
 export const socketio = new Server<
   ClientToServerEvents,
@@ -12,6 +13,8 @@ export const socketio = new Server<
 socketio.on("connection", (socket): void => {
   const player = dataAPI.createPlayer(socket);
   if (!player) return void socket.disconnect(true);
+
+  let didCleanup = false;
 
   socket.on("client-create-lobby", (data) => { websocketController.createLobby(player, data) });
   socket.on("client-join-lobby", (data) => { websocketController.joinLobby(player, data) });
@@ -25,24 +28,23 @@ socketio.on("connection", (socket): void => {
   socket.on("client-game-action", (data) => { websocketController.gameAction(player, data) });
 
   socket.on("disconnect", (_reason, _description) => {
-    const lobbyId = player.lobby;
-    dataAPI.removePlayer(player);
-
-    const players = dataAPI.getLobbyPlayers(lobbyId);
-    players.forEach(p => p.socket.emit("server-leave-lobby", { playerId: player.id }));
+    if (didCleanup) return;
+    didCleanup = true;
+    cleanup(player);
   });
   socket.on("disconnecting", (_reason, _description) => {
-    const lobbyId = player.lobby;
-    dataAPI.removePlayer(player);
-
-    const players = dataAPI.getLobbyPlayers(lobbyId);
-    players.forEach(p => p.socket.emit("server-leave-lobby", { playerId: player.id }));
+    if (didCleanup) return;
+    didCleanup = true;
+    cleanup(player);
   });
   socket.on("error", (_err) => {
-    const lobbyId = player.lobby;
-    dataAPI.removePlayer(player);
-
-    const players = dataAPI.getLobbyPlayers(lobbyId);
-    players.forEach(p => p.socket.emit("server-leave-lobby", { playerId: player.id }));
+    if (didCleanup) return;
+    didCleanup = true;
+    cleanup(player);
   });
 });
+
+function cleanup(player: IPlayer) {
+  websocketController.leaveLobby(player);
+  dataAPI.removePlayer(player);
+}

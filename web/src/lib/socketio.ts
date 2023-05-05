@@ -89,12 +89,6 @@ socketio.on("server-leave-lobby", (data) => {
     // If another player left the lobby
     else {
       s.lobby.players = s.lobby.players.filter(p => p.id !== data.playerId);
-
-      /**
-       * TODO: In server when admin leaves, another player is chosen as admin,
-       * but in client, if admin leaves, other players also leave automatically.
-       */
-      if (player && s.lobby.adminId === player.id) socketio.emit("client-leave-lobby");
     }
   });
 
@@ -118,22 +112,24 @@ socketio.on("server-lobby-update", (data) => {
   const players = useAppStore.getState().lobby.players;
 
   useGameStore.setState(s => {
-    if (data.w === undefined || data.h === undefined || data.seed === undefined) return;
-
     // Reset game data
     s.data = createGameData();
 
     // Set width, height & seed
-    s.data.width = data.w;
-    s.data.height = data.h;
-    s.data.seed = data.seed;
+    if (data.w !== undefined) s.data.width = data.w;
+    if (data.h !== undefined) s.data.height = data.h;
+    if (data.seed !== undefined) s.data.seed = data.seed;
 
     // Add countries of the current players in the lobby
     players.forEach(p => game.play.addCountry(s.data, { country: p.country }));
 
     // Generate
-    game.play.generate(s.data, { w: data.w, h: data.h, seed: data.seed });
+    game.play.generate(s.data, { w: s.data.width, h: s.data.height, seed: s.data.seed });
   });
+
+  useAppStore.setState(s => {
+    if (data.adminId) s.lobby.adminId = data.adminId;
+  })
 });
 
 socketio.on("server-change-country", (data) => {

@@ -78,11 +78,22 @@ function joinLobby(player: IPlayer, data: Parameters<ClientToServerEvents["clien
 }
 
 function leaveLobby(player: IPlayer) {
+  const lobby = dataAPI.getLobby(player.lobby);
+  if (!lobby) return;
+
+  const isAdmin = player.id === lobby.adminId;
+
   // Send "leave lobby" event to all players in the lobby
   dataAPI.getLobbyPlayers(player.lobby).forEach(p => p.socket.emit("server-leave-lobby", { playerId: player.id }));
 
   // Make player leave the lobby
   dataAPI.leaveLobby(player);
+
+  // If player that left was the admin, send update to players 
+  if (isAdmin) {
+    const data = { adminId: lobby.adminId };
+    dataAPI.getLobbyPlayers(player.lobby).forEach(p => p.socket.emit("server-lobby-update", data));
+  }
 }
 
 function lobbyUpdate(player: IPlayer, data: Parameters<ClientToServerEvents["client-lobby-update"]>[0]): void {
@@ -103,9 +114,7 @@ function lobbyUpdate(player: IPlayer, data: Parameters<ClientToServerEvents["cli
   // If "lobby update" is done successfully, send it to all players, if not, only send to current player
   if (status) {
     const players = dataAPI.getLobbyPlayers(player.lobby);
-    players.forEach(p => {
-      p.socket.emit("server-lobby-update", { w, h, seed, online });
-    });
+    players.forEach(p => { p.socket.emit("server-lobby-update", { w, h, seed, online }) });
   }
   else {
     player.socket.emit("server-lobby-update", undefined);

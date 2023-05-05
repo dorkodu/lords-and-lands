@@ -35,28 +35,34 @@ function removePlayer(player: IPlayer) {
   delete data.players[player.id];
 
   // Check if player is in the lobby, if not don't execute code below
-  if (lobby && !lobby.players[player.id]) return;
-
-  // If removed player was the last player in the lobby, remove lobby
-  if (lobby && Object.values(lobby.players).length === 1) removeLobby(player);
-
-  // Remove country of the player that left
-  if (lobby) game.play.removeCountry(lobby.gameData, { country: player.country });
+  if (!lobby || !lobby.players[player.id]) return;
 
   // Delete player from lobby.players if exists
-  if (lobby) delete lobby.players[player.id];
+  delete lobby.players[player.id];
+
+  // Remove country of the player that left
+  game.play.removeCountry(lobby.gameData, { country: player.country });
 
   // If the removed player is admin, assign another player as admin
-  if (lobby && lobby.adminId === player.id) {
+  if (lobby.adminId === player.id) {
     const newAdmin = Object.values(lobby.players)[0];
     if (newAdmin) lobby.adminId = newAdmin.id;
   }
+
+  // If removed player was the last player in the lobby, remove lobby
+  if (Object.values(lobby.players).length === 0) removeLobby(player);
 }
 
 function getLobbyPlayers(lobbyId: string | undefined) {
   const lobby = lobbyId && data.lobbies[lobbyId];
   if (!lobby) return [];
   return Object.values(lobby.players);
+}
+
+function getLobby(lobbyId: string | undefined) {
+  const lobby = lobbyId && data.lobbies[lobbyId];
+  if (!lobby) return undefined;
+  return lobby;
 }
 
 
@@ -108,19 +114,20 @@ function leaveLobby(player: IPlayer) {
   const lobby = player.lobby && data.lobbies[player.lobby];
   if (!lobby) return;
 
+  // Remove player from the lobby
+  delete data.lobbies[lobby.id]?.players[player.id];
+
   // Remove country of the player that left
   game.play.removeCountry(lobby.gameData, { country: player.country });
 
-  // If removed player was the last player in the lobby, remove lobby
-  if (lobby && Object.values(lobby.players).length === 1) removeLobby(player);
-
   // If the removed player is admin, assign another player as admin
-  if (lobby && lobby.adminId === player.id) {
+  if (lobby.adminId === player.id) {
     const newAdmin = Object.values(lobby.players)[0];
     if (newAdmin) lobby.adminId = newAdmin.id;
   }
 
-  delete data.lobbies[lobby.id]?.players[player.id];
+  // If removed player was the last player in the lobby, remove lobby
+  if (Object.values(lobby.players).length === 0) removeLobby(player);
 }
 
 function lobbyUpdate(player: IPlayer, width?: number, height?: number, seed?: number): boolean {
@@ -289,6 +296,7 @@ export const dataAPI = {
   createPlayer,
   removePlayer,
   getLobbyPlayers,
+  getLobby,
 
   createLobby,
   removeLobby,
