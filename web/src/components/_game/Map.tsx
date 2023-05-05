@@ -21,7 +21,7 @@ export default function Map() {
       maxScale={1}
       minScale={0.25}
 
-      limitToBounds={false}
+      limitToBounds={true}
       doubleClick={{ disabled: true }}
 
       onTransformed={(_ref, state) => { useGameStore.setState(s => { s.map = state }) }}

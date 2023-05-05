@@ -17,12 +17,13 @@ import { socketio } from "@/lib/socketio";
 import { ActionId } from "@core/types/action_id";
 
 export default function Tilemap() {
+  const [width, height] = useGameStore(state => [state.data.width, state.data.height]);
   const tiles = useGameStore(state => state.data.tiles);
 
   return (
-    <>
+    <div style={{ width: width * 128, height: height * 128 }}>
       {tiles.map((tile, i) => <Tile tile={tile} key={i} />)}
-    </>
+    </div>
   )
 }
 
