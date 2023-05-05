@@ -14,7 +14,12 @@ export interface GameStoreState {
   selectedUnitTile: ITile | undefined;
   moveableTiles: ITile[];
 
-  map: { positionX: number, positionY: number, scale: number };
+  map: {
+    positionX: number,
+    positionY: number,
+    scale: number,
+    center: () => void;
+  };
 
   /**
    * Used to display "ModalNextTurn", if player didn't do any actions,
@@ -35,7 +40,12 @@ const initialState: GameStoreState = {
   selectedUnitTile: undefined,
   moveableTiles: [],
 
-  map: { positionX: 0, positionY: 0, scale: 1 },
+  map: {
+    positionX: 0,
+    positionY: 0,
+    scale: 1,
+    center: () => { },
+  },
 
   didAction: false,
 }

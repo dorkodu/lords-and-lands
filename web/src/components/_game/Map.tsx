@@ -21,10 +21,22 @@ export default function Map() {
       maxScale={1}
       minScale={0.25}
 
-      limitToBounds={true}
+      limitToBounds={false}
       doubleClick={{ disabled: true }}
 
-      onTransformed={(_ref, state) => { useGameStore.setState(s => { s.map = state }) }}
+      onInit={(ref) => {
+        useGameStore.setState(s => {
+          s.map.center = () => ref.centerView(0.25);
+        });
+      }}
+
+      onTransformed={(_ref, state) => {
+        useGameStore.setState(s => {
+          s.map.positionX = state.positionX;
+          s.map.positionY = state.positionY;
+          s.map.scale = state.scale;
+        });
+      }}
     >
       <TransformComponent wrapperStyle={{ width: `${size.x}px`, height: `${size.y}px` }}>
         <Tilemap />

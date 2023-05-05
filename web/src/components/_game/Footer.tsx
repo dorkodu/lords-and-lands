@@ -2,9 +2,9 @@ import { util } from "@/lib/util";
 import { useAppStore } from "@/stores/appStore";
 import { useGameStore } from "@/stores/gameStore";
 import { game } from "@core/game";
-import { Flex, createStyles, ActionIcon, Tooltip } from "@mantine/core";
+import { Flex, createStyles, ActionIcon, Tooltip, useMantineTheme } from "@mantine/core";
 import { useHotkeys } from "@mantine/hooks";
-import { IconArrowRight, IconWorld } from "@tabler/icons-react";
+import { IconArrowRight, IconFocusCentered, IconWorld } from "@tabler/icons-react";
 import { useNavigate } from "react-router-dom";
 import CustomMessageIcon from "../custom/CustomMessageIcon";
 
@@ -25,6 +25,7 @@ const useStyles = createStyles((_theme) => ({
 export default function Footer() {
   const navigate = useNavigate();
   const { classes } = useStyles();
+  const theme = useMantineTheme();
 
   const data = useGameStore(state => state.data);
   const country = useGameStore(state => state.country);
@@ -45,12 +46,14 @@ export default function Footer() {
 
     util.nextTurn();
   }
+  const onClickCenter = () => { useGameStore.getState().map.center() }
 
   useHotkeys([
     ["Escape", () => onClickLobby()],
     ["1", () => onClickLobby()],
     ["2", () => onClickChat()],
     ["3", () => onClickNextTurn()],
+    ["4", () => onClickCenter()],
   ]);
 
   return (
@@ -76,6 +79,17 @@ export default function Footer() {
           disabled={!game.play.nextTurnActable(data, { country: country?.id })}
         >
           <IconArrowRight />
+        </ActionIcon>
+      </Tooltip>
+
+      <Tooltip label="Center (4)" events={{ hover: true, focus: false, touch: true }}>
+        <ActionIcon
+          variant="filled"
+          size={32}
+          onClick={onClickCenter}
+          style={{ position: "absolute", right: theme.spacing.md }}
+        >
+          <IconFocusCentered />
         </ActionIcon>
       </Tooltip>
 

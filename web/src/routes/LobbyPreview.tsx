@@ -4,9 +4,9 @@ import { useAppStore } from "@/stores/appStore";
 import { useGameStore } from "@/stores/gameStore";
 import { game } from "@core/game";
 import { ActionId } from "@core/types/action_id";
-import { ActionIcon, createStyles, Flex, Tooltip } from "@mantine/core";
+import { ActionIcon, createStyles, Flex, Tooltip, useMantineTheme } from "@mantine/core";
 import { useHotkeys } from "@mantine/hooks";
-import { IconArrowLeft, IconRefresh } from "@tabler/icons-react";
+import { IconArrowLeft, IconFocusCentered, IconRefresh } from "@tabler/icons-react";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
@@ -54,6 +54,7 @@ const useStyles = createStyles((_theme) => ({
 function Footer() {
   const navigate = useNavigate();
   const { classes } = useStyles();
+  const theme = useMantineTheme();
 
   const lobbyOwner = useAppStore(state => state.lobby.owner);
   const running = useGameStore(state => state.data.running);
@@ -61,7 +62,6 @@ function Footer() {
   const onClickLobby = () => {
     navigate("/lobby")
   }
-
   const onClickGenerate = () => {
     const online = useAppStore.getState().lobby.online;
 
@@ -73,11 +73,13 @@ function Footer() {
       else game.play.generate(s.data, info);
     });
   }
+  const onClickCenter = () => { useGameStore.getState().map.center() }
 
   useHotkeys([
     ["Escape", onClickLobby],
     ["1", () => onClickLobby()],
     ["2", () => onClickGenerate()],
+    ["3", () => onClickCenter()],
   ]);
 
   return (
@@ -89,13 +91,22 @@ function Footer() {
         </ActionIcon>
       </Tooltip>
 
-      {lobbyOwner &&
-        <Tooltip label="Re-generate (2)" events={{ hover: true, focus: false, touch: true }}>
-          <ActionIcon variant="filled" size={32} onClick={onClickGenerate} disabled={running}>
-            <IconRefresh />
-          </ActionIcon>
-        </Tooltip>
-      }
+      <Tooltip label="Re-generate (2)" events={{ hover: true, focus: false, touch: true }}>
+        <ActionIcon variant="filled" size={32} onClick={onClickGenerate} disabled={!lobbyOwner || running}>
+          <IconRefresh />
+        </ActionIcon>
+      </Tooltip>
+
+      <Tooltip label="Center (3)" events={{ hover: true, focus: false, touch: true }}>
+        <ActionIcon
+          variant="filled"
+          size={32}
+          onClick={onClickCenter}
+          style={{ position: "absolute", right: theme.spacing.md }}
+        >
+          <IconFocusCentered />
+        </ActionIcon>
+      </Tooltip>
 
     </Flex>
   )
