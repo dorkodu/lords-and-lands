@@ -301,7 +301,7 @@ function Player({ player }: { player: IPlayer }) {
         </Flex>
 
         <Flex align="center" justify="flex-end" gap="xs">
-          {lobbyOwner && <ActionIcon size={24} onClick={onClickBan}><IconBan /></ActionIcon>}
+          {lobbyOwner && player.id !== lobby.adminId && <ActionIcon size={24} onClick={onClickBan}><IconBan /></ActionIcon>}
           {player.id === lobby.adminId && <IconStarFilled />}
         </Flex>
 
