@@ -29,7 +29,7 @@ export interface AppStoreState {
     showNextTurn: boolean;
     showPlayerWin: boolean;
 
-    //showUpdateSW: boolean;
+    showUpdateSW: boolean;
   }
 
   lobby: {
@@ -70,7 +70,7 @@ const initialState: AppStoreState = {
     showNextTurn: false,
     showPlayerWin: false,
 
-    //showUpdateSW: false,
+    showUpdateSW: false,
   },
 
   lobby: {
