@@ -37,14 +37,26 @@ export default defineConfig({
         background_color: "#000",
         icons: [
           {
-            src: "/android-chrome-128x128.png",
-            sizes: "128x128",
+            src: "/android-chrome-192x192.png",
+            sizes: "192x192",
             type: "image/png",
             purpose: "any"
           },
           {
-            src: "/maskable_icon_x128.png",
-            sizes: "128x128",
+            src: "/android-chrome-512x512.png",
+            sizes: "512x512",
+            type: "image/png",
+            purpose: "any"
+          },
+          {
+            src: "/maskable_icon_x192.png",
+            sizes: "192x192",
+            type: "image/png",
+            purpose: "maskable"
+          },
+          {
+            src: "/maskable_icon_x512.png",
+            sizes: "512x512",
             type: "image/png",
             purpose: "maskable"
           },
