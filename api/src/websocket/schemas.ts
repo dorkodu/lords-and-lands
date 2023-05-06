@@ -122,5 +122,6 @@ export const actionMoveUnitSchema = z.object({
   countryId: countryId,
   from: pos,
   to: pos,
+  bonus: z.number().optional(),
 }).strict();
 // Actions \\
