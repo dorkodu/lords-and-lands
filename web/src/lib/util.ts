@@ -3,7 +3,7 @@ import { useGameStore } from "@/stores/gameStore";
 import { game } from "@core/game";
 import { ActionId } from "@core/types/action_id";
 import { socketio } from "./socketio";
-import { ai } from "@core/lib/ai";
+import { bot } from "@core/lib/bot";
 import { IGameData } from "@core/gamedata";
 
 function share(text: string, url: string): Promise<boolean> {
@@ -82,7 +82,7 @@ function skipAITurns(data: IGameData) {
       aggressiveness: player.aggressiveness ?? 0,
       difficulty: player.difficulty === "hard" ? 3 : player.difficulty === "normal" ? 1 : 0,
     };
-    ai.play(data, player.country, settings);
+    bot.play(data, player.country, settings);
     game.play.nextTurn(data, { country: player.country });
 
     currentCountry = game.util.turnTypeToCountryId(data.turn.type);

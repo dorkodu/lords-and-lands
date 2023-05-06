@@ -5,7 +5,7 @@ import { LandmarkId } from "../types/landmark_id";
 import { ITile } from "./tile";
 import { util } from "./util";
 
-interface IAISettings {
+interface IBotSettings {
   aggressiveness: number;
   difficulty: number;
 }
@@ -16,10 +16,10 @@ interface IAISettings {
  * @param countryId 
  * @param settings
  * Aggressiveness (-6 to +6) -> minimum war modifier threshold before attacking.
- * Difficulty (-6 to +6) -> war modifier bonus to AI.
+ * Difficulty (-6 to +6) -> war modifier bonus to bot.
  * @returns 
  */
-function play(data: IGameData, countryId: CountryId, settings: IAISettings) {
+function play(data: IGameData, countryId: CountryId, settings: IBotSettings) {
   const country = data.countries.filter(c => c.id === countryId)[0];
   if (!country) return;
 
@@ -33,7 +33,7 @@ function play(data: IGameData, countryId: CountryId, settings: IAISettings) {
     if (t.owner === countryId && t.landmark === LandmarkId.None) emptyOwnTiles.push(t);
   });
 
-  // AI stages:
+  // Bot stages:
   // 1. Place banner
   // 2. Move armies away from the banner
   // 3. Move armies to better tiles that have better modifiers
@@ -170,7 +170,7 @@ function moveUnitAway(data: IGameData, tile: ITile): boolean {
   return false;
 }
 
-function attackUnit(data: IGameData, tile: ITile, settings: IAISettings) {
+function attackUnit(data: IGameData, tile: ITile, settings: IBotSettings) {
   const countryId = tile.unit?.id;
   if (countryId === undefined) return;
 
@@ -190,6 +190,6 @@ function attackUnit(data: IGameData, tile: ITile, settings: IAISettings) {
   }
 }
 
-export const ai = {
+export const bot = {
   play,
 }
