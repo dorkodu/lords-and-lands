@@ -138,47 +138,55 @@ function Players() {
 
   const localPlayerAddable = lobby.players.length < 4;
   const addLocalPlayer = () => {
-    // TODO: Implement and enable adding local players in online mode
-    // Disable adding local players in online mode
-    if (lobby.online) return;
     if (!localPlayerAddable) return;
 
-    useAppStore.setState(s => {
-      if (!s.lobby.adminId) return;
-
-      const newPlayer: INetworkPlayer = {
-        id: util.generateId(),
-        name: "Local Player",
-        country: CountryId.None,
-        local: { ownerId: s.lobby.adminId },
+    if (lobby.online) {
+      if (lobby.lobbyId) {
+        socketio.emit("client-join-lobby", { lobbyId: lobby.lobbyId, playerName: "Local", local: true });
       }
+    }
+    else {
+      useAppStore.setState(s => {
+        if (!s.lobby.adminId) return;
 
-      const exists = s.lobby.players.filter(p => p.id === newPlayer.id).length > 0;
-      if (exists) return;
-      s.lobby.players.push(newPlayer);
-    });
+        const newPlayer: INetworkPlayer = {
+          id: util.generateId(),
+          name: "Local Player",
+          country: CountryId.None,
+          local: { ownerId: s.lobby.adminId },
+        }
+
+        const exists = s.lobby.players.filter(p => p.id === newPlayer.id).length > 0;
+        if (exists) return;
+        s.lobby.players.push(newPlayer);
+      });
+    }
   }
 
   const botPlayerAddable = lobby.players.length < 4;
   const addBotPlayer = (botSettings: IBotSettings) => {
-    // TODO: Implement and enable adding local players in online mode
-    // Disable adding local players in online mode
-    if (lobby.online) return;
     if (!botPlayerAddable) return;
 
-    useAppStore.setState(s => {
-      const newPlayer: INetworkPlayer = {
-        id: util.generateId(),
-        name: "",
-        country: CountryId.None,
-        bot: botSettings,
+    if (lobby.online) {
+      if (lobby.lobbyId) {
+        socketio.emit("client-join-lobby", { lobbyId: lobby.lobbyId, playerName: "Bot", bot: botSettings });
       }
+    }
+    else {
+      useAppStore.setState(s => {
+        const newPlayer: INetworkPlayer = {
+          id: util.generateId(),
+          name: "",
+          country: CountryId.None,
+          bot: botSettings,
+        }
 
-      const exists = s.lobby.players.filter(p => p.id === newPlayer.id).length > 0;
-      if (exists) return;
+        const exists = s.lobby.players.filter(p => p.id === newPlayer.id).length > 0;
+        if (exists) return;
 
-      s.lobby.players.push(newPlayer);
-    });
+        s.lobby.players.push(newPlayer);
+      });
+    }
   }
 
   return (
@@ -193,7 +201,7 @@ function Players() {
         <Button
           leftIcon={<IconDeviceGamepad2 />}
           onClick={addLocalPlayer}
-          disabled={lobby.online || running || !localPlayerAddable}
+          disabled={running || !localPlayerAddable}
           style={{ flex: 1 }}
         >
           Add Local Player
@@ -203,7 +211,7 @@ function Players() {
           <Menu.Target>
             <Button
               leftIcon={<IconRobot />}
-              disabled={lobby.online || running || !botPlayerAddable}
+              disabled={running || !botPlayerAddable}
               style={{ flex: 1 }}
             >
               Add Bot Player
@@ -214,7 +222,7 @@ function Players() {
             <Menu.Item
               icon={<IconRobot />}
               onClick={() => addBotPlayer({ difficulty: "easy" })}
-              disabled={lobby.online || running || !botPlayerAddable}
+              disabled={running || !botPlayerAddable}
               color="green"
             >
               Add Easy Bot
@@ -223,7 +231,7 @@ function Players() {
             <Menu.Item
               icon={<IconRobot />}
               onClick={() => addBotPlayer({ difficulty: "normal" })}
-              disabled={lobby.online || running || !botPlayerAddable}
+              disabled={running || !botPlayerAddable}
               color="yellow"
             >
               Add Normal Bot
@@ -232,7 +240,7 @@ function Players() {
             <Menu.Item
               icon={<IconRobot />}
               onClick={() => addBotPlayer({ difficulty: "hard" })}
-              disabled={lobby.online || running || !botPlayerAddable}
+              disabled={running || !botPlayerAddable}
               color="red"
             >
               Add Hard Bot
@@ -249,9 +257,7 @@ function Player({ player }: { player: INetworkPlayer }) {
   const lobbyOwner = useAppStore(state => state.isLobbyOwner());
 
   const onClickCountry = () => {
-    // If playing online and player is not current player
-    if (lobby.online && lobby.playerId !== player.id) return;
-
+    // TODO: Add some checks
     let oldCountry = player.country;
     let newCountry = player.country;
 
@@ -267,9 +273,9 @@ function Player({ player }: { player: INetworkPlayer }) {
 
     if (newCountry >= CountryId.Count) newCountry = CountryId.None;
 
-    // If online, send "new country" to server first to validate
+    // If online, send "new country" to server
     if (lobby.online) {
-      socketio.emit("client-change-country", { country: newCountry });
+      socketio.emit("client-change-country", { playerId: player.id, country: newCountry });
     }
     // If not offline, change country immediately
     else {
