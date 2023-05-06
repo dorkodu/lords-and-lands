@@ -8,7 +8,7 @@ import { useGameStore } from "./stores/gameStore";
 import { game } from "@core/game";
 import { assets } from "./assets/assets";
 import ModalQuitLobby from "./components/modals/ModalQuitLobby";
-//import ModalUpdateSW from "./components/modals/ModalUpdateSW";
+import ModalUpdateSW from "./components/modals/ModalUpdateSW";
 import ModalLobbyOnline from "./components/modals/ModalLobbyOnline";
 import ModalPlayerWin from "./components/modals/ModalPlayerWin";
 import ModalNextTurn from "./components/modals/ModalNextTurn";
@@ -51,7 +51,7 @@ export default function App() {
         <ModalQuitLobby />
         <ModalNextTurn />
         <ModalPlayerWin />
-        {/*<ModalUpdateSW />*/}
+        <ModalUpdateSW />
       </MantineProvider>
 
       <ScrollRestoration />
