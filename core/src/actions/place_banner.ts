@@ -38,11 +38,8 @@ export function placeBannerActable(data: IGameData, info: Info): boolean {
 
   const adjacents = util.getAdjacentTiles(data, info.pos);
   for (const adjacent of adjacents) {
-    // If there is a adjacent banner
-    if (adjacent.landmark === LandmarkId.Banner) return false;
-
-    // If there is adjacent enemy unit
-    if (adjacent.unit && adjacent.unit.id !== country.id) return false;
+    // If there is a adjacent banner of the same country
+    if (adjacent.landmark === LandmarkId.Banner && adjacent.owner === tile.owner) return false;
   }
 
   return true;
@@ -64,13 +61,8 @@ export function placeBanner(data: IGameData, info: Info) {
 
   const adjacent = util.getAdjacentTiles(data, info.pos);
   adjacent.forEach(t => {
-    // If tile is already settled
-    if (t.type === TileType.Settled) return;
+    if (t.owner !== tile.owner) return;
 
-    // If tile has a unit that is not own unit
-    if (t.unit && t.unit.id !== country.id) return;
-
-    t.owner = country.id;
     t.type = TileType.Settled;
   });
 }
