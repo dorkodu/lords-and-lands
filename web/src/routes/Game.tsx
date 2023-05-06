@@ -30,8 +30,6 @@ export default function Game() {
     });
 
     useGameStore.setState(s => {
-      if (!s.data.running) return;
-
       if (lobby.online) {
         const player = lobby.players.filter(p => p.id === lobby.playerId)[0];
         const country = player && s.data.countries.filter(c => c.id === player.country)[0];
