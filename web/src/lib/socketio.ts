@@ -6,6 +6,7 @@ import { CountryId } from "@core/types/country_id";
 import { game } from "@core/game";
 import { createSeedRandom } from "@core/lib/seed_random";
 import { createGameData } from "@core/gamedata";
+import { util } from "./util";
 
 export const socketio: Socket<ServerToClientEvents, ClientToServerEvents> = io(
   { path: "/api/socket", transports: ["websocket"] }
@@ -174,6 +175,9 @@ socketio.on("server-game-action", (data) => {
     // Server sends a new seed on every action to prevent cheating
     s.data.rng = createSeedRandom(data.seed);
     game.parseAction(s.data, { id: data.id, info: data.info });
+
+    // After every action re-set current country
+    s.country = util.getLocalCountry(s.data);
   });
 });
 // Game events \\

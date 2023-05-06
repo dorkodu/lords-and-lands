@@ -227,6 +227,12 @@ function gameAction(player: IPlayer, action: { id: ActionId, info?: any }, seed:
   // Some actions require player to be admin, get player's admin status
   const isAdmin = player.id === lobby.adminId;
 
+  // Get players that current player can control (like local players, etc.)
+  const players = Object.values(lobby.players).map(p => {
+    if (p.id === player.id || p.local?.ownerId === player.id) return p.country;
+    return undefined;
+  }).filter(c => c !== undefined) as CountryId[];
+
   // Create new rng at every action to prevent users from cheating
   const oldRng = lobby.gameData.rng;
   const newRng = createSeedRandom(seed);
@@ -252,10 +258,12 @@ function gameAction(player: IPlayer, action: { id: ActionId, info?: any }, seed:
     case ActionId.NextTurn:
       if (!actionNextTurnSchema.safeParse(action.info).success) break;
       const parsedNextTurn = action as IActionNextTurn;
-      parsedNextTurn.info.country = player.country;
+
+      if (parsedNextTurn.info.country !== undefined && !players.includes(parsedNextTurn.info.country)) break;
 
       actable = game.play.nextTurnActable(lobby.gameData, parsedNextTurn.info);
       game.play.nextTurn(lobby.gameData, parsedNextTurn.info);
+      // TODO: Play AI if can
       break;
     case ActionId.Generate:
       if (!actionGenerateSchema.safeParse(action.info).success) break;
@@ -286,7 +294,8 @@ function gameAction(player: IPlayer, action: { id: ActionId, info?: any }, seed:
     case ActionId.PlaceBanner:
       if (!actionPlaceBannerSchema.safeParse(action.info).success) break;
       const parsedPlaceBanner = action as IActionPlaceBanner;
-      parsedPlaceBanner.info.countryId = player.country;
+
+      if (!players.includes(parsedPlaceBanner.info.countryId)) break;
 
       actable = game.play.placeBannerActable(lobby.gameData, parsedPlaceBanner.info);
       game.play.placeBanner(lobby.gameData, parsedPlaceBanner.info);
@@ -294,7 +303,8 @@ function gameAction(player: IPlayer, action: { id: ActionId, info?: any }, seed:
     case ActionId.MoveUnit:
       if (!actionMoveUnitSchema.safeParse(action.info).success) break;
       const parsedMoveUnit = action as IActionMoveUnit;
-      parsedMoveUnit.info.countryId = player.country;
+
+      if (!players.includes(parsedMoveUnit.info.countryId)) break;
 
       actable = game.play.moveUnitActable(lobby.gameData, parsedMoveUnit.info);
       game.play.moveUnit(lobby.gameData, parsedMoveUnit.info);

@@ -6,6 +6,7 @@ import { socketio } from "./socketio";
 import { bot, IBotSettings } from "@core/lib/bot";
 import { IGameData } from "@core/gamedata";
 import { DefaultMantineColor } from "@mantine/core";
+import { ICountry } from "@core/lib/country";
 
 function share(text: string, url: string): Promise<boolean> {
   return new Promise(resolve => {
@@ -52,7 +53,7 @@ function nextTurn() {
     if (online) {
       // If next turn action is actable
       if (game.play.nextTurnActable(s.data, { country: s.country?.id })) {
-        socketio.emit("client-game-action", { id: ActionId.NextTurn, info: {} });
+        socketio.emit("client-game-action", { id: ActionId.NextTurn, info: { country: s.country?.id } });
       }
     }
     else {
@@ -88,18 +89,26 @@ function skipAITurns(data: IGameData) {
   }
 }
 
-/**
- * Only use in offline mode, picks the next local country.
- * @param data 
- * @returns 
- */
-function getLocalCountry(data: IGameData) {
-  const players = useAppStore.getState().lobby.players;
+function getLocalCountry(data: IGameData): ICountry | undefined {
+  const lobby = useAppStore.getState().lobby;
 
   const country = game.util.turnTypeToCountry(data, data.turn.type);
   if (!country) return undefined;
 
-  const count = players.filter(p => !p.bot && data.countries.filter(c => c.id === p.country).length).length;
+  const player = lobby.players.filter(p => p.country === country.id)[0];
+  if (!player) return undefined;
+
+  // If player is bot, it's never local turn
+  if (player.bot) return undefined;
+
+  // If player is local but not owned by current player
+  if (player.local && player.local.ownerId !== lobby.playerId) return undefined;
+
+  // If player is not local and not current player
+  if (!player.local && player.id !== lobby.playerId) return undefined;
+
+  // If remaining players are only bots
+  const count = lobby.players.filter(p => !p.bot && data.countries.filter(c => c.id === p.country).length).length;
   if (count > 0) return country;
 
   return undefined;

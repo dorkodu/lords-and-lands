@@ -28,17 +28,6 @@ export default function Game() {
         s.country = util.getLocalCountry(s.data);
       }
     });
-
-    useGameStore.setState(s => {
-      if (lobby.online) {
-        const player = lobby.players.filter(p => p.id === lobby.playerId)[0];
-        const country = player && s.data.countries.filter(c => c.id === player.country)[0];
-        if (country) s.country = country;
-      }
-      else {
-
-      }
-    });
   }, []);
 
   return (
