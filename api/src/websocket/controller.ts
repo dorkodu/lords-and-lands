@@ -42,8 +42,12 @@ function joinLobby(player: IPlayer, data: Parameters<ClientToServerEvents["clien
     player.socket?.emit("server-join-lobby", undefined);
     return;
   }
-  // If bot player is joininng
+  // If bot player is joining (only admin can add bot players)
   else if (data.bot) {
+    const _lobby = dataAPI.getLobbyFromPlayerId(player.id);
+    if (!_lobby || _lobby.adminId !== player.id)
+      return void player.socket?.emit("server-join-lobby", undefined);
+
     newPlayer = dataAPI.createPlayer(undefined);
     newPlayer && (newPlayer.bot = data.bot);
   }

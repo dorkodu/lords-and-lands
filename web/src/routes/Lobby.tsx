@@ -136,6 +136,8 @@ function Players() {
   const lobby = useAppStore(state => state.lobby);
   const running = useGameStore(state => state.data.running);
 
+  const lobbyOwner = lobby.playerId !== undefined && lobby.adminId !== undefined && lobby.playerId === lobby.adminId;
+
   const localPlayerAddable = lobby.players.length < 4;
   const addLocalPlayer = () => {
     if (!localPlayerAddable) return;
@@ -211,7 +213,7 @@ function Players() {
           <Menu.Target>
             <Button
               leftIcon={<IconRobot />}
-              disabled={running || !botPlayerAddable}
+              disabled={!lobbyOwner || running || !botPlayerAddable}
               style={{ flex: 1 }}
             >
               Add Bot Player
