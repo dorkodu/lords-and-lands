@@ -1,4 +1,3 @@
-import { util } from "@/lib/util";
 import { createGameData } from "@core/gamedata";
 import { CountryId } from "@core/types/country_id";
 import { create } from "zustand";
@@ -77,31 +76,31 @@ const initialState: AppStoreState = {
 
   lobby: {
     lobbyId: undefined,
-    playerId: undefined,
-    adminId: undefined,
+    playerId: "0000",
+    adminId: "0000",
 
     online: false,
 
     players: [
       {
-        id: util.generateId(),
+        id: "0000",
         name: "Player",
         country: CountryId.Green
       },
       {
-        id: util.generateId(),
+        id: "1111",
         name: "",
         country: CountryId.Purple,
         bot: { difficulty: "normal" }
       },
       {
-        id: util.generateId(),
+        id: "2222",
         name: "",
         country: CountryId.Red,
         bot: { difficulty: "normal" }
       },
       {
-        id: util.generateId(),
+        id: "3333",
         name: "",
         country: CountryId.Yellow,
         bot: { difficulty: "normal" }
@@ -153,7 +152,7 @@ export const useAppStore = create(
     },
 
     isLobbyOwner: () => {
-      return !get().lobby.online || get().lobby.playerId === get().lobby.adminId;
+      return get().lobby.playerId === get().lobby.adminId;
     }
   }))
 );

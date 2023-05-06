@@ -26,6 +26,7 @@ import { socketio } from "@/lib/socketio";
 import CustomMessageIcon from "@/components/custom/CustomMessageIcon";
 import { INetworkPlayer } from "@api/types/player";
 import { IBotSettings } from "@core/lib/bot";
+import CustomRobotIcon, { botToColor, botToName } from "@/components/custom/CustomRobotIcon";
 
 export default function Lobby() {
   const navigate = useNavigate();
@@ -296,11 +297,15 @@ function Player({ player }: { player: INetworkPlayer }) {
           <ActionIcon size={48} onClick={onClickCountry}>
             <Image src={assets.countryIdToUnitSrc(player.country)} width={48} height={48} withPlaceholder />
           </ActionIcon>
-          <Text>{player.name}</Text>
+          <Text>
+            <Text span>{player.name}</Text>
+            {player.bot && <Text span color={botToColor(player.bot)}>{botToName(player.bot)}</Text>}
+          </Text>
         </Flex>
 
         <Flex align="center" justify="flex-end" gap="xs">
           {lobbyOwner && player.id !== lobby.adminId && <ActionIcon size={24} onClick={onClickBan}><IconBan /></ActionIcon>}
+          {player.bot && <CustomRobotIcon bot={player.bot} />}
           {player.id === lobby.adminId && <IconStarFilled />}
         </Flex>
 
