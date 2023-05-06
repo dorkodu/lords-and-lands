@@ -144,7 +144,7 @@ function leaveLobby(player: IPlayer, data: Parameters<ClientToServerEvents["clie
   dataAPI.leaveLobby(playerId);
 
   // If player that left was the admin, send update to players 
-  if (isAdmin) {
+  if (player.id === playerId && isAdmin) {
     dataAPI.getLobbyPlayers(player.lobby).forEach(p => p.socket?.emit("server-lobby-update", { adminId: lobby.adminId }));
   }
 }

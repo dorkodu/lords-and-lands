@@ -257,7 +257,6 @@ function Player({ player }: { player: INetworkPlayer }) {
   const lobbyOwner = useAppStore(state => state.isLobbyOwner());
 
   const onClickCountry = () => {
-    // TODO: Add some checks
     let oldCountry = player.country;
     let newCountry = player.country;
 
