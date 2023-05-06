@@ -5,20 +5,25 @@ import { LandmarkId } from "../types/landmark_id";
 import { ITile } from "./tile";
 import { util } from "./util";
 
-interface IBotSettings {
-  aggressiveness: number;
-  difficulty: number;
+export type IBotSettings = { difficulty: BotDifficulty }
+export type BotDifficulty = "easy" | "normal" | "hard";
+
+function convertDifficulty(difficulty: BotDifficulty) {
+  switch (difficulty) {
+    case "easy": return +0;
+    case "normal": return +2;
+    case "hard": return +4;
+  }
 }
 
-/**
- * 
- * @param data 
- * @param countryId 
- * @param settings
- * Aggressiveness (-6 to +6) -> minimum war modifier threshold before attacking.
- * Difficulty (-6 to +6) -> war modifier bonus to bot.
- * @returns 
- */
+function convertAggressiveness(difficulty: BotDifficulty) {
+  switch (difficulty) {
+    case "easy": return +0;
+    case "normal": return +1;
+    case "hard": return +2;
+  }
+}
+
 function play(data: IGameData, countryId: CountryId, settings: IBotSettings) {
   const country = data.countries.filter(c => c.id === countryId)[0];
   if (!country) return;
@@ -180,10 +185,13 @@ function attackUnit(data: IGameData, tile: ITile, settings: IBotSettings) {
     if (!t.unit) continue;
     if (t.unit.id === countryId) continue;
 
-    const info = { from: tile.pos, to: t.pos, countryId, bonus: settings.difficulty };
+    const difficulty = convertDifficulty(settings.difficulty);
+    const aggressiveness = convertAggressiveness(settings.difficulty);
+
+    const info = { from: tile.pos, to: t.pos, countryId, bonus: difficulty };
     if (!game.play.moveUnitActable(data, info)) continue;
 
-    if (settings.aggressiveness + settings.difficulty > util.getWarModifier(data, tile, t) * -1) {
+    if (difficulty + aggressiveness > util.getWarModifier(data, tile, t) * -1) {
       game.play.moveUnit(data, info);
       break;
     }
