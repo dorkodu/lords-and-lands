@@ -176,7 +176,8 @@ socketio.on("server-game-action", (data) => {
     s.data.rng = createSeedRandom(data.seed);
     game.parseAction(s.data, { id: data.id, info: data.info });
 
-    // After every action re-set current country
+    // After every action: skip ai turns and set current country
+    util.skipAITurns(s.data);
     s.country = util.getLocalCountry(s.data);
   });
 });

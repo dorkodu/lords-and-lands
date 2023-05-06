@@ -17,6 +17,7 @@ import { IActionPlaceBanner } from "@core/actions/place_banner";
 import { IActionMoveUnit } from "@core/actions/move_unit";
 import { createSeedRandom } from "@core/lib/seed_random";
 import { ISerializedGameData } from "@core/serializer";
+import { bot } from "@core/lib/bot";
 
 function createPlayer(socket: ISocket | undefined) {
   // Generate random id, if player with id already exists, return
@@ -263,7 +264,7 @@ function gameAction(player: IPlayer, action: { id: ActionId, info?: any }, seed:
 
       actable = game.play.nextTurnActable(lobby.gameData, parsedNextTurn.info);
       game.play.nextTurn(lobby.gameData, parsedNextTurn.info);
-      // TODO: Play AI if can
+      skipAITurns(lobby);
       break;
     case ActionId.Generate:
       if (!actionGenerateSchema.safeParse(action.info).success) break;
@@ -315,6 +316,25 @@ function gameAction(player: IPlayer, action: { id: ActionId, info?: any }, seed:
   if (!actable) lobby.gameData.rng = oldRng;
 
   return actable;
+}
+
+function skipAITurns(lobby: ILobby) {
+  const players = Object.values(lobby.players);
+  const data = lobby.gameData;
+
+  let currentCountry = game.util.turnTypeToCountryId(data.turn.type);
+  let player = players.filter(p => p.country === currentCountry)[0];
+  let nonBotPlayerCount = players.filter(p => !p.bot && data.countries.filter(c => c.id === p.country).length).length;
+
+  // If current turn is a bot, make it play it's turn, if no players left in the game, stop
+  while (player && player.bot && nonBotPlayerCount > 0) {
+    bot.play(data, player.country, player.bot);
+    game.play.nextTurn(data, { country: player.country });
+
+    currentCountry = game.util.turnTypeToCountryId(data.turn.type);
+    player = players.filter(p => p.country === currentCountry)[0];
+    nonBotPlayerCount = players.filter(p => !p.bot && data.countries.filter(c => c.id === p.country).length).length;
+  }
 }
 
 export const dataAPI = {
