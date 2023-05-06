@@ -26,7 +26,7 @@ import { socketio } from "@/lib/socketio";
 import CustomMessageIcon from "@/components/custom/CustomMessageIcon";
 import { INetworkPlayer } from "@api/types/player";
 import { IBotSettings } from "@core/lib/bot";
-import CustomRobotIcon, { botToColor, botToName } from "@/components/custom/CustomRobotIcon";
+import CustomRobotIcon from "@/components/custom/CustomRobotIcon";
 
 export default function Lobby() {
   const navigate = useNavigate();
@@ -144,7 +144,15 @@ function Players() {
     if (!localPlayerAddable) return;
 
     useAppStore.setState(s => {
-      const newPlayer: INetworkPlayer = { id: util.generateId(), name: "Local Player", country: CountryId.None };
+      if (!s.lobby.adminId) return;
+
+      const newPlayer: INetworkPlayer = {
+        id: util.generateId(),
+        name: "Local Player",
+        country: CountryId.None,
+        local: { ownerId: s.lobby.adminId },
+      }
+
       const exists = s.lobby.players.filter(p => p.id === newPlayer.id).length > 0;
       if (exists) return;
       s.lobby.players.push(newPlayer);
@@ -298,14 +306,16 @@ function Player({ player }: { player: INetworkPlayer }) {
             <Image src={assets.countryIdToUnitSrc(player.country)} width={48} height={48} withPlaceholder />
           </ActionIcon>
           <Text>
-            <Text span>{player.name}</Text>
-            {player.bot && <Text span color={botToColor(player.bot)}>{botToName(player.bot)}</Text>}
+            {!player.bot && !player.local && <Text span>{player.name}</Text>}
+            {player.bot && <Text span>{util.getBotPlayerName(player.bot)}</Text>}
+            {player.local && <Text span>{util.getLocalPlayerName(player.local)}</Text>}
           </Text>
         </Flex>
 
         <Flex align="center" justify="flex-end" gap="xs">
           {lobbyOwner && player.id !== lobby.adminId && <ActionIcon size={24} onClick={onClickBan}><IconBan /></ActionIcon>}
           {player.bot && <CustomRobotIcon bot={player.bot} />}
+          {player.local && <IconDeviceGamepad2 />}
           {player.id === lobby.adminId && <IconStarFilled />}
         </Flex>
 

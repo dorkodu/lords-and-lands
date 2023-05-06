@@ -3,8 +3,9 @@ import { useGameStore } from "@/stores/gameStore";
 import { game } from "@core/game";
 import { ActionId } from "@core/types/action_id";
 import { socketio } from "./socketio";
-import { bot } from "@core/lib/bot";
+import { bot, IBotSettings } from "@core/lib/bot";
 import { IGameData } from "@core/gamedata";
+import { DefaultMantineColor } from "@mantine/core";
 
 function share(text: string, url: string): Promise<boolean> {
   return new Promise(resolve => {
@@ -104,6 +105,29 @@ function getLocalCountry(data: IGameData) {
   return undefined;
 }
 
+function getBotPlayerName(bot: IBotSettings): string {
+  switch (bot?.difficulty) {
+    case "easy": return "Easy Bot";
+    case "normal": return "Normal Bot";
+    case "hard": return "Hard Bot";
+  }
+}
+
+function getBotPlayerColor(bot: IBotSettings): DefaultMantineColor {
+  switch (bot.difficulty) {
+    case "easy": return "green";
+    case "normal": return "yellow";
+    case "hard": return "red";
+  }
+}
+
+function getLocalPlayerName(local: { ownerId: string }): string {
+  const players = useAppStore.getState().lobby.players;
+  const owner = players.filter(p => p.id === local.ownerId)[0];
+  if (!owner) return "";
+  return `${owner.name} (Local)`
+}
+
 export const util = {
   share,
   copyToClipboard,
@@ -114,4 +138,8 @@ export const util = {
   nextTurn,
   skipAITurns,
   getLocalCountry,
+
+  getBotPlayerName,
+  getBotPlayerColor,
+  getLocalPlayerName,
 }
