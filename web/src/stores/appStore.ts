@@ -1,10 +1,10 @@
 import { util } from "@/lib/util";
-import { IPlayer } from "@/types/player";
 import { createGameData } from "@core/gamedata";
 import { CountryId } from "@core/types/country_id";
 import { create } from "zustand";
 import { immer } from "zustand/middleware/immer";
 import { useGameStore } from "./gameStore";
+import { INetworkPlayer } from "@api/types/player";
 
 export interface AppStoreState {
   redirect: string | undefined;
@@ -39,7 +39,7 @@ export interface AppStoreState {
 
     online: boolean;
 
-    players: IPlayer[];
+    players: INetworkPlayer[];
 
     messages: { playerId: string, msg: string }[];
     message: string;
@@ -50,7 +50,7 @@ export interface AppStoreState {
 export interface AppStoreAction {
   resetLobby: () => void;
 
-  playerIdToPlayer: (playerId: string) => IPlayer | undefined;
+  playerIdToPlayer: (playerId: string) => INetworkPlayer | undefined;
   playerIdToColor: (playerId: string) => string | undefined;
 
   showMessageIndicator: () => boolean;
@@ -83,10 +83,29 @@ const initialState: AppStoreState = {
     online: false,
 
     players: [
-      { id: util.generateId(), name: "Player", country: CountryId.Green },
-      { id: util.generateId(), name: "Normal Bot", country: CountryId.Purple, isBot: true, aggressiveness: 2, difficulty: "normal" },
-      { id: util.generateId(), name: "Normal Bot", country: CountryId.Red, isBot: true, aggressiveness: 0, difficulty: "normal" },
-      { id: util.generateId(), name: "Normal Bot", country: CountryId.Yellow, isBot: true, aggressiveness: -2, difficulty: "normal" },
+      {
+        id: util.generateId(),
+        name: "Player",
+        country: CountryId.Green
+      },
+      {
+        id: util.generateId(),
+        name: "",
+        country: CountryId.Purple,
+        bot: { difficulty: "normal" }
+      },
+      {
+        id: util.generateId(),
+        name: "",
+        country: CountryId.Red,
+        bot: { difficulty: "normal" }
+      },
+      {
+        id: util.generateId(),
+        name: "",
+        country: CountryId.Yellow,
+        bot: { difficulty: "normal" }
+      },
     ],
 
     messages: [],

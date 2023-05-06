@@ -74,20 +74,16 @@ function skipAITurns(data: IGameData) {
 
   let currentCountry = game.util.turnTypeToCountryId(data.turn.type);
   let player = players.filter(p => p.country === currentCountry)[0];
-  let nonBotPlayerCount = players.filter(p => !p.isBot && data.countries.filter(c => c.id === p.country).length).length;
+  let nonBotPlayerCount = players.filter(p => !p.bot && data.countries.filter(c => c.id === p.country).length).length;
 
   // If current turn is a bot, make it play it's turn, if no players left in the game, stop
-  while (player && player.isBot && nonBotPlayerCount > 0) {
-    const settings = {
-      aggressiveness: player.aggressiveness ?? 0,
-      difficulty: player.difficulty === "hard" ? 3 : player.difficulty === "normal" ? 1 : 0,
-    };
-    bot.play(data, player.country, settings);
+  while (player && player.bot && nonBotPlayerCount > 0) {
+    bot.play(data, player.country, player.bot);
     game.play.nextTurn(data, { country: player.country });
 
     currentCountry = game.util.turnTypeToCountryId(data.turn.type);
     player = players.filter(p => p.country === currentCountry)[0];
-    nonBotPlayerCount = players.filter(p => !p.isBot && data.countries.filter(c => c.id === p.country).length).length;
+    nonBotPlayerCount = players.filter(p => !p.bot && data.countries.filter(c => c.id === p.country).length).length;
   }
 }
 
@@ -102,7 +98,7 @@ function getLocalCountry(data: IGameData) {
   const country = game.util.turnTypeToCountry(data, data.turn.type);
   if (!country) return undefined;
 
-  const count = players.filter(p => !p.isBot && data.countries.filter(c => c.id === p.country).length).length;
+  const count = players.filter(p => !p.bot && data.countries.filter(c => c.id === p.country).length).length;
   if (count > 0) return country;
 
   return undefined;

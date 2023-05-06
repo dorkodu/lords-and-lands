@@ -13,7 +13,6 @@ import {
   IconShare,
   IconStarFilled
 } from "@tabler/icons-react";
-import { IPlayer } from "@/types/player";
 import { useAppStore } from "@/stores/appStore";
 import { assets } from "@/assets/assets";
 import { useNavigate } from "react-router-dom";
@@ -25,6 +24,8 @@ import { useDebouncedValue, useTimeout } from "@mantine/hooks";
 import { useEffect, useState } from "react";
 import { socketio } from "@/lib/socketio";
 import CustomMessageIcon from "@/components/custom/CustomMessageIcon";
+import { INetworkPlayer } from "@api/types/player";
+import { IBotSettings } from "@core/lib/bot";
 
 export default function Lobby() {
   const navigate = useNavigate();
@@ -142,7 +143,7 @@ function Players() {
     if (!localPlayerAddable) return;
 
     useAppStore.setState(s => {
-      const newPlayer: IPlayer = { id: util.generateId(), name: "Local Player", country: CountryId.None };
+      const newPlayer: INetworkPlayer = { id: util.generateId(), name: "Local Player", country: CountryId.None };
       const exists = s.lobby.players.filter(p => p.id === newPlayer.id).length > 0;
       if (exists) return;
       s.lobby.players.push(newPlayer);
@@ -150,20 +151,18 @@ function Players() {
   }
 
   const botPlayerAddable = lobby.players.length < 4;
-  const addBotPlayer = (name: string, difficulty: "easy" | "normal" | "hard") => {
+  const addBotPlayer = (botSettings: IBotSettings) => {
     // TODO: Implement and enable adding local players in online mode
     // Disable adding local players in online mode
     if (lobby.online) return;
     if (!botPlayerAddable) return;
 
     useAppStore.setState(s => {
-      const newPlayer: IPlayer = {
+      const newPlayer: INetworkPlayer = {
         id: util.generateId(),
-        name: name,
+        name: "",
         country: CountryId.None,
-        isBot: true,
-        aggressiveness: useGameStore.getState().data.rng.number(-6, +6 + 1),
-        difficulty: difficulty,
+        bot: botSettings,
       }
 
       const exists = s.lobby.players.filter(p => p.id === newPlayer.id).length > 0;
@@ -205,7 +204,7 @@ function Players() {
           <Menu.Dropdown>
             <Menu.Item
               icon={<IconRobot />}
-              onClick={() => addBotPlayer("Easy Bot", "easy")}
+              onClick={() => addBotPlayer({ difficulty: "easy" })}
               disabled={lobby.online || running || !botPlayerAddable}
               color="green"
             >
@@ -214,7 +213,7 @@ function Players() {
 
             <Menu.Item
               icon={<IconRobot />}
-              onClick={() => addBotPlayer("Normal Bot", "normal")}
+              onClick={() => addBotPlayer({ difficulty: "normal" })}
               disabled={lobby.online || running || !botPlayerAddable}
               color="yellow"
             >
@@ -223,7 +222,7 @@ function Players() {
 
             <Menu.Item
               icon={<IconRobot />}
-              onClick={() => addBotPlayer("Hard Bot", "hard")}
+              onClick={() => addBotPlayer({ difficulty: "hard" })}
               disabled={lobby.online || running || !botPlayerAddable}
               color="red"
             >
@@ -236,7 +235,7 @@ function Players() {
   )
 }
 
-function Player({ player }: { player: IPlayer }) {
+function Player({ player }: { player: INetworkPlayer }) {
   const lobby = useAppStore(state => state.lobby);
   const lobbyOwner = useAppStore(state => state.isLobbyOwner());
 
