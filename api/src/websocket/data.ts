@@ -41,6 +41,12 @@ function removePlayer(player: IPlayer) {
   // Delete player from lobby.players if exists
   delete lobby.players[player.id];
 
+  // If removed player was the last player in the lobby, remove lobby
+  if (Object.values(lobby.players).length === 0) {
+    removeLobby(player);
+    return;
+  }
+
   // Remove country of the player that left
   game.play.removeCountry(lobby.gameData, { country: player.country });
 
@@ -49,9 +55,6 @@ function removePlayer(player: IPlayer) {
     const newAdmin = Object.values(lobby.players)[0];
     if (newAdmin) lobby.adminId = newAdmin.id;
   }
-
-  // If removed player was the last player in the lobby, remove lobby
-  if (Object.values(lobby.players).length === 0) removeLobby(player);
 }
 
 function getPlayer(playerId: string) {
@@ -130,6 +133,12 @@ function leaveLobby(playerId: string) {
   // Remove player from the lobby
   delete data.lobbies[lobby.id]?.players[player.id];
 
+  // If removed player was the last player in the lobby, remove lobby
+  if (Object.values(lobby.players).length === 0) {
+    removeLobby(player);
+    return;
+  }
+
   // Remove country of the player that left
   game.play.removeCountry(lobby.gameData, { country: player.country });
 
@@ -138,9 +147,6 @@ function leaveLobby(playerId: string) {
     const newAdmin = Object.values(lobby.players)[0];
     if (newAdmin) lobby.adminId = newAdmin.id;
   }
-
-  // If removed player was the last player in the lobby, remove lobby
-  if (Object.values(lobby.players).length === 0) removeLobby(player);
 }
 
 function lobbyUpdate(player: IPlayer, width?: number, height?: number, seed?: number): boolean {
