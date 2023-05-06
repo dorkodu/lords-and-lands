@@ -5,9 +5,13 @@ import { IBotSettings } from "@core/lib/bot";
 export interface IPlayer {
   id: string;
   name: string;
-  lobby: string | undefined;
   country: CountryId;
-  socket: ISocket;
+
+  lobby: string | undefined;
+  socket: ISocket | undefined;
+
+  bot?: IBotSettings;
+  local?: { ownerId: string };
 }
 
 export interface INetworkPlayer {

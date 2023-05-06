@@ -13,12 +13,17 @@ export default function ModalQuitLobby() {
 
   const quitLobby = () => {
     // This modal is only used on online but still, if playing online, send "leave lobby" event
-    const online = useAppStore.getState().lobby.online;
-    if (online) socketio.emit("client-leave-lobby");
+    const lobby = useAppStore.getState().lobby;
 
-    // Close the modal & navigate to "/"
+    if (lobby.online) {
+      if (lobby.playerId) socketio.emit("client-leave-lobby", { playerId: lobby.playerId });
+    }
+    else {
+      navigate("/");
+    }
+
+    // Close the modal
     close();
-    navigate("/");
   }
 
   return (

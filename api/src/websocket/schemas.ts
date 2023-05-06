@@ -24,6 +24,12 @@ export const createLobbySchema = z.object({
 export const joinLobbySchema = z.object({
   lobbyId: lobbyId,
   playerName: playerName,
+  bot: z.object({ difficulty: z.enum(["easy", "normal", "hard"]) }).strict().optional(),
+  local: z.boolean().optional(),
+}).strict();
+
+export const leaveLobbySchema = z.object({
+  playerId: z.string(),
 }).strict();
 
 export const lobbyUpdateSchema = z.object({

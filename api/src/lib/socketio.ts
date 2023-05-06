@@ -18,7 +18,7 @@ socketio.on("connection", (socket): void => {
 
   socket.on("client-create-lobby", (data) => { websocketController.createLobby(player, data) });
   socket.on("client-join-lobby", (data) => { websocketController.joinLobby(player, data) });
-  socket.on("client-leave-lobby", () => { websocketController.leaveLobby(player) });
+  socket.on("client-leave-lobby", (data) => { websocketController.leaveLobby(player, data) });
   socket.on("client-lobby-update", (data) => { websocketController.lobbyUpdate(player, data) });
   socket.on("client-change-country", (data) => { websocketController.changeCountry(player, data) });
 
@@ -45,6 +45,6 @@ socketio.on("connection", (socket): void => {
 });
 
 function cleanup(player: IPlayer) {
-  websocketController.leaveLobby(player);
+  websocketController.leaveLobby(player, { playerId: player.id });
   dataAPI.removePlayer(player);
 }

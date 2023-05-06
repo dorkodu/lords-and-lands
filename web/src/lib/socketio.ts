@@ -76,6 +76,8 @@ socketio.on("server-join-lobby", (data) => {
 });
 
 socketio.on("server-leave-lobby", (data) => {
+  if (!data) return;
+
   let needLobbyReset = false;
 
   const player = useAppStore.getState().lobby.players.filter(p => p.id === data.playerId)[0];
