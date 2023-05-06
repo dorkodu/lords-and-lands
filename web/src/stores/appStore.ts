@@ -118,10 +118,7 @@ export const useAppStore = create(
     ...initialState,
 
     resetLobby: () => {
-      set(s => {
-        s.redirect = undefined;
-        s.lobby = { ...initialState.lobby };
-      });
+      set(s => { s.lobby = { ...initialState.lobby } });
 
       useGameStore.setState(s => { s.data = createGameData() });
     },

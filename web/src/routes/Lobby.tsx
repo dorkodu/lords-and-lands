@@ -288,13 +288,13 @@ function Player({ player }: { player: INetworkPlayer }) {
   const onClickBan = () => {
     if (!lobbyOwner) return;
 
-    useAppStore.setState(s => {
-      s.lobby.players = s.lobby.players.filter(p => p.id !== player.id);
-    });
-
-    useGameStore.setState(s => {
-      game.play.removeCountry(s.data, { country: player.country });
-    });
+    if (lobby.online) {
+      socketio.emit("client-leave-lobby", { playerId: player.id });
+    }
+    else {
+      useAppStore.setState(s => { s.lobby.players = s.lobby.players.filter(p => p.id !== player.id) });
+      useGameStore.setState(s => { game.play.removeCountry(s.data, { country: player.country }) });
+    }
   }
 
   return (

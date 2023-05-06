@@ -59,9 +59,13 @@ function getLobbyPlayers(lobbyId: string | undefined) {
   return Object.values(lobby.players);
 }
 
-function getLobby(lobbyId: string | undefined) {
-  const lobby = lobbyId && data.lobbies[lobbyId];
+function getLobbyFromPlayerId(playerId: string | undefined) {
+  const player = playerId && data.players[playerId];
+  if (!player) return undefined;
+
+  const lobby = player.lobby && data.lobbies[player.lobby];
   if (!lobby) return undefined;
+
   return lobby;
 }
 
@@ -110,7 +114,10 @@ function joinLobby(player: IPlayer, lobbyId: string): ILobby | undefined {
   return lobby;
 }
 
-function leaveLobby(player: IPlayer) {
+function leaveLobby(playerId: string) {
+  const player = playerId && data.players[playerId];
+  if (!player) return;
+
   const lobby = player.lobby && data.lobbies[player.lobby];
   if (!lobby) return;
 
@@ -296,7 +303,7 @@ export const dataAPI = {
   createPlayer,
   removePlayer,
   getLobbyPlayers,
-  getLobby,
+  getLobbyFromPlayerId,
 
   createLobby,
   removeLobby,

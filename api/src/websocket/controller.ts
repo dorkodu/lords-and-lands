@@ -82,18 +82,23 @@ function leaveLobby(player: IPlayer, data: Parameters<ClientToServerEvents["clie
   if (!parsed.success) return void player.socket?.emit("server-leave-lobby", undefined);
   const parsedData = parsed.data;
 
-  const playerId = parsedData.playerId;
-
-  const lobby = dataAPI.getLobby(player.lobby);
+  const lobby = dataAPI.getLobbyFromPlayerId(parsedData.playerId);
   if (!lobby) return;
 
+  const playerId = parsedData.playerId;
   const isAdmin = player.id === lobby.adminId;
 
+  // If not admin and trying to make someone else leave the lobby
+  if (!isAdmin && player.id !== playerId) {
+    player.socket?.emit("server-leave-lobby", undefined);
+    return;
+  }
+
   // Send "leave lobby" event to all players in the lobby
-  dataAPI.getLobbyPlayers(player.lobby).forEach(p => p.socket?.emit("server-leave-lobby", { playerId: player.id }));
+  dataAPI.getLobbyPlayers(player.lobby).forEach(p => p.socket?.emit("server-leave-lobby", { playerId }));
 
   // Make player leave the lobby
-  dataAPI.leaveLobby(player);
+  dataAPI.leaveLobby(playerId);
 
   // If player that left was the admin, send update to players 
   if (isAdmin) {
