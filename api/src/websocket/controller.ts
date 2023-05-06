@@ -35,32 +35,75 @@ function joinLobby(player: IPlayer, data: Parameters<ClientToServerEvents["clien
   if (!parsed.success) return void player.socket?.emit("server-join-lobby", undefined);
   const parsedData = parsed.data;
 
-  // Set player's name
-  player.name = parsedData.playerName;
+  let newPlayer: IPlayer | undefined = undefined;
 
-  const lobby = dataAPI.joinLobby(player, parsedData.lobbyId);
+  // If trying to make both bot & local player join, error
+  if (data.bot && data.local) {
+    player.socket?.emit("server-join-lobby", undefined);
+    return;
+  }
+  // If bot player is joininng
+  else if (data.bot) {
+    newPlayer = dataAPI.createPlayer(undefined);
+    newPlayer && (newPlayer.bot = data.bot);
+  }
+  // If local player is joining
+  else if (data.local) {
+    newPlayer = dataAPI.createPlayer(undefined);
+    newPlayer && (newPlayer.local = { ownerId: player.id });
+  }
+  // If player is joining
+  else {
+    newPlayer = player;
+    newPlayer && (player.name = parsedData.playerName);
+  }
+
+  // If newPlayer is undefined, return
+  if (!newPlayer) return void player.socket?.emit("server-join-lobby", undefined);
+
+  // Try to join to the lobby
+  const lobby = dataAPI.joinLobby(newPlayer, parsedData.lobbyId);
 
   if (!lobby) {
     // Send the joined player, that player couldn't join
     player.socket?.emit("server-join-lobby", undefined);
+
+    // If couldn't join to the lobby, and is a bot/local player, remove the player
+    if (newPlayer && (data.bot || data.local)) dataAPI.removePlayer(newPlayer);
   }
   else {
     const players = Object.values(lobby.players);
-    const networkPlayer: INetworkPlayer = { id: player.id, name: player.name, country: player.country }
-    const networkPlayers = players.map(p => ({ id: p.id, name: p.name, country: p.country }));
 
-    const { width, height, seed } = lobby.gameData;
+    const networkPlayers = players.map(p => {
+      const player: INetworkPlayer = {
+        id: p.id,
+        name: p.name,
+        country: p.country,
+        bot: p.bot,
+        local: p.local,
+      }
+
+      return player;
+    });
+
+    const networkPlayer: INetworkPlayer = {
+      id: newPlayer.id,
+      name: newPlayer.name,
+      country: newPlayer.country,
+      bot: newPlayer.bot,
+      local: newPlayer.local,
+    }
 
     // Send the joined player: player id, lobby id, width, height, seed, and all players
-    player.socket?.emit(
+    newPlayer.socket?.emit(
       "server-join-lobby",
       {
-        playerId: player.id,
+        playerId: newPlayer.id,
         lobbyId: lobby.id,
         adminId: lobby.adminId,
-        w: width,
-        h: height,
-        seed,
+        w: lobby.gameData.width,
+        h: lobby.gameData.height,
+        seed: lobby.gameData.seed,
         players: networkPlayers
       }
     );
@@ -68,11 +111,11 @@ function joinLobby(player: IPlayer, data: Parameters<ClientToServerEvents["clien
     // Send the joined player sync state to syncronize game state because:
     // 1. Admin might have loaded a save
     // 2. Game might have already started
-    player.socket?.emit("server-sync-state", { state: game.serializer.serialize(lobby.gameData) });
+    newPlayer.socket?.emit("server-sync-state", { state: game.serializer.serialize(lobby.gameData) });
 
     // Send the already joined players, only the joined player
     players
-      .filter(p => p.id !== player.id)
+      .filter(p => newPlayer && p.id !== newPlayer.id)
       .forEach(p => p.socket?.emit("server-join-lobby", { players: [networkPlayer] }));
   }
 }
@@ -136,7 +179,25 @@ function changeCountry(player: IPlayer, data: Parameters<ClientToServerEvents["c
   if (!parsed.success) return void player.socket?.emit("server-change-country", undefined);
   const parsedData = parsed.data;
 
-  const result = dataAPI.changeCountry(player, parsedData.country);
+  const targetPlayer = dataAPI.getPlayer(parsedData.playerId);
+  if (!targetPlayer) return void player.socket?.emit("server-change-country", undefined);
+
+  const lobby = dataAPI.getLobbyFromPlayerId(player.id);
+  if (!lobby) return void player.socket?.emit("server-change-country", undefined);
+
+  // If not admin and trying to change bot player's country
+  if (player.id !== lobby.adminId && targetPlayer.bot)
+    return void player.socket?.emit("server-change-country", undefined);
+
+  // If not owner and trying to change local player's country
+  if (targetPlayer.local && targetPlayer.local.ownerId !== player.id)
+    return void player.socket?.emit("server-change-country", undefined);
+
+  // If trying to change country of non-local, non-bot player (even admin can't do this)
+  if (!targetPlayer.bot && !targetPlayer.local && player.id !== targetPlayer.id)
+    return void player.socket?.emit("server-change-country", undefined);
+
+  const result = dataAPI.changeCountry(parsedData.playerId, parsedData.country);
 
   // If "change country" is done successfully, send it to all players, if not, only send to current player
   if (result) {

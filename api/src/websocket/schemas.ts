@@ -41,6 +41,7 @@ export const lobbyUpdateSchema = z.object({
 
 export const changeCountrySchema = z.object({
   country: countryIdAll,
+  playerId: z.string(),
 }).strict();
 
 export const chatMessageSchema = z.object({

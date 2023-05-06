@@ -18,7 +18,7 @@ import { IActionMoveUnit } from "@core/actions/move_unit";
 import { createSeedRandom } from "@core/lib/seed_random";
 import { ISerializedGameData } from "@core/serializer";
 
-function createPlayer(socket: ISocket) {
+function createPlayer(socket: ISocket | undefined) {
   // Generate random id, if player with id already exists, return
   const id = crypto.id();
   if (data.players[id]) return undefined;
@@ -52,6 +52,11 @@ function removePlayer(player: IPlayer) {
   // If removed player was the last player in the lobby, remove lobby
   if (Object.values(lobby.players).length === 0) removeLobby(player);
 }
+
+function getPlayer(playerId: string) {
+  return data.players[playerId];
+}
+
 
 function getLobbyPlayers(lobbyId: string | undefined) {
   const lobby = lobbyId && data.lobbies[lobbyId];
@@ -165,7 +170,10 @@ function lobbyUpdate(player: IPlayer, width?: number, height?: number, seed?: nu
   return true;
 }
 
-function changeCountry(player: IPlayer, country: CountryId): { id: string, country: CountryId } | undefined {
+function changeCountry(playerId: string, country: CountryId): { id: string, country: CountryId } | undefined {
+  const player = data.players[playerId];
+  if (!player) return undefined;
+
   const lobby = player.lobby && data.lobbies[player.lobby];
   if (!lobby) return undefined;
 
@@ -302,6 +310,8 @@ function gameAction(player: IPlayer, action: { id: ActionId, info?: any }, seed:
 export const dataAPI = {
   createPlayer,
   removePlayer,
+  getPlayer,
+
   getLobbyPlayers,
   getLobbyFromPlayerId,
 
