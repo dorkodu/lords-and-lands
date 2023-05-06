@@ -1,6 +1,6 @@
 import { game } from "@core/game";
 import { crypto } from "../lib/crypto";
-import { INetworkPlayer } from "../types/network_player";
+import { INetworkPlayer } from "../types/player";
 import { IPlayer } from "../types/player";
 import { dataAPI } from "./data";
 import { changeCountrySchema, chatMessageSchema, createLobbySchema, gameActionSchema, joinLobbySchema, lobbyUpdateSchema, syncStateSchema } from "./schemas";

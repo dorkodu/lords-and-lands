@@ -9,9 +9,9 @@ import {
   syncStateSchema,
 } from "./schemas";
 import { CountryId } from "@core/types/country_id";
-import { INetworkPlayer } from "../types/network_player";
 import { ActionId } from "@core/types/action_id";
 import { ISerializedGameData } from "@core/serializer";
+import { INetworkPlayer } from "../types/player";
 
 /**
  * Client sends "client-x" event. After server processes it,
