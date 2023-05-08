@@ -1,5 +1,5 @@
 import { useAppStore } from "@/stores/appStore";
-import { Button, Flex, Image, Indicator, Text, Title, Card, Anchor } from "@mantine/core";
+import { Button, Flex, Image, Indicator, Text, Title, Card } from "@mantine/core";
 import { useNavigate } from "react-router-dom";
 import DorkoduLogo from "@/assets/dorkodu_logo.svg";
 import { util } from "@/lib/util";
@@ -14,6 +14,7 @@ export default function MainMenu() {
   }
   const joinLobby = () => { navigate("/join-lobby") }
   const settings = () => { navigate("/settings") }
+  const manageAccount = () => { useAppStore.setState(s => { s.modals.showAccount = true }) }
 
   return (
     <div style={{ position: "absolute", top: 0, bottom: 0, left: 0, right: 0 }}>
@@ -47,10 +48,8 @@ export default function MainMenu() {
         <Card withBorder>
           <Flex direction="column" gap="xs">
             <Text align="center">This is Lords and Lands early access.</Text>
-            <Text align="center">Get a 50% discounted subscription for $3/mo.</Text>
-            <Anchor href="https://buy.stripe.com/00gdS8cEPbU85bO7ss" target="_blank">
-              <Button fullWidth>Subscribe for 50% discount</Button>
-            </Anchor>
+            <Text align="center">You can get a 50% discounted subscription for $3/mo.</Text>
+            <Button onClick={manageAccount}>Manage my account</Button>
           </Flex>
         </Card>
 

@@ -1,9 +1,11 @@
 lockfileVersion: 5.4
 
 specifiers:
+  '@dorkodu/sage-client': ^0.1.4
   '@emotion/react': ^11.10.6
   '@mantine/core': ^6.0.8
   '@mantine/hooks': ^6.0.8
+  '@react-oauth/google': ^0.11.0
   '@tabler/icons-react': ^2.16.0
   '@types/node': ^18.15.11
   '@types/react': ^18.0.28
@@ -28,9 +30,11 @@ specifiers:
   zustand: ^4.3.7
 
 dependencies:
+  '@dorkodu/sage-client': 0.1.4
   '@emotion/react': 11.10.6_3mjolpizrsjgnt7s4ahgoveqvu
   '@mantine/core': 6.0.9_w5vopm7tvyccmnwcpdw2ejqi7q
   '@mantine/hooks': 6.0.9_react@18.2.0
+  '@react-oauth/google': 0.11.0_biqbaboplfbrettd7655fr4n2y
   '@tabler/icons-react': 2.17.0_react@18.2.0
   emoji-regex: 10.2.1
   immer: 10.0.1
@@ -1237,6 +1241,10 @@ packages:
       '@babel/helper-validator-identifier': 7.19.1
       to-fast-properties: 2.0.0
 
+  /@dorkodu/sage-client/0.1.4:
+    resolution: {integrity: sha512-YW2uHbePdHDtD5WzLbUhA2rKTadAcuW2AdtTlhyw2o5SAKqvvFjs5GTgwpdRWGDzYDzDkrcD/a734+vLYgqUZA==}
+    dev: false
+
   /@emotion/babel-plugin/11.10.6:
     resolution: {integrity: sha512-p2dAqtVrkhSa7xz1u/m9eHYdLi+en8NowrmXeF/dKtJpU8lCWli8RUAati7NcSl0afsBott48pdnANuD0wh9QQ==}
     dependencies:
@@ -1781,6 +1789,16 @@ packages:
     dependencies:
       '@babel/runtime': 7.21.0
       react: 18.2.0
+    dev: false
+
+  /@react-oauth/google/0.11.0_biqbaboplfbrettd7655fr4n2y:
+    resolution: {integrity: sha512-yeypwdQCcFIAo43OqVOLBfUXuxmxt3xiybfP9h3smtBW4UeFXFVQDsq+d+GlbZFo0TpONPR2+KCk/KT1/pQnvQ==}
+    peerDependencies:
+      react: '>=16.8.0'
+      react-dom: '>=16.8.0'
+    dependencies:
+      react: 18.2.0
+      react-dom: 18.2.0_react@18.2.0
     dev: false
 
   /@remix-run/router/1.5.0:

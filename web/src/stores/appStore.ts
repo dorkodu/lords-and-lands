@@ -19,7 +19,10 @@ export interface AppStoreState {
   "any";
   status: boolean;
 
+  account: { name: string, subscribed: boolean } | undefined;
+
   modals: {
+    showAccount: boolean;
     showTutorial: boolean;
 
     showLobbyOnline: boolean;
@@ -62,7 +65,10 @@ const initialState: AppStoreState = {
   route: "any",
   status: false,
 
+  account: undefined,
+
   modals: {
+    showAccount: false,
     showTutorial: false,
 
     showLobbyOnline: false,
