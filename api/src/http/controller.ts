@@ -49,6 +49,7 @@ const login = sage.resource(
     if (!result0.exists) {
       const row = {
         id: `google|${userInfo.sub}`,
+        customerId: null,
         name: userInfo.name,
         email: userInfo.email,
         subscribed: false,
@@ -108,21 +109,24 @@ const subscribe = sage.resource(
     const authInfo = await getAuthInfo(ctx.req);
     if (!authInfo) return { error: ErrorCode.Default };
 
-    const [result0]: [{ name: string, email: string }] = await pg`
-      SELECT name, email FROM users WHERE id=${authInfo.userId}
+    const [result0]: [{ customerId: string | null, email: string }] = await pg`
+      SELECT customer_id, email FROM users WHERE id=${authInfo.userId}
     `;
     if (!result0) return { error: ErrorCode.Default };
 
-    const customer = await stripe.customers.create({
-      name: result0.name,
-      email: result0.email,
-      metadata: { userId: authInfo.userId },
-    });
+    //const customer = await stripe.customers.create({
+    //  name: result0.name,
+    //  email: result0.email,
+    //  metadata: { userId: authInfo.userId },
+    //});
 
     const session = await stripe.checkout.sessions.create({
-      customer: customer.id,
+      customer: result0.customerId ?? undefined,
+      customer_email: result0.email,
+      metadata: { userId: authInfo.userId },
       mode: "subscription",
       line_items: [{ price: "price_1N5UeHLpx9cgle4utdU8CpLO", quantity: 1 }],
+      allow_promotion_codes: true,
       success_url: "https://lordsandlands.dorkodu.com",
       cancel_url: "https://lordsandlands.dorkodu.com",
     });
@@ -140,19 +144,14 @@ const manageSubscription = sage.resource(
     const authInfo = await getAuthInfo(ctx.req);
     if (!authInfo) return { error: ErrorCode.Default };
 
-    const [result0]: [{ name: string, email: string }] = await pg`
-      SELECT name, email FROM users WHERE id=${authInfo.userId}
+    const [result0]: [{ customerId: string | null, }] = await pg`
+      SELECT customer_id FROM users WHERE id=${authInfo.userId}
     `;
     if (!result0) return { error: ErrorCode.Default };
-
-    const customer = await stripe.customers.create({
-      name: result0.name,
-      email: result0.email,
-      metadata: { userId: authInfo.userId },
-    });
+    if (!result0.customerId) return { error: ErrorCode.Default };
 
     const session = await stripe.billingPortal.sessions.create({
-      customer: customer.id,
+      customer: result0.customerId,
       return_url: "https://lordsandlands.dorkodu.com",
     });
 

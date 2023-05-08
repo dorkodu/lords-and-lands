@@ -8,6 +8,10 @@ express.disable('x-powered-by');
 express.use(_express.json());
 express.use(cookieParser());
 
+express.use("/api/stripe/webhook", async (_req, _res, _next) => {
+  console.log(_req);
+});
+
 express.use("/api", async (req, res, next) => {
   res.status(200).send(await schema.execute(() => ({ req, res, next }), req.body));
 });
