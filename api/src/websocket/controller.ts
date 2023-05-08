@@ -48,12 +48,12 @@ function joinLobby(player: IPlayer, data: Parameters<ClientToServerEvents["clien
     if (!_lobby || _lobby.adminId !== player.id)
       return void player.socket?.emit("server-join-lobby", undefined);
 
-    newPlayer = dataAPI.createPlayer(undefined);
+    newPlayer = dataAPI.createPlayer(crypto.id(), undefined);
     newPlayer && (newPlayer.bot = data.bot);
   }
   // If local player is joining
   else if (data.local) {
-    newPlayer = dataAPI.createPlayer(undefined);
+    newPlayer = dataAPI.createPlayer(crypto.id(), undefined);
     newPlayer && (newPlayer.local = { ownerId: player.id });
   }
   // If player is joining

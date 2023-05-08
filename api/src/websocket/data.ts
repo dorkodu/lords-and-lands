@@ -19,9 +19,8 @@ import { createSeedRandom } from "@core/lib/seed_random";
 import { ISerializedGameData } from "@core/serializer";
 import { bot } from "@core/lib/bot";
 
-function createPlayer(socket: ISocket | undefined) {
-  // Generate random id, if player with id already exists, return
-  const id = crypto.id();
+function createPlayer(id: string, socket: ISocket | undefined) {
+  // If player with id already exists, return
   if (data.players[id]) return undefined;
 
   // Assign new player to data.players & return

@@ -4,9 +4,11 @@ export async function up(knex: Knex): Promise<void> {
   return knex.schema
     .createTable("users", (table) => {
       table.text("id").primary()
-      table.text("customer_id")
+
       table.text("name").notNullable()
       table.text("email").notNullable()
+
+      table.text("customer_id")
       table.boolean("subscribed").notNullable()
 
       table.unique(["customer_id"], undefined)

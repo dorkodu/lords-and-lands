@@ -1,3 +1,4 @@
+import { socketio } from "@/lib/socketio";
 import { request, sage } from "@/stores/api";
 import { useAppStore } from "@/stores/appStore";
 import { Anchor, Button, Flex, Modal, Text, Title } from "@mantine/core";
@@ -12,10 +13,11 @@ export default function ModalAccount() {
 
   const account = useAppStore(state => state.account);
 
-  const [authControl, setAuthControl] = useControlProps();
-  const [loginControl, setLoginControl] = useControlProps();
-  const [logoutControl, setLogoutControl] = useControlProps();
-  const [subscribeControl, setSubscribeControl] = useControlProps();
+  const [_authControl, setAuthControl] = useControlProps();
+  const [_loginControl, setLoginControl] = useControlProps();
+  const [_logoutControl, setLogoutControl] = useControlProps();
+  const [_subscribeControl, setSubscribeControl] = useControlProps();
+  const [_manageSubscriptionControl, setManageSubscriptionControl] = useControlProps();
 
   const googleLogin = useGoogleLogin({
     flow: "implicit",
@@ -36,6 +38,7 @@ export default function ModalAccount() {
     const data = res?.a.data;
 
     if (data) useAppStore.setState(s => { s.account = data });
+    if (data?.subscribed && !useAppStore.getState().status) socketio.connect();
 
     setAuthControl(() => ({ loading: false, status: status }));
   }
@@ -52,6 +55,7 @@ export default function ModalAccount() {
     const data = res?.a.data;
 
     if (data) useAppStore.setState(s => { s.account = data });
+    if (data?.subscribed) socketio.connect();
 
     setLoginControl(() => ({ loading: false, status: status }));
   }
@@ -85,6 +89,22 @@ export default function ModalAccount() {
     setSubscribeControl(() => ({ loading: false, status: status }));
   }
 
+  const manageSubscription = async () => {
+    setManageSubscriptionControl(() => ({ loading: true, status: undefined }));
+
+    const res = await sage.get(
+      { a: sage.query("manageSubscription", undefined) },
+      (query) => useWait(() => request(query))()
+    );
+
+    const status = !(!res?.a.data || res.a.error);
+    const data = res?.a.data;
+
+    if (data) document.location.href = data.url;
+
+    setManageSubscriptionControl(() => ({ loading: false, status: status }));
+  }
+
   useEffect(() => { auth() }, []);
 
   return (
@@ -104,7 +124,7 @@ export default function ModalAccount() {
 
             <SubscriberFeatures />
 
-            {account.subscribed && <Button>Manage my subscription</Button>}
+            {account.subscribed && <Button onClick={manageSubscription}>Manage my subscription</Button>}
             {!account.subscribed && <Button onClick={subscribe}>Subscribe for 50% discount</Button>}
 
             <Button variant="default" onClick={logout}>Logout</Button>
