@@ -14,7 +14,7 @@ import ModalPlayerWin from "./components/modals/ModalPlayerWin";
 import ModalNextTurn from "./components/modals/ModalNextTurn";
 import ModalTutorial from "./components/modals/ModalTutorial";
 import { GoogleOAuthProvider } from "@react-oauth/google";
-import ModalAccount from "./components/modals/ModalUser";
+import ModalAccount from "./components/modals/ModalAccount";
 
 export default function App() {
   const navigate = useNavigate();
