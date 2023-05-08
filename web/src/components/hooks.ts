@@ -108,3 +108,10 @@ export function useSettings() {
     seenTutorial, setSeenTutorial,
   }
 }
+
+export function useControlProps(props?: { loading?: boolean, status?: boolean }) {
+  return useState<typeof props>({
+    status: props?.status,
+    loading: props?.loading ?? false,
+  });
+}

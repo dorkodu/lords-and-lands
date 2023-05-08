@@ -3,6 +3,8 @@ import { util } from "./lib/util";
 const epochTime = util.parseNumber(process.env.EPOCH_TIME) || 1672531200069;
 const machineId = util.parseNumber(process.env.MACHINE_ID) || 0;
 
+const stripeAPIKey = process.env.STRIPE_API_KEY || "";
+
 const postgresHost = process.env.POSTGRES_HOST || "lordsandlands_postgres";
 const postgresPort = util.parseNumber(process.env.PGPORT) || 7004;
 const postgresName = process.env.POSTGRES_DB || "lordsandlands";
@@ -17,6 +19,8 @@ const env: "development" | "production" = (
 export const config = {
   epochTime,
   machineId,
+
+  stripeAPIKey,
 
   postgresHost,
   postgresPort,

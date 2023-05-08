@@ -1,22 +1,21 @@
 import { request, sage } from "@/stores/api";
 import { useAppStore } from "@/stores/appStore";
-import { Button, Flex, Modal, Text } from "@mantine/core";
+import { Anchor, Button, Flex, Modal, Text, Title } from "@mantine/core";
 import { useGoogleLogin } from "@react-oauth/google";
 import { IconBrandGoogle } from "@tabler/icons-react";
-import { useEffect, useState } from "react";
-import { useWait } from "../hooks";
-
-interface State {
-  loading: boolean;
-  status: boolean | undefined;
-}
+import { useEffect } from "react";
+import { useControlProps, useWait } from "../hooks";
 
 export default function ModalAccount() {
   const showAccount = useAppStore(state => state.modals.showAccount);
   const close = () => { useAppStore.setState(s => { s.modals.showAccount = false }) }
 
-  const [state, setState] = useState<State>({ loading: false, status: undefined });
   const account = useAppStore(state => state.account);
+
+  const [authControl, setAuthControl] = useControlProps();
+  const [loginControl, setLoginControl] = useControlProps();
+  const [logoutControl, setLogoutControl] = useControlProps();
+  const [subscribeControl, setSubscribeControl] = useControlProps();
 
   const googleLogin = useGoogleLogin({
     flow: "implicit",
@@ -26,6 +25,8 @@ export default function ModalAccount() {
   });
 
   const auth = async () => {
+    setAuthControl(() => ({ loading: true, status: undefined }));
+
     const res = await sage.get(
       { a: sage.query("auth", undefined) },
       (query) => useWait(() => request(query))()
@@ -35,10 +36,12 @@ export default function ModalAccount() {
     const data = res?.a.data;
 
     if (data) useAppStore.setState(s => { s.account = data });
+
+    setAuthControl(() => ({ loading: false, status: status }));
   }
 
   const login = async (type: "google", value: string) => {
-    setState((s) => ({ ...s, loading: true, status: undefined }));
+    setLoginControl(() => ({ loading: true, status: undefined }));
 
     const res = await sage.get(
       { a: sage.query("login", { type, value }) },
@@ -48,18 +51,38 @@ export default function ModalAccount() {
     const status = !(!res?.a.data || res.a.error);
     const data = res?.a.data;
 
-    setState((s) => ({ ...s, loading: false, status: status }));
-
     if (data) useAppStore.setState(s => { s.account = data });
+
+    setLoginControl(() => ({ loading: false, status: status }));
   }
 
   const logout = async () => {
+    setLogoutControl(() => ({ loading: true, status: undefined }));
+
     await sage.get(
       { a: sage.query("logout", undefined) },
       (query) => useWait(() => request(query))()
     );
 
     useAppStore.setState(s => { s.account = undefined });
+
+    setLogoutControl(() => ({ loading: false, status: true }));
+  }
+
+  const subscribe = async () => {
+    setSubscribeControl(() => ({ loading: true, status: undefined }));
+
+    const res = await sage.get(
+      { a: sage.query("subscribe", undefined) },
+      (query) => useWait(() => request(query))()
+    );
+
+    const status = !(!res?.a.data || res.a.error);
+    const data = res?.a.data;
+
+    if (data) document.location.href = data.url;
+
+    setSubscribeControl(() => ({ loading: false, status: status }));
   }
 
   useEffect(() => { auth() }, []);
@@ -77,20 +100,40 @@ export default function ModalAccount() {
 
         {account &&
           <>
-            <Text>{`Hello, ${account.name}`}</Text>
+            <Title order={5}>{`Hello, ${account.name}`}</Title>
+
+            <SubscriberFeatures />
 
             {account.subscribed && <Button>Manage my subscription</Button>}
-            {!account.subscribed && <Button>Subscribe for 50% discount</Button>}
+            {!account.subscribed && <Button onClick={subscribe}>Subscribe for 50% discount</Button>}
 
             <Button variant="default" onClick={logout}>Logout</Button>
           </>
         }
 
         {!account &&
-          <Button leftIcon={<IconBrandGoogle />} onClick={() => googleLogin()}>Login with Google</Button>
+          <>
+            <SubscriberFeatures />
+            <Button leftIcon={<IconBrandGoogle />} onClick={() => googleLogin()}>Login with Google</Button>
+          </>
         }
+
+        <Text color="dimmed" align="center">
+          For any questions, reach out to us at <Anchor href="mailto:hey@dorkodu.com">hey@dorkodu.com</Anchor>.
+        </Text>
 
       </Flex>
     </Modal>
+  )
+}
+
+function SubscriberFeatures() {
+  return (
+    <Flex direction="column">
+      <Title order={5}>Subscriber features:</Title>
+      <Text>• Online multiplayer</Text>
+      <Text>• Lord of the lords</Text>
+      <Text>• A lot of land</Text>
+    </Flex>
   )
 }

@@ -10,6 +10,7 @@ import { Request, Response } from "express";
 import { snowflake } from "../lib/snowflake";
 import { crypto } from "../lib/crypto";
 import { date } from "../lib/date";
+import { stripe } from "../lib/stripe";
 
 const auth = sage.resource(
   {} as SchemaContext,
@@ -107,7 +108,28 @@ const subscribe = sage.resource(
     const authInfo = await getAuthInfo(ctx.req);
     if (!authInfo) return { error: ErrorCode.Default };
 
-    return { data: { url: "https://www.site.com" } };
+    const [result0]: [{ name: string, email: string }] = await pg`
+      SELECT name, email FROM users WHERE id=${authInfo.userId}
+    `;
+    if (!result0) return { error: ErrorCode.Default };
+
+    const customer = await stripe.customers.create({
+      name: result0.name,
+      email: result0.email,
+      metadata: { userId: authInfo.userId },
+    });
+
+    const session = await stripe.checkout.sessions.create({
+      customer: customer.id,
+      mode: "subscription",
+      line_items: [{ price: "price_1N5UeHLpx9cgle4utdU8CpLO", quantity: 1 }],
+      success_url: "https://lordsandlands.dorkodu.com",
+      cancel_url: "https://lordsandlands.dorkodu.com",
+    });
+
+    if (!session.url) return { error: ErrorCode.Default };
+
+    return { data: { url: session.url } };
   }
 );
 
@@ -118,7 +140,25 @@ const manageSubscription = sage.resource(
     const authInfo = await getAuthInfo(ctx.req);
     if (!authInfo) return { error: ErrorCode.Default };
 
-    return { data: { url: "https://www.site.com" } };
+    const [result0]: [{ name: string, email: string }] = await pg`
+      SELECT name, email FROM users WHERE id=${authInfo.userId}
+    `;
+    if (!result0) return { error: ErrorCode.Default };
+
+    const customer = await stripe.customers.create({
+      name: result0.name,
+      email: result0.email,
+      metadata: { userId: authInfo.userId },
+    });
+
+    const session = await stripe.billingPortal.sessions.create({
+      customer: customer.id,
+      return_url: "https://lordsandlands.dorkodu.com",
+    });
+
+    if (!session.url) return { error: ErrorCode.Default };
+
+    return { data: { url: session.url } };
   }
 );
 
