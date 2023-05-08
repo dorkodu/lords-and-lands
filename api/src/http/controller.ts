@@ -126,7 +126,7 @@ const subscribe = sage.resource(
         metadata: { userId: authInfo.userId },
       });
 
-      await pg`UPDATE users SET customer_id=${customer.id}`;
+      await pg`UPDATE users SET customer_id=${customer.id} WHERE id=${authInfo.userId}`;
       result0.customerId = customer.id;
     }
 

@@ -22,16 +22,19 @@ express.use("/api/stripe/webhook", _express.raw({ type: 'application/json' }), a
     return;
   }
 
-  let customerId = (event.data.object as any).customer;
+  let customerId: string | undefined = (event.data.object as any)?.customer;
+  let planId: string | undefined = (event.data.object as any)?.plan?.id;
 
   switch (event.type) {
     case 'customer.subscription.created':
     case 'customer.subscription.resumed':
-      await pg`UPDATE users SET subscribed=true WHERE customer_id=${customerId}`;
+      if (customerId && planId === config.stripeSubPrice)
+        await pg`UPDATE users SET subscribed=true WHERE customer_id=${customerId}`;
       break;
     case 'customer.subscription.deleted':
     case 'customer.subscription.paused':
-      await pg`UPDATE users SET subscribed=false WHERE customer_id=${customerId}`;
+      if (customerId)
+        await pg`UPDATE users SET subscribed=false WHERE customer_id=${customerId}`;
       break;
   }
 

@@ -14,10 +14,10 @@ export default function ModalAccount() {
   const account = useAppStore(state => state.account);
 
   const [_authControl, setAuthControl] = useControlProps();
-  const [_loginControl, setLoginControl] = useControlProps();
-  const [_logoutControl, setLogoutControl] = useControlProps();
-  const [_subscribeControl, setSubscribeControl] = useControlProps();
-  const [_manageSubscriptionControl, setManageSubscriptionControl] = useControlProps();
+  const [loginControl, setLoginControl] = useControlProps();
+  const [logoutControl, setLogoutControl] = useControlProps();
+  const [subscribeControl, setSubscribeControl] = useControlProps();
+  const [manageSubscriptionControl, setManageSubscriptionControl] = useControlProps();
 
   const googleLogin = useGoogleLogin({
     flow: "implicit",
@@ -124,17 +124,31 @@ export default function ModalAccount() {
 
             <SubscriberFeatures />
 
-            {account.subscribed && <Button onClick={manageSubscription}>Manage my subscription</Button>}
-            {!account.subscribed && <Button onClick={subscribe}>Subscribe for 50% discount</Button>}
+            {account.subscribed &&
+              <Button onClick={manageSubscription} loading={manageSubscriptionControl?.loading}>
+                Manage my subscription
+              </Button>
+            }
+            {!account.subscribed &&
+              <Button onClick={subscribe} loading={subscribeControl?.loading}>
+                Subscribe for 50% discount
+              </Button>
+            }
 
-            <Button variant="default" onClick={logout}>Logout</Button>
+            <Button variant="default" onClick={logout} loading={logoutControl?.loading}>Logout</Button>
           </>
         }
 
         {!account &&
           <>
             <SubscriberFeatures />
-            <Button leftIcon={<IconBrandGoogle />} onClick={() => googleLogin()}>Login with Google</Button>
+            <Button
+              leftIcon={<IconBrandGoogle />}
+              onClick={() => googleLogin()}
+              loading={loginControl?.loading}
+            >
+              Login with Google
+            </Button>
           </>
         }
 
