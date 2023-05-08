@@ -152,6 +152,8 @@ export default function ModalAccount() {
           </>
         }
 
+        <Text color="dimmed" align="center" fs="italic">*No refunds. All sales final.*</Text>
+
         <Text color="dimmed" align="center">
           For any questions, reach out to us at <Anchor href="mailto:hey@dorkodu.com">hey@dorkodu.com</Anchor>.
         </Text>
