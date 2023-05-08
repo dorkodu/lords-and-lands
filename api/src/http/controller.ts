@@ -114,15 +114,10 @@ const subscribe = sage.resource(
     `;
     if (!result0) return { error: ErrorCode.Default };
 
-    //const customer = await stripe.customers.create({
-    //  name: result0.name,
-    //  email: result0.email,
-    //  metadata: { userId: authInfo.userId },
-    //});
-
     const session = await stripe.checkout.sessions.create({
       customer: result0.customerId ?? undefined,
       customer_email: result0.email,
+      customer_update: result0.customerId ? { name: "auto", address: "auto", shipping: "auto" } : undefined,
       metadata: { userId: authInfo.userId },
       mode: "subscription",
       line_items: [{ price: "price_1N5UeHLpx9cgle4utdU8CpLO", quantity: 1 }],
