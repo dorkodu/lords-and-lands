@@ -17,11 +17,14 @@ socketio.on("connection", async (socket): Promise<void> => {
   // Only allow users that are logged in and have subscribed to play multiplayer
   const token = socket.request.headers.cookie && cookie.parse(socket.request.headers.cookie)["token"];
   if (!token) return void socket.disconnect(true);
+  console.log(token)
 
   const authInfo = await controller.getAuthInfo(token);
   if (!authInfo) return void socket.disconnect(true);
+  console.log(authInfo)
 
   const [result0]: [{ subscribed: boolean }?] = await pg`SELECT subscribed FROM users WHERE id=${authInfo.userId}`;
+  console.log(result0)
   if (!result0) return void socket.disconnect(true);
   if (!result0.subscribed) return void socket.disconnect(true);
 
