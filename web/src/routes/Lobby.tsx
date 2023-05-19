@@ -41,9 +41,7 @@ export default function Lobby() {
   const { start: resetShare } = useTimeout(() => setShare(false), 500);
 
   const toggleLobbyStatus = () => {
-    const subscribed = useAppStore.getState().account?.subscribed;
-    if (!lobby.online && !subscribed) useAppStore.setState(s => { s.modals.showAccount = true });
-    else useAppStore.setState(s => { s.modals.showLobbyOnline = true });
+    useAppStore.setState(s => { s.modals.showLobbyOnline = true });
   }
 
   const onClickClipboard = async () => {

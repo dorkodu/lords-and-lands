@@ -51,22 +51,7 @@ services:
       - app
       - nginx-proxy
 
-  lordsandlands_postgres:
-    image: postgres:15-alpine
-    environment:
-      - POSTGRES_USER=${POSTGRES_USER:-postgres}
-      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-postgres}
-      - POSTGRES_DB=${POSTGRES_DB:-lordsandlands}
-      - PGPORT=${PGPORT:-7004}
-    volumes:
-      - pgdata:/var/lib/postgresql/data
-    restart: always
-    networks:
-      - app
-      - nginx-proxy
-
 volumes:
-  pgdata:
   api_node_modules:
   web_node_modules:
 

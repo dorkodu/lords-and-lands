@@ -1,5 +1,5 @@
 import { useAppStore } from "@/stores/appStore";
-import { Button, Flex, Image, Indicator, Text, Title, Card } from "@mantine/core";
+import { Button, Flex, Image, Indicator, Text, Title, Card, Anchor } from "@mantine/core";
 import { useNavigate } from "react-router-dom";
 import DorkoduLogo from "@/assets/dorkodu_logo.svg";
 import { util } from "@/lib/util";
@@ -14,7 +14,6 @@ export default function MainMenu() {
   }
   const joinLobby = () => { navigate("/join-lobby") }
   const settings = () => { navigate("/settings") }
-  const manageAccount = () => { useAppStore.setState(s => { s.modals.showAccount = true }) }
 
   return (
     <div style={{ position: "absolute", top: 0, bottom: 0, left: 0, right: 0 }}>
@@ -41,15 +40,18 @@ export default function MainMenu() {
         </Flex>
 
         <Flex direction="column" align="center" gap="xs">
-          <Image src={DorkoduLogo} maw={240} />
-          <Text color="dimmed"><b>Dorkodu</b> &copy; {new Date().getFullYear()}</Text>
+          <Anchor href="https://dorkodu.com"><Image src={DorkoduLogo} maw={240} /></Anchor>
+          <Text color="dimmed">
+            <Anchor href="https://dorkodu.com" fw="bold">Dorkodu</Anchor> &copy; {new Date().getFullYear()}
+          </Text>
         </Flex>
 
         <Card withBorder>
           <Flex direction="column" gap="xs">
-            <Text align="center">This is Lords and Lands early access.</Text>
-            <Text align="center">You can get a 50% discounted subscription for $3/mo.</Text>
-            <Button onClick={manageAccount}>Manage my account</Button>
+            <Text align="center">This the free Lords and Lands demo.</Text>
+            <Text align="center">This is not the final game.</Text>
+            <Text align="center">Check our Kickstarter page for more info.</Text>
+            <Anchor href="#"><Button fullWidth>To the Kickstarter!</Button></Anchor>
           </Flex>
         </Card>
 

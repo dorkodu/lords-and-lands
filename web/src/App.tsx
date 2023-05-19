@@ -13,8 +13,6 @@ import ModalLobbyOnline from "./components/modals/ModalLobbyOnline";
 import ModalPlayerWin from "./components/modals/ModalPlayerWin";
 import ModalNextTurn from "./components/modals/ModalNextTurn";
 import ModalTutorial from "./components/modals/ModalTutorial";
-import { GoogleOAuthProvider } from "@react-oauth/google";
-import ModalAccount from "./components/modals/ModalAccount";
 
 export default function App() {
   const navigate = useNavigate();
@@ -45,19 +43,16 @@ export default function App() {
 
   return (
     <>
-      <GoogleOAuthProvider clientId="545347259439-fv1hu4n6nf2vacoe2qbsr3com41ta74u.apps.googleusercontent.com">
-        <MantineProvider theme={{ ...theme }} withNormalizeCSS withGlobalStyles>
-          <Outlet />
+      <MantineProvider theme={{ ...theme }} withNormalizeCSS withGlobalStyles>
+        <Outlet />
 
-          <ModalAccount />
-          <ModalTutorial />
-          <ModalLobbyOnline />
-          <ModalQuitLobby />
-          <ModalNextTurn />
-          <ModalPlayerWin />
-          <ModalUpdateSW />
-        </MantineProvider>
-      </GoogleOAuthProvider>
+        <ModalTutorial />
+        <ModalLobbyOnline />
+        <ModalQuitLobby />
+        <ModalNextTurn />
+        <ModalPlayerWin />
+        <ModalUpdateSW />
+      </MantineProvider>
 
       <ScrollRestoration />
     </>

@@ -4,7 +4,6 @@
     "docker:build:dev": "docker compose -f docker-compose.dev.yml build",
     "docker:dev": "docker compose -f docker-compose.dev.yml up",
     "docker:dev:api": "docker exec -it lordsandlands_dev-lordsandlands_api-1 /bin/sh",
-    "docker:dev:web": "docker exec -it lordsandlands_dev-lordsandlands_web-1 /bin/sh",
-    "docker:dev:postgres": "docker exec -it lordsandlands_dev-lordsandlands_postgres-1 psql -U postgres"
+    "docker:dev:web": "docker exec -it lordsandlands_dev-lordsandlands_web-1 /bin/sh"
   }
 }
