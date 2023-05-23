@@ -1,5 +1,5 @@
 import { useAppStore } from "@/stores/appStore";
-import { Button, Flex, Image, Indicator, Text, Title, Card, Anchor } from "@mantine/core";
+import { Button, Flex, Image, Indicator, Text, Title, Anchor } from "@mantine/core";
 import { useNavigate } from "react-router-dom";
 import DorkoduLogo from "@/assets/dorkodu_logo.svg";
 import { util } from "@/lib/util";
@@ -45,15 +45,6 @@ export default function MainMenu() {
             <Anchor href="https://dorkodu.com" fw="bold">Dorkodu</Anchor> &copy; {new Date().getFullYear()}
           </Text>
         </Flex>
-
-        <Card withBorder>
-          <Flex direction="column" gap="xs">
-            <Text align="center">This the free Lords and Lands demo.</Text>
-            <Text align="center">This is not the final game.</Text>
-            <Text align="center">Check our Kickstarter page for more info.</Text>
-            <Anchor href="#"><Button fullWidth>To the Kickstarter!</Button></Anchor>
-          </Flex>
-        </Card>
 
       </Flex>
     </div>
