@@ -10,7 +10,6 @@ import {
   IconDeviceGamepad2,
   IconPalette,
   IconQuestionMark,
-  IconRefresh,
   IconRobot,
   IconSettings,
   IconShare,
