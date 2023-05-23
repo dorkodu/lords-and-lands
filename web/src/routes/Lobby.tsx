@@ -8,6 +8,8 @@ import {
   IconClipboardText,
   IconDeviceFloppy,
   IconDeviceGamepad2,
+  IconPalette,
+  IconQuestionMark,
   IconRefresh,
   IconRobot,
   IconSettings,
@@ -311,11 +313,12 @@ function Player({ player }: { player: INetworkPlayer }) {
       <Flex gap="md" justify="space-between" style={{ maxWidth: 360 }}>
 
         <Flex align="center" gap="md">
-          <ActionIcon size={48} onClick={onClickCountry}>
-            <Image src={assets.countryIdToUnitSrc(player.country)} width={48} height={48} withPlaceholder />
-            <IconRefresh style={{ position: "absolute", right: 0, bottom: 0, zIndex: 1 }} />
-          </ActionIcon>
-          <Flex align="center" gap="md">
+          {assets.countryIdToUnitSrc(player.country) ?
+            <Image src={assets.countryIdToUnitSrc(player.country)} width={48} height={48} withPlaceholder /> :
+            <Flex w={48} h={48} align="center" justify="center"><IconQuestionMark size={32} /></Flex>
+          }
+
+          <Flex align="center" gap="xs">
             {player.bot && <CustomRobotIcon bot={player.bot} />}
             {player.local && <IconDeviceGamepad2 style={{ flexShrink: 0 }} />}
             {player.id === lobby.adminId && <IconStarFilled style={{ flexShrink: 0 }} />}
@@ -326,10 +329,11 @@ function Player({ player }: { player: INetworkPlayer }) {
           </Flex>
         </Flex>
 
-        <Flex align="center" justify="flex-end">
+        <Flex align="center" justify="flex-end" gap="xs">
           {lobbyOwner && player.id !== lobby.adminId &&
             <ActionIcon variant="filled" color="red" size={32} onClick={onClickBan}><IconBan /></ActionIcon>
           }
+          <ActionIcon variant="filled" size={32} onClick={onClickCountry}><IconPalette /></ActionIcon>
         </Flex>
 
       </Flex>
