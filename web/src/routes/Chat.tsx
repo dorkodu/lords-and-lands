@@ -12,7 +12,7 @@ import { Virtuoso } from 'react-virtuoso'
 // TODO: Make styles re-usable, this is copied from layouts/DefaultLayout.tsx
 const useStyles = createStyles((theme) => ({
   main: {
-    marginBottom: 64,
+    height: "calc(100vh - 80px - 80px) !important",
   },
   footer: {
     position: "fixed",
@@ -79,13 +79,13 @@ export default function Chat() {
   return (
     <Flex direction="column">
       <Virtuoso
-        useWindowScroll
         initialTopMostItemIndex={memoizedIndex < 0 ? 0 : memoizedIndex}
         data={messages}
         itemContent={(index, message) => (
           <ChatMessage message={message} seen={index <= memoizedIndex} key={index} />
         )}
         className={classes.main}
+        followOutput="auto"
       />
 
       <Card className={classes.footer}>
