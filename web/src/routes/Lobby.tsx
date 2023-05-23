@@ -28,6 +28,7 @@ import CustomMessageIcon from "@/components/custom/CustomMessageIcon";
 import { INetworkPlayer } from "@api/types/player";
 import { IBotSettings } from "@core/lib/bot";
 import CustomRobotIcon from "@/components/custom/CustomRobotIcon";
+import { wrapContent } from "@/styles/css";
 
 export default function Lobby() {
   const navigate = useNavigate();
@@ -314,18 +315,21 @@ function Player({ player }: { player: INetworkPlayer }) {
             <Image src={assets.countryIdToUnitSrc(player.country)} width={48} height={48} withPlaceholder />
             <IconRefresh style={{ position: "absolute", right: 0, bottom: 0, zIndex: 1 }} />
           </ActionIcon>
-          <Text>
-            {!player.bot && !player.local && <Text span>{player.name}</Text>}
-            {player.bot && <Text span>{util.getBotPlayerName(player.bot)}</Text>}
-            {player.local && <Text span>{util.getLocalPlayerName(player.local)}</Text>}
-          </Text>
+          <Flex align="center" gap="md">
+            {player.bot && <CustomRobotIcon bot={player.bot} />}
+            {player.local && <IconDeviceGamepad2 style={{ flexShrink: 0 }} />}
+            {player.id === lobby.adminId && <IconStarFilled style={{ flexShrink: 0 }} />}
+
+            {!player.bot && !player.local && <Text style={wrapContent}>{player.name}</Text>}
+            {player.bot && <Text style={wrapContent}>{util.getBotPlayerName(player.bot)}</Text>}
+            {player.local && <Text style={wrapContent}>{util.getLocalPlayerName(player.local)}</Text>}
+          </Flex>
         </Flex>
 
-        <Flex align="center" justify="flex-end" gap="xs">
-          {lobbyOwner && player.id !== lobby.adminId && <ActionIcon size={24} onClick={onClickBan}><IconBan /></ActionIcon>}
-          {player.bot && <CustomRobotIcon bot={player.bot} />}
-          {player.local && <IconDeviceGamepad2 />}
-          {player.id === lobby.adminId && <IconStarFilled />}
+        <Flex align="center" justify="flex-end">
+          {lobbyOwner && player.id !== lobby.adminId &&
+            <ActionIcon variant="filled" color="red" size={32} onClick={onClickBan}><IconBan /></ActionIcon>
+          }
         </Flex>
 
       </Flex>
