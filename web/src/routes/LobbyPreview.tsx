@@ -1,3 +1,4 @@
+import CustomMessageIcon from "@/components/custom/CustomMessageIcon";
 import Map from "@/components/_game/Map";
 import { socketio } from "@/lib/socketio";
 import { useAppStore } from "@/stores/appStore";
@@ -63,6 +64,7 @@ function Footer() {
   const onClickLobby = () => {
     navigate("/lobby")
   }
+  const onClickChat = () => { navigate("/chat") }
   const onClickGenerate = () => {
     const online = useAppStore.getState().lobby.online;
 
@@ -79,8 +81,9 @@ function Footer() {
   useHotkeys([
     ["Escape", onClickLobby],
     ["1", () => onClickLobby()],
-    ["2", () => onClickGenerate()],
-    ["3", () => onClickCenter()],
+    ["2", () => onClickChat()],
+    ["3", () => onClickGenerate()],
+    ["4", () => onClickCenter()],
   ]);
 
   return (
@@ -92,13 +95,20 @@ function Footer() {
         </ActionIcon>
       </Tooltip>
 
-      <Tooltip label="Re-generate (2)" events={{ hover: true, focus: false, touch: true }}>
+
+      <Tooltip label="Chat (2)" events={{ hover: true, focus: false, touch: true }}>
+        <ActionIcon variant="filled" size={32} onClick={onClickChat}>
+        <CustomMessageIcon />
+        </ActionIcon>
+      </Tooltip>
+
+      <Tooltip label="Re-generate (3)" events={{ hover: true, focus: false, touch: true }}>
         <ActionIcon variant="filled" size={32} onClick={onClickGenerate} disabled={!lobbyOwner || running}>
           <IconRefresh />
         </ActionIcon>
       </Tooltip>
 
-      <Tooltip label="Center (3)" events={{ hover: true, focus: false, touch: true }}>
+      <Tooltip label="Center (4)" events={{ hover: true, focus: false, touch: true }}>
         <ActionIcon
           variant="filled"
           size={32}
