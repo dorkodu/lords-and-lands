@@ -8,6 +8,7 @@ import {
   IconClipboardText,
   IconDeviceFloppy,
   IconDeviceGamepad2,
+  IconRefresh,
   IconRobot,
   IconSettings,
   IconShare,
@@ -311,6 +312,7 @@ function Player({ player }: { player: INetworkPlayer }) {
         <Flex align="center" gap="md">
           <ActionIcon size={48} onClick={onClickCountry}>
             <Image src={assets.countryIdToUnitSrc(player.country)} width={48} height={48} withPlaceholder />
+            <IconRefresh style={{ position: "absolute", right: 0, bottom: 0, zIndex: 1 }} />
           </ActionIcon>
           <Text>
             {!player.bot && !player.local && <Text span>{player.name}</Text>}
