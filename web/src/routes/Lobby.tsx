@@ -315,7 +315,7 @@ function Player({ player }: { player: INetworkPlayer }) {
         <Flex align="center" gap="md">
           {assets.countryIdToUnitSrc(player.country) ?
             <Image src={assets.countryIdToUnitSrc(player.country)} width={48} height={48} withPlaceholder /> :
-            <Flex w={48} h={48} align="center" justify="center"><IconQuestionMark size={32} /></Flex>
+            <Flex align="center" justify="center"><IconQuestionMark size={48} /></Flex>
           }
 
           <Flex align="center" gap="xs">
