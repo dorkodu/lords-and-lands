@@ -332,7 +332,15 @@ function Player({ player }: { player: INetworkPlayer }) {
           {lobbyOwner && player.id !== lobby.adminId &&
             <ActionIcon variant="filled" color="red" size={32} onClick={onClickBan}><IconBan /></ActionIcon>
           }
-          <ActionIcon variant="filled" size={32} onClick={onClickCountry}><IconPalette /></ActionIcon>
+
+          {
+            (
+              player.id === lobby.playerId ||
+              player.local?.ownerId === lobby.playerId ||
+              (lobbyOwner && player.bot)
+            ) &&
+            <ActionIcon variant="filled" size={32} onClick={onClickCountry}><IconPalette /></ActionIcon>
+          }
         </Flex>
 
       </Flex>
