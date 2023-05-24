@@ -91,19 +91,19 @@ const initialState: AppStoreState = {
         id: "1111",
         name: "",
         country: CountryId.Purple,
-        bot: { difficulty: "normal" }
+        bot: { difficulty: "easy" }
       },
       {
         id: "2222",
         name: "",
         country: CountryId.Red,
-        bot: { difficulty: "normal" }
+        bot: { difficulty: "easy" }
       },
       {
         id: "3333",
         name: "",
         country: CountryId.Yellow,
-        bot: { difficulty: "normal" }
+        bot: { difficulty: "easy" }
       },
     ],
 
