@@ -68,8 +68,12 @@ function play(data: IGameData, countryId: CountryId, settings: IBotSettings) {
       break;
     }
   });
-  // After checking for chests, if banner count increased, try to place new banner (safety is already calculated)
-  if (country.banners > 0) placeBanner(data, country, safety);
+  // After checking for chests, if banner count increased, try to place new banner
+  if (country.banners > 0) {
+    // If safety is not calculated, calculate it
+    if (!safety) safety = emptyOwnTiles.map(t => getTileSafety(data, t)).sort((a, b) => b.safety - a.safety);
+    placeBanner(data, country, safety);
+  }
 
   // 3. Move armies away from the banner
   bannerTiles.forEach(t => {
@@ -124,13 +128,13 @@ function getTileSafety(data: IGameData, tile: ITile): { tile: ITile, safety: num
 
     // Sides
     for (let i = -depth + 1; i < depth; i++) {
-      const n = util.getTile(data, (x + i), (y + depth));
+      const n = util.getTile(data, (x + i), (y - depth));
       if (util.isEnemyTile(n, tile.owner)) return { tile, safety: depth };
       const e = util.getTile(data, (x + depth), (y + i));
       if (util.isEnemyTile(e, tile.owner)) return { tile, safety: depth };
       const s = util.getTile(data, (x + i), (y + depth));
       if (util.isEnemyTile(s, tile.owner)) return { tile, safety: depth };
-      const w = util.getTile(data, (x + depth), (y + i));
+      const w = util.getTile(data, (x - depth), (y + i));
       if (util.isEnemyTile(w, tile.owner)) return { tile, safety: depth };
     }
 

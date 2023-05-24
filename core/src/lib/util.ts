@@ -78,10 +78,10 @@ function getAdjacentTiles(data: IGameData, pos: { x: number, y: number }, depth:
 
   // Sides
   for (let i = -depth + 1; i < depth; i++) {
-    tiles.push(util.getTile(data, (x + i), (y + depth)));
+    tiles.push(util.getTile(data, (x + i), (y - depth)));
     tiles.push(util.getTile(data, (x + depth), (y + i)));
     tiles.push(util.getTile(data, (x + i), (y + depth)));
-    tiles.push(util.getTile(data, (x + depth), (y + i)));
+    tiles.push(util.getTile(data, (x - depth), (y + i)));
   }
 
   return tiles.filter(t => t) as ITile[];
