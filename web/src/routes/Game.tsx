@@ -11,6 +11,7 @@ import { util } from "@/lib/util";
 
 export default function Game() {
   useEffect(() => {
+    const data = useGameStore.getState().data;
     const lobby = useAppStore.getState().lobby;
 
     useGameStore.setState(s => {
@@ -21,7 +22,11 @@ export default function Game() {
       }
       else {
         lobby.players.forEach(p => game.play.addCountry(s.data, { country: p.country }));
-        game.play.generate(s.data, { w: s.data.width, h: s.data.height, seed: s.data.seed });
+
+        // If map is not generated ex. player directly entered to /game route
+        if (data.tiles.length === 0) {
+          game.play.generate(s.data, { w: s.data.width, h: s.data.height, seed: s.data.seed });
+        }
 
         game.play.start(s.data, {});
         util.skipAITurns(s.data);

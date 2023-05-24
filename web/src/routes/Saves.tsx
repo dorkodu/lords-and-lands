@@ -109,11 +109,11 @@ function Save({ save, deleteSave }: { save: ISave, deleteSave: (name: string) =>
       </Flex>
 
       <Flex gap="xs">
-        <ActionIcon onClick={onClickDelete}>
+        <ActionIcon variant="filled" size={32} color="red" onClick={onClickDelete}>
           <IconTrash />
         </ActionIcon>
 
-        <ActionIcon onClick={onClickPlay} disabled={!lobbyOwner || running}>
+        <ActionIcon variant="filled" size={32} color="green" onClick={onClickPlay} disabled={!lobbyOwner || running}>
           <IconDeviceGamepad2 />
         </ActionIcon>
       </Flex>
