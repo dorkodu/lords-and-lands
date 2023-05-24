@@ -62,32 +62,27 @@ function getTurnType(data: IGameData, turn: number): TurnType {
   return util.countryToTurnType(data.countries[turnOffset % countryCount]);
 }
 
-function getAdjacentTiles(data: IGameData, pos: { x: number, y: number }): ITile[] {
+function getAdjacentTiles(data: IGameData, pos: { x: number, y: number }, depth: number = 1): ITile[] {
   const tiles: (ITile | undefined)[] = [];
 
-  if (pos.x - 1 >= 0 && pos.y - 1 >= 0)
-    tiles.push(data.tiles[(pos.x - 1) + (pos.y - 1) * data.width]); // NW
+  const x = pos.x;
+  const y = pos.y;
 
-  if (pos.y - 1 >= 0)
-    tiles.push(data.tiles[(pos.x + 0) + (pos.y - 1) * data.width]); // N
+  // N, NE, E, SE, S, SW, W, NW
 
-  if (pos.x + 1 < data.width && pos.y - 1 >= 0)
-    tiles.push(data.tiles[(pos.x + 1) + (pos.y - 1) * data.width]); // NE
+  // Corners
+  tiles.push(util.getTile(data, (x + depth), (y - depth)));
+  tiles.push(util.getTile(data, (x + depth), (y + depth)));
+  tiles.push(util.getTile(data, (x - depth), (y + depth)));
+  tiles.push(util.getTile(data, (x - depth), (y - depth)));
 
-  if (pos.x - 1 >= 0 && pos.y + 1 < data.height)
-    tiles.push(data.tiles[(pos.x - 1) + (pos.y + 1) * data.width]); // SW
-
-  if (pos.y + 1 < data.height)
-    tiles.push(data.tiles[(pos.x + 0) + (pos.y + 1) * data.width]); // S
-
-  if (pos.x + 1 < data.width && pos.y + 1 < data.height)
-    tiles.push(data.tiles[(pos.x + 1) + (pos.y + 1) * data.width]); // SE
-
-  if (pos.x - 1 >= 0)
-    tiles.push(data.tiles[(pos.x - 1) + (pos.y + 0) * data.width]); // W
-
-  if (pos.x + 1 < data.width)
-    tiles.push(data.tiles[(pos.x + 1) + (pos.y + 0) * data.width]); // E
+  // Sides
+  for (let i = -depth + 1; i < depth; i++) {
+    tiles.push(util.getTile(data, (x + i), (y + depth)));
+    tiles.push(util.getTile(data, (x + depth), (y + i)));
+    tiles.push(util.getTile(data, (x + i), (y + depth)));
+    tiles.push(util.getTile(data, (x + depth), (y + i)));
+  }
 
   return tiles.filter(t => t) as ITile[];
 }

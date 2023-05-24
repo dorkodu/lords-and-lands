@@ -2,6 +2,7 @@ import { game } from "../game";
 import { IGameData } from "../gamedata";
 import { CountryId } from "../types/country_id";
 import { LandmarkId } from "../types/landmark_id";
+import { ICountry } from "./country";
 import { ITile } from "./tile";
 import { util } from "./util";
 
@@ -31,45 +32,63 @@ function play(data: IGameData, countryId: CountryId, settings: IBotSettings) {
   const unitTiles: ITile[] = [];
   const bannerTiles: ITile[] = [];
   const emptyOwnTiles: ITile[] = [];
+  const chestTiles: ITile[] = [];
+  let safety: ReturnType<typeof getTileSafety>[] = [];
 
   data.tiles.forEach(t => {
     if (t.unit && t.unit.id === countryId) unitTiles.push(t);
     if (t.owner === countryId && t.landmark === LandmarkId.Banner) bannerTiles.push(t);
     if (t.owner === countryId && t.landmark === LandmarkId.None) emptyOwnTiles.push(t);
+    if (t.landmark === LandmarkId.Chest) chestTiles.push(t);
   });
 
   // Bot stages:
   // 1. Place banner
-  // 2. Move armies away from the banner
-  // 3. Move armies to better tiles that have better modifiers
-  // 4. Attack if accepted attack modifier level is met
+  // 2. Check for chests
+  // 3. Move armies away from the banner
+  // 4. Move armies to better tiles that have better modifiers
+  // 5. Attack if accepted attack modifier level is met
 
   // 1. Place banner
   if (country.banners > 0) {
-    const safety = emptyOwnTiles.map(t => getTileSafety(data, t)).sort((a, b) => b.safety - a.safety);
-
-    while (country.banners > 0 && safety.length > 0) {
-      const tile = safety.shift();
-      if (!tile) break;
-
-      game.play.placeBanner(data, { countryId, pos: tile.tile.pos });
-    }
+    safety = emptyOwnTiles.map(t => getTileSafety(data, t)).sort((a, b) => b.safety - a.safety);
+    placeBanner(data, country, safety);
   }
 
-  // 2. Move armies away from the banner
+  // 2. Check for chests
+  chestTiles.forEach(t => {
+    const adjacent = util.getAdjacentTiles(data, t.pos);
+
+    for (let i = 0; i < adjacent.length; ++i) {
+      const adjacentTile = adjacent[i];
+      if (!adjacentTile) continue;
+      if (!(adjacentTile.unit && adjacentTile.unit.id === countryId && !adjacentTile.unit.moved)) continue;
+
+      game.play.moveUnit(data, { from: adjacentTile.pos, to: t.pos, countryId });
+      break;
+    }
+  });
+  // After checking for chests, if banner count increased, try to place new banner (safety is already calculated)
+  if (country.banners > 0) placeBanner(data, country, safety);
+
+  // 3. Move armies away from the banner
   bannerTiles.forEach(t => {
     if (!t.unit || t.unit.id !== countryId) return;
     moveUnitAway(data, t);
   });
 
-  // 3. Move armies to better tiles that have better modifiers
+  // 4. Move armies to better tiles that have better modifiers
 
-  // 4. Attack if accepted attack modifier level is met
-  unitTiles.forEach(t => {
-    attackUnit(data, t, settings);
-  });
+  // 5. Attack if accepted attack modifier level is met
+  unitTiles.forEach(t => { attackUnit(data, t, settings) });
 }
 
+/**
+ * Uses same logic as util.getAdjacentTiles, but this function is tuned for performance.
+ * @param data 
+ * @param tile 
+ * @returns 
+ */
 function getTileSafety(data: IGameData, tile: ITile): { tile: ITile, safety: number } {
   // X X X X X
   // X X X X X
@@ -119,6 +138,18 @@ function getTileSafety(data: IGameData, tile: ITile): { tile: ITile, safety: num
   }
 
   return { tile, safety: -1 };
+}
+
+function placeBanner(data: IGameData, country: ICountry, safety: ReturnType<typeof getTileSafety>[]) {
+  if (country.banners > 0) {
+
+    while (country.banners > 0 && safety.length > 0) {
+      const tile = safety.shift();
+      if (!tile) break;
+
+      game.play.placeBanner(data, { countryId: country.id, pos: tile.tile.pos });
+    }
+  }
 }
 
 /**
