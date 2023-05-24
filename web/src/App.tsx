@@ -13,6 +13,7 @@ import ModalLobbyOnline from "./components/modals/ModalLobbyOnline";
 import ModalPlayerStatus from "./components/modals/ModalPlayerStatus";
 import ModalNextTurn from "./components/modals/ModalNextTurn";
 import ModalTutorial from "./components/modals/ModalTutorial";
+import ModalLobbyDisconnected from "./components/modals/ModalLobbyDisconnected";
 
 export default function App() {
   const navigate = useNavigate();
@@ -47,6 +48,7 @@ export default function App() {
         <Outlet />
 
         <ModalTutorial />
+        <ModalLobbyDisconnected />
         <ModalLobbyOnline />
         <ModalQuitLobby />
         <ModalNextTurn />

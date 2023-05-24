@@ -22,6 +22,7 @@ export interface AppStoreState {
   modals: {
     showTutorial: boolean;
 
+    showLobbyDisconnected: boolean;
     showLobbyOnline: boolean;
     showQuitLobby: boolean;
 
@@ -66,6 +67,7 @@ const initialState: AppStoreState = {
   modals: {
     showTutorial: false,
 
+    showLobbyDisconnected: false,
     showLobbyOnline: false,
     showQuitLobby: false,
 
