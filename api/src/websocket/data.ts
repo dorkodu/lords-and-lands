@@ -40,8 +40,9 @@ function removePlayer(player: IPlayer) {
   // Delete player from lobby.players if exists
   delete lobby.players[player.id];
 
-  // If removed player was the last player in the lobby, remove lobby
-  if (Object.values(lobby.players).length === 0) {
+  // If removed player was the last player (not including bots & local players) in the lobby, remove lobby
+  if (Object.values(lobby.players).filter(p => !p.bot && !p.local).length === 0) {
+    Object.values(lobby.players).filter(p => p.bot || p.local).forEach(p => removePlayer(p));
     removeLobby(player);
     return;
   }
@@ -103,6 +104,9 @@ function removeLobby(player: IPlayer) {
 
   // Remove players' lobby
   players.forEach(p => { p.lobby = undefined });
+
+  // Remove bot & local players
+  players.forEach(p => (p.bot || p.local) && removePlayer(p));
 }
 
 function joinLobby(player: IPlayer, lobbyId: string): ILobby | undefined {
@@ -132,20 +136,24 @@ function leaveLobby(playerId: string) {
   // Remove player from the lobby
   delete data.lobbies[lobby.id]?.players[player.id];
 
-  // If removed player was the last player in the lobby, remove lobby
-  if (Object.values(lobby.players).length === 0) {
+  // If removed player was the last player (not including bots & local players) in the lobby, remove lobby
+  if (Object.values(lobby.players).filter(p => !p.bot && !p.local).length === 0) {
+    Object.values(lobby.players).filter(p => p.bot || p.local).forEach(p => removePlayer(p));
     removeLobby(player);
-    return;
+  }
+  else {
+    // Remove country of the player that left
+    game.play.removeCountry(lobby.gameData, { country: player.country });
+
+    // If the removed player is admin, assign another player as admin
+    if (lobby.adminId === player.id) {
+      const newAdmin = Object.values(lobby.players)[0];
+      if (newAdmin) lobby.adminId = newAdmin.id;
+    }
   }
 
-  // Remove country of the player that left
-  game.play.removeCountry(lobby.gameData, { country: player.country });
-
-  // If the removed player is admin, assign another player as admin
-  if (lobby.adminId === player.id) {
-    const newAdmin = Object.values(lobby.players)[0];
-    if (newAdmin) lobby.adminId = newAdmin.id;
-  }
+  // Set players lobby to undefined, so they can connect to new lobbies
+  player.lobby = undefined;
 }
 
 function lobbyUpdate(player: IPlayer, width?: number, height?: number, seed?: number): boolean {
