@@ -260,6 +260,7 @@ function Players() {
 function Player({ player }: { player: INetworkPlayer }) {
   const lobby = useAppStore(state => state.lobby);
   const lobbyOwner = useAppStore(state => state.isLobbyOwner());
+  const running = useGameStore(state => state.data.running);
 
   const onClickCountry = () => {
     let oldCountry = player.country;
@@ -339,7 +340,7 @@ function Player({ player }: { player: INetworkPlayer }) {
               player.local?.ownerId === lobby.playerId ||
               (lobbyOwner && player.bot)
             ) &&
-            <ActionIcon variant="filled" size={32} onClick={onClickCountry}><IconPalette /></ActionIcon>
+            <ActionIcon variant="filled" size={32} onClick={onClickCountry} disabled={running}><IconPalette /></ActionIcon>
           }
         </Flex>
 
