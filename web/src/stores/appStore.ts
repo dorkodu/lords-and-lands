@@ -26,7 +26,8 @@ export interface AppStoreState {
     showQuitLobby: boolean;
 
     showNextTurn: boolean;
-    showPlayerWin: boolean;
+
+    showPlayerStatus: boolean;
 
     showUpdateSW: boolean;
   }
@@ -69,7 +70,8 @@ const initialState: AppStoreState = {
     showQuitLobby: false,
 
     showNextTurn: false,
-    showPlayerWin: false,
+
+    showPlayerStatus: false,
 
     showUpdateSW: false,
   },

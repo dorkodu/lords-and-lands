@@ -10,7 +10,7 @@ import { assets } from "./assets/assets";
 import ModalQuitLobby from "./components/modals/ModalQuitLobby";
 import ModalUpdateSW from "./components/modals/ModalUpdateSW";
 import ModalLobbyOnline from "./components/modals/ModalLobbyOnline";
-import ModalPlayerWin from "./components/modals/ModalPlayerWin";
+import ModalPlayerStatus from "./components/modals/ModalPlayerStatus";
 import ModalNextTurn from "./components/modals/ModalNextTurn";
 import ModalTutorial from "./components/modals/ModalTutorial";
 
@@ -50,7 +50,7 @@ export default function App() {
         <ModalLobbyOnline />
         <ModalQuitLobby />
         <ModalNextTurn />
-        <ModalPlayerWin />
+        <ModalPlayerStatus />
         <ModalUpdateSW />
       </MantineProvider>
 
