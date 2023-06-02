@@ -1,7 +1,7 @@
 import { useAppStore } from "@/stores/appStore";
 import { Button, Flex, Image, Indicator, Text, Title, Anchor } from "@mantine/core";
 import { useNavigate } from "react-router-dom";
-import DorkoduLogo from "@/assets/dorkodu_logo.svg";
+import DorkoduLogo from "@/assets/dorkodu-pride_logo.svg";
 import { util } from "@/lib/util";
 
 export default function MainMenu() {
