@@ -28,7 +28,7 @@ export default defineConfig({
       manifest: {
         name: "Lords and Lands",
         short_name: "Lords and Lands",
-        description: "Lords and Lands",
+        description: "Easy-to-learn multiplayer turn-based strategy game, fight with/against other players, capture lands, and play with friends!",
         categories: [],
         start_url: "/",
         display: "standalone",

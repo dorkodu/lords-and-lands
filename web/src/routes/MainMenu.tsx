@@ -24,7 +24,7 @@ export default function MainMenu() {
 
         <Flex direction="column" align="center">
           <Title align="center">Lords and Lands</Title>
-          <Text size="xs" weight="bold" color="dimmed">{util.version(24, 5, 2023)}</Text>
+          <Text size="xs" weight="bold" color="dimmed">{util.version(10, 6, 2023)}</Text>
         </Flex>
 
         <Flex direction="column" gap="md" style={{ maxWidth: 240, width: "100%", margin: "0 auto" }}>
