@@ -44,6 +44,7 @@ export default function ModalLobbyDisconnected() {
         </Title>
 
         <Button onClick={okay}>Okay</Button>
+        <Button variant="default" onClick={close}>Stay</Button>
       </Flex>
     </Modal>
   )
