@@ -13,6 +13,9 @@ type Info = {
 export type IActionMoveUnit = { id: ActionId.MoveUnit, info: Info };
 
 export function moveUnitActable(data: IGameData, info: Info): boolean {
+  // If not started
+  if (!data.running) return false;
+
   const fromTile = data.tiles[info.from.x + info.from.y * data.width];
   const toTile = data.tiles[info.to.x + info.to.y * data.width];
   if (!fromTile || !toTile) return false;

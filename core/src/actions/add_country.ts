@@ -7,6 +7,9 @@ type Info = { country: CountryId };
 export type IActionAddCountry = { id: ActionId.AddCountry, info: Info };
 
 export function addCountryActable(data: IGameData, info: Info): boolean {
+  // If already started
+  if (data.running) return false;
+  
   // If country already exist
   const existing = data.countries.filter(c => c.id === info.country).length > 0;
   if (existing) return false;

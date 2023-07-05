@@ -13,6 +13,9 @@ type Info = { country: CountryId | undefined };
 export type IActionNextTurn = { id: ActionId.NextTurn, info: Info };
 
 export function nextTurnActable(data: IGameData, info: Info): boolean {
+  // If not started
+  if (!data.running) return false;
+  
   const currentCountry = util.turnTypeToCountry(data, data.turn.type);
 
   // Any country can pass the turn if it's no other country's turn

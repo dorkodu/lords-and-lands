@@ -10,6 +10,9 @@ type Info = { countryId: CountryId, pos: { x: number, y: number } };
 export type IActionPlaceBanner = { id: ActionId.PlaceBanner, info: Info };
 
 export function placeBannerActable(data: IGameData, info: Info): boolean {
+  // If not started
+  if (!data.running) return false;
+  
   const country = data.countries.filter(c => c.id === info.countryId)[0];
   if (!country) return false;
 
