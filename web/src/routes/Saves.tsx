@@ -6,7 +6,7 @@ import { ISave } from "@/types/save";
 import { game } from "@core/game";
 import { ActionIcon, Button, Divider, Flex, Text, TextInput } from "@mantine/core";
 import { getHotkeyHandler, useHotkeys, useLocalStorage } from "@mantine/hooks";
-import { IconDeviceGamepad2, IconTrash } from "@tabler/icons-react";
+import { IconCheck, IconDeviceGamepad2, IconTrash } from "@tabler/icons-react";
 import React, { useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
@@ -86,8 +86,18 @@ function Save({ save, deleteSave }: { save: ISave, deleteSave: (name: string) =>
   const lobbyOwner = useAppStore(state => state.isLobbyOwner());
   const running = useGameStore(state => state.data.running);
 
+  const [deleteStatus, setDeleteStatus] = useState<"delete" | "confirm">("delete");
+
   const onClickDelete = () => {
-    deleteSave(save.name);
+    if (deleteStatus === "delete") {
+      setDeleteStatus("confirm");
+      return;
+    }
+
+    if (deleteStatus === "confirm") {
+      deleteSave(save.name);
+      return;
+    }
   }
 
   const onClickPlay = () => {
@@ -110,7 +120,8 @@ function Save({ save, deleteSave }: { save: ISave, deleteSave: (name: string) =>
 
       <Flex gap="xs">
         <ActionIcon variant="filled" size={32} color="red" onClick={onClickDelete}>
-          <IconTrash />
+          {deleteStatus === "delete" && <IconTrash />}
+          {deleteStatus === "confirm" && <IconCheck />}
         </ActionIcon>
 
         <ActionIcon variant="filled" size={32} color="green" onClick={onClickPlay} disabled={!lobbyOwner || running}>
