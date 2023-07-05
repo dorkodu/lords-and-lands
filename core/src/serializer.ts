@@ -1,7 +1,10 @@
 import { createGameData, IGameData } from "./gamedata";
+import { gameplay } from "./gameplay";
 import { ICountry } from "./lib/country";
 import { createSeedRandom } from "./lib/seed_random";
 import { ITile } from "./lib/tile";
+import { util } from "./lib/util";
+import { CountryId } from "./types/country_id";
 import { TurnType } from "./types/turn_type";
 
 export interface ISerializedGameData {
@@ -56,6 +59,19 @@ function deserialize(serialized: ISerializedGameData): IGameData {
 
   data.countries = serialized.countries;
   data.tiles = serialized.tiles;
+
+  // When a player leaves the game but his country is still alive,
+  // player's turn won't be available when the save is reloaded.
+  // So check alive countries, if one is not already in data.countries,
+  // add it (though if player had banners, they will be reset as info is deleted).
+  const aliveCountries = util.getAliveCountries(data);
+  for (const [key, _value] of Object.entries(aliveCountries)) {
+    // TODO: This is very dangerous
+    const countryId = parseInt(key) as any as CountryId;
+
+    const exists = data.countries.filter(c => c.id === countryId).length > 0;
+    if (!exists) gameplay.addCountry(data, { country: countryId });
+  }
 
   return data;
 }
