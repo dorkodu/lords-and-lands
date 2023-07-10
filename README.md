@@ -69,7 +69,7 @@
 We developed an easy-to-learn multiplayer turn-based strategy game, simply you fight with/against other players and capture lands. It’s fun and engaging, even more enjoyable when played with friends: online by opening a room and sharing the link, or offline on the same device, like a board game!
 
 * It’s easy to learn, and fun to master. For all ages. We made turn-based strategy games for everyone.
-* t’s multiplayer. Against bots, offline local players on the same device, or online with other players.
+* It’s multiplayer. Against bots, offline local players on the same device, or online with other players.
 * It has a rich map generation, unlocking the endless potential of war and peace.
 * It has bots, with different difficulty levels.
 * It encourages players to think tactically and take advantage of different terrains.
