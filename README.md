@@ -15,7 +15,7 @@
 <br />
 <div align="center">
   <a href="https://github.com/dorkodu/lords-and-lands">
-    <img src="www/Lords_and_Lands-Icon.png" alt="Logo" width="80" height="80">
+    <img src="www/Lords_and_Lands-Icon.png" alt="Logo" width="100" height="100">
   </a>
 
   <h3 align="center">Lords and Lands</h3>
