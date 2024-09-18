@@ -86,5 +86,5 @@ export default defineConfig({
   build: {
     reportCompressedSize: false,
   },
-  base: process.env.NODE_ENV === "production" ? "https://cdn.dorkodu.com/lordsandlands/" : "",
+  base: "/",
 });
